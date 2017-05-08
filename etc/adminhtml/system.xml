@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="stockbase_tab" translate="label" sortOrder="1000">
+            <label>Stockbase</label>
+        </tab>
+        <section id="stockbase_section" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Configuration</label>
+            <tab>stockbase_tab</tab>
+            <resource>Strategery_Stockbase::config</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+
+                <label>Stockbase configuration</label>
+
+                <field id="module_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Module enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Allows to completely disable the Stockbase module. Enable to see other options.</comment>
+                </field>
+
+                <field id="username" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Your Stockbase username</label>
+                    <depends>
+                        <field id="*/*/module_enabled">1</field>
+                    </depends>
+                    <validate>validate-no-empty</validate>
+                </field>
+
+                <field id="password" translate="label" type="password" sortOrder="25" showInDefault="1" 
+                       showInWebsite="1" showInStore="1">
+                    <label>Your Stockbase password</label>
+                    <depends>
+                        <field id="*/*/module_enabled">1</field>
+                    </depends>
+                    <validate>validate-no-empty</validate>
+                </field>
+
+                <field id="environment" translate="label" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Environment selection</label>
+                    <depends>
+                        <field id="*/*/module_enabled">1</field>
+                    </depends>
+                    <source_model>Strategery\Stockbase\Model\Config\Source\Environment</source_model>
+                </field>
+
+                <field id="ean_field" translate="label comment" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product EAN field</label>
+                    <depends>
+                        <field id="*/*/module_enabled">1</field>
+                    </depends>
+                    <source_model>Strategery\Stockbase\Model\Config\Source\EanField</source_model>
+                    <comment>Please select a product attribute that contains a valid EAN. Products with empty EAN will be ignored. Only simple products can have EAN.</comment>
+                </field>
+
+            </group>
+        </section>
+    </system>
+</config>
