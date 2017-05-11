@@ -32,8 +32,7 @@ class Sync
         ObjectManagerInterface $objectManager,
         StockbaseClientFactory $stockbaseClientFactory,
         StockbaseConfiguration $config
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->stockbaseClientFactory = $stockbaseClientFactory;
         $this->objectManager = $objectManager;
@@ -42,8 +41,9 @@ class Sync
 
     public function execute()
     {
-        if (!$this->config->isModuleEnabled())
+        if (!$this->config->isModuleEnabled()) {
             return;
+        }
         
         $this->logger->info("Synchronizing Stockbase stock index...");
         

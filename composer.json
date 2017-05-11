@@ -14,5 +14,11 @@
         "psr-4": {
             "Strategery\\Stockbase\\": ""
         }
+    },
+    "require-dev": {
+        "phpro/grumphp": "^0.11.5",
+        "magento-ecg/coding-standard": "^2.0",
+        "squizlabs/php_codesniffer": "~2.6",
+        "escapestudios/symfony2-coding-standard": "~2.0"
     }
 }

@@ -41,8 +41,8 @@ class StockbaseClientFactory
         ObjectManagerInterface $objectManager,
         StockbaseConfiguration $config,
         $instanceName = StockbaseClient::class
-    )
-    {
+    ) {
+    
         $this->objectManager = $objectManager;
         $this->instanceName = $instanceName;
         $this->logger = $logger;

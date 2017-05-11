@@ -9,6 +9,9 @@ use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 use Magento\Framework\DB\Ddl\Table;
 
+/**
+ * @author Vitaly Zilnik <vitaly@strategery.io>
+ */
 class InstallSchema implements InstallSchemaInterface
 {
 
@@ -21,7 +24,6 @@ class InstallSchema implements InstallSchemaInterface
 
         $tableName = $setup->getTable('stockbase_stock');
         if (!$setup->getConnection()->isTableExists($tableName)) {
-
             $table = $setup->getConnection()
                 ->newTable($tableName)
                 ->setComment('Stockbase stock index')

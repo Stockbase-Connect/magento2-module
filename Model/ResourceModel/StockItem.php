@@ -3,7 +3,6 @@
 
 namespace Strategery\Stockbase\Model\ResourceModel;
 
-
 class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
     const BULK_INSERT_CHUNK_SIZE = 100;
@@ -20,7 +19,7 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
     /**
      * Gets the modification date of the last modified item in the stock.
-     * 
+     *
      * @return \DateTime|null
      */
     public function getLastModifiedItemDate()
@@ -39,7 +38,7 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
     /**
      * Updates the local stock based on given Stockbase API response.
-     * 
+     *
      * @param \stdClass $stock
      * @return int
      */
@@ -81,8 +80,7 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             $connection->insertOnDuplicate($this->getMainTable(), $data);
             
             $connection->commit();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $connection->rollBack();
             throw $e;
         }
