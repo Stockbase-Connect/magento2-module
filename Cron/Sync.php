@@ -52,7 +52,8 @@ class Sync
         /** @var StockItemResource $stockItemResource */
         $stockItemResource = $this->objectManager->create(StockItemResource::class);
         
-        $lastModifiedDate = $stockItemResource->getLastModifiedItemDate();
+        //$lastModifiedDate = $stockItemResource->getLastModifiedItemDate();
+        $lastModifiedDate = null; // Disabled due to unstable API
 
         $this->logger->info(sprintf(
             "Downloading Stockbase stock data since %s...",

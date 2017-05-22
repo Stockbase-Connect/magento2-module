@@ -4,7 +4,7 @@
     <group id="stockbase">
 
         <job name="stockbase_sync" instance="Strategery\Stockbase\Cron\Sync" method="execute">
-            <schedule>*/10 * * * *</schedule>
+            <schedule>7,37 * * * *</schedule>
         </job>
 
     </group>
