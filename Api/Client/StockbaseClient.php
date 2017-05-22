@@ -5,20 +5,33 @@ namespace Strategery\Stockbase\Api\Client;
 
 use Assert\Assertion;
 use DivideBV\PHPDivideIQ\DivideIQ;
+use Magento\Sales\Model\Order;
+use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
+use Strategery\Stockbase\Model\StockItemReserve;
 
 class StockbaseClient
 {
     const STOCKBASE_STOCK_ENDPOINT = 'stockbase_stock';
     const STOCKBASE_IMAGES_ENDPOINT = 'stockbase_images';
+    const STOCKBASE_ORDER_REQUEST_ENDPOINT = 'stockbase_orderrequest';
     
     /**
      * @var DivideIQ
      */
     private $divideIqClient;
+    
+    /**
+     * @var StockbaseConfiguration
+     */
+    private $stockbaseConfiguration;
 
-    public function __construct(DivideIQ $divideIqClient)
+    public function __construct(
+        DivideIQ $divideIqClient,
+        StockbaseConfiguration $stockbaseConfiguration
+    )
     {
         $this->divideIqClient = $divideIqClient;
+        $this->stockbaseConfiguration = $stockbaseConfiguration;
     }
 
     /**
@@ -52,5 +65,71 @@ class StockbaseClient
             'ean' => implode(',', $eans),
         ];
         return $this->divideIqClient->request(self::STOCKBASE_IMAGES_ENDPOINT, $data);
+    }
+
+    /**
+     * @param Order $order
+     * @param StockItemReserve[] $reservedStockbaseItems
+     * @return object
+     * @throws \Exception
+     */
+    public function createOrder(Order $order, array $reservedStockbaseItems)
+    {
+        $orderPrefix = $this->stockbaseConfiguration->getOrderPrefix();
+        $shippingAddress = $order->getShippingAddress();
+        $now = new \DateTime('now', new \DateTimeZone('UTC'));
+        $Orderlines = [];
+
+        $orderLineNumber = 0;
+        foreach ($reservedStockbaseItems as $reserve) {
+            $orderLineNumber++;
+            $Orderlines[] = [
+                'Number' => $orderLineNumber, // Number starting from 1
+                'EAN' => $reserve->getEan(),
+                'Amount' => (int)$reserve->getAmount(),
+            ];
+        }
+
+        $OrderHeader = [
+            'OrderNumber' => $orderPrefix . '#' . $order->getRealOrderId(),
+            'TimeStamp' => $now->format('Y-m-d h:i:s'),
+            'Attention' => $order->getCustomerNote() ? $order->getCustomerNote() : ' ',
+        ];
+        
+        $OrderDelivery = [
+            'Person' => [
+                'FirstName' => $shippingAddress->getFirstname(),
+                'Surname' => $shippingAddress->getLastname(),
+                'Company' => $shippingAddress->getCompany(),
+            ],
+            'Address' => [
+                'Street' => $shippingAddress->getStreetLine(1),
+                'StreetNumber' => $shippingAddress->getStreetLine(2) ?: '-',
+                'ZipCode' => $shippingAddress->getPostcode(),
+                'City' => $shippingAddress->getCity(),
+                'CountryCode' => $shippingAddress->getCountryId(),
+            ],
+        ];
+
+        $OrderRequest = [
+            'OrderHeader' => $OrderHeader,
+            'OrderLines' => $Orderlines,
+            'OrderDelivery' => $OrderDelivery,
+        ];
+
+        $response = $this->divideIqClient->request(self::STOCKBASE_ORDER_REQUEST_ENDPOINT, $OrderRequest, 'POST');
+        if ($response->StatusCode != 1) {
+            $message = '';
+            if (isset($response->Items) && is_array($response->Items)) {
+                foreach ($response->Items as $item) {
+                    if ($item->StatusCode != 1) {
+                        $message .= ' ' . trim($item->ExceptionMessage);
+                    }
+                }
+            }
+            //throw new \Exception('Failed sending order to stockbase.' . $message); //TODO: TMP
+        }
+        
+        return $response;
     }
 }

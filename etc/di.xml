@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    
+    <preference for="Magento\CatalogInventory\Model\Spi\StockStateProviderInterface" type="Strategery\Stockbase\Model\Inventory\StockStateProvider" />
+   <!-- <preference for="Magento\CatalogInventory\Observer\ProductQty" type="Strategery\Stockbase\Model\Inventory\ProductQty" />-->
+    <preference for="Magento\CatalogInventory\Observer\SubtractQuoteInventoryObserver" type="Strategery\Stockbase\Model\Observer\SubtractQuoteInventoryObserver" />
+    <!--<preference for="Magento\CatalogInventory\Observer\RevertQuoteInventoryObserver" type="Strategery\Stockbase\Model\Observer\RevertQuoteInventoryObserver" />-->
+    
+</config>

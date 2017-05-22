@@ -17,6 +17,46 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $this->_init('stockbase_stock', 'ean');
     }
 
+    public function getNotReservedStockAmount($eans)
+    {
+        $connection = $this->getConnection();
+
+        $query = $connection->select()
+            ->from(
+                ['s' => $this->getMainTable()],
+                ['s.ean', 'amount' => new \Zend_Db_Expr('s.amount - COALESCE(SUM(r.amount), 0)')]
+            )
+            ->joinLeft(
+                ['r' => $this->getTable('stockbase_stock_reserve')],
+                'r.ean = s.ean',
+                null
+            )
+            ->where('s.ean in (?)', $eans)
+            ->group('s.ean');
+        
+        $pairs = $connection->fetchPairs($query);
+
+        return is_array($eans) ? $pairs : reset($pairs);
+    }
+
+    public function updateStockAmount($ean, $amount, $operation = '-')
+    {
+        $amount = (float)$amount;
+        $operation = $operation == '-' ? '-' : '+';
+        
+        $connection = $this->getConnection();
+
+        $result = $connection->update(
+            $this->getMainTable(),
+            ['amount' => new \Zend_Db_Expr('amount ' . $operation . ' ' . $amount)],
+            ['ean = ?' => $ean]
+        );
+        if ($result == 1) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Gets the modification date of the last modified item in the stock.
      *

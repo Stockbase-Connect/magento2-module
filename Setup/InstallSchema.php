@@ -64,7 +64,7 @@ class InstallSchema implements InstallSchemaInterface
                 )
                 ->addColumn(
                     'amount',
-                    Table::TYPE_INTEGER,
+                    Table::TYPE_FLOAT,
                     null,
                     ['nullable' => false, 'default' => '0'],
                     'Available stock amount for sale'
@@ -96,6 +96,96 @@ class InstallSchema implements InstallSchemaInterface
                 ->addIndex(
                     $setup->getIdxName($tableName, ['timestamp']),
                     ['timestamp'],
+                    ['type' => AdapterInterface::INDEX_TYPE_INDEX]
+                );
+
+            $setup->getConnection()->createTable($table);
+        }
+
+        $tableName = $setup->getTable('stockbase_stock_reserve');
+        if (!$setup->getConnection()->isTableExists($tableName)) {
+            $table = $setup->getConnection()
+                ->newTable($tableName)
+                ->setComment('Stockbase stock reserve')
+                ->addColumn(
+                    'id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                    'ID'
+                )
+                ->addColumn(
+                    'ean',
+                    Table::TYPE_BIGINT,
+                    null,
+                    ['unsigned' => true, 'nullable' => false],
+                    'International/European Article Number'
+                )
+                ->addColumn(
+                    'amount',
+                    Table::TYPE_FLOAT,
+                    null,
+                    ['nullable' => false, 'default' => '0'],
+                    'Reserved amount'
+                )
+                ->addColumn(
+                    'magento_stock_amount',
+                    Table::TYPE_FLOAT,
+                    null,
+                    ['nullable' => false, 'default' => '0'],
+                    'Amount to subtract from Magento stock'
+                )
+                ->addColumn(
+                    'quote_item_id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['unsigned' => true, 'nullable' => false],
+                    'Quote Item ID'
+                )
+                ->addColumn(
+                    'product_id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['unsigned' => true, 'nullable' => false],
+                    'Product ID'
+                )
+                ->addColumn(
+                    'order_item_id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['unsigned' => true, 'nullable' => true],
+                    'Order Item ID'
+                )
+                ->addColumn(
+                    'created_at',
+                    Table::TYPE_DATETIME,
+                    null,
+                    ['nullable' => false],
+                    'Created at'
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['ean']),
+                    ['ean'],
+                    ['type' => AdapterInterface::INDEX_TYPE_INDEX]
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['amount']),
+                    ['amount'],
+                    ['type' => AdapterInterface::INDEX_TYPE_INDEX]
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['quote_item_id']),
+                    ['quote_item_id'],
+                    ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['product_id']),
+                    ['product_id'],
+                    ['type' => AdapterInterface::INDEX_TYPE_INDEX]
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['order_item_id']),
+                    ['order_item_id'],
                     ['type' => AdapterInterface::INDEX_TYPE_INDEX]
                 );
 

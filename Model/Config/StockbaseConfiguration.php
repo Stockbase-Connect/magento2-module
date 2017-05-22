@@ -64,4 +64,9 @@ class StockbaseConfiguration
     {
         return $this->scopeConfig->getValue(self::CONFIG_EAN_FIELD);
     }
+
+    public function getOrderPrefix()
+    {
+        return 'MAGE-' . mt_rand(0, 999); //TODO: Order prefix configuration
+    }
 }
