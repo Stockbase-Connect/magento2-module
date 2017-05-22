@@ -3,8 +3,8 @@
 
 namespace Strategery\Stockbase\Api\Client;
 
+use Strategery\Stockbase\Api\Client\DivideIQ\DivideIQClientFactory;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
-use DivideBV\PHPDivideIQ\DivideIQ;
 use Magento\Framework\ObjectManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -22,11 +22,6 @@ class StockbaseClientFactory
     protected $instanceName;
 
     /**
-     * @var DivideIQ
-     */
-    protected $divideIqClient;
-
-    /**
      * @var StockbaseConfiguration
      */
     protected $config;
@@ -35,11 +30,17 @@ class StockbaseClientFactory
      * @var LoggerInterface
      */
     private $logger;
+    
+    /**
+     * @var DivideIQClientFactory
+     */
+    private $divideIQClientFactory;
 
     public function __construct(
         LoggerInterface $logger,
         ObjectManagerInterface $objectManager,
         StockbaseConfiguration $config,
+        DivideIQClientFactory $divideIQClientFactory,
         $instanceName = StockbaseClient::class
     ) {
     
@@ -47,14 +48,7 @@ class StockbaseClientFactory
         $this->instanceName = $instanceName;
         $this->logger = $logger;
         $this->config = $config;
-        
-        //TODO: Cache authentication state using DivideIQ::fromJson() and DivideIQ::toJson()
-        
-        $this->divideIqClient = new DivideIQ(
-            $this->config->getUsername(),
-            $this->config->getPassword(),
-            $this->config->getEnvironment()
-        );
+        $this->divideIQClientFactory = $divideIQClientFactory;
     }
 
     /**
@@ -65,9 +59,9 @@ class StockbaseClientFactory
      */
     public function create(array $data = [])
     {
-        $data = array_merge([
-            'divideIqClient' => $this->divideIqClient,
-        ], $data);
+        if (!isset($data['divideIqClient'])) {
+            $data['divideIqClient'] = $this->divideIQClientFactory->create();
+        }
         return $this->objectManager->create($this->instanceName, $data);
     }
 }
