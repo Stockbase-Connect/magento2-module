@@ -1,46 +1,46 @@
 <?php
 namespace Strategery\Stockbase\Model\Observer;
 
-
-use Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\Event\Observer;
+use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order\Item as OrderItem;
 use Strategery\Stockbase\Api\Client\StockbaseClientFactory;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
-use Strategery\Stockbase\Model\ResourceModel\StockItemReserve\Collection as StockItemReserveCollection;
-use Strategery\Stockbase\Model\ResourceModel\StockItem as StockItemResource;
+use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
 use Strategery\Stockbase\Model\StockItemReserve;
 
-class OrderPaymentPayObserver implements \Magento\Framework\Event\ObserverInterface
+class OrderPaymentPayObserver implements ObserverInterface
 {
-
     /**
      * @var StockbaseConfiguration
      */
     private $stockbaseConfiguration;
-    /**
-     * @var ObjectManagerInterface
-     */
-    private $objectManager;
+    
     /**
      * @var StockbaseClientFactory
      */
     private $stockbaseClientFactory;
+    
+    /**
+     * @var StockbaseStockManagement
+     */
+    private $stockbaseStockManagement;
 
     public function __construct(
         StockbaseConfiguration $stockbaseConfiguration,
-        ObjectManagerInterface $objectManager,
+        StockbaseStockManagement $stockbaseStockManagement,
         StockbaseClientFactory $stockbaseClientFactory
     ) {
         $this->stockbaseConfiguration = $stockbaseConfiguration;
-        $this->objectManager = $objectManager;
         $this->stockbaseClientFactory = $stockbaseClientFactory;
+        $this->stockbaseStockManagement = $stockbaseStockManagement;
     }
 
     /**
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      * @return $this
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         /** @var \Magento\Sales\Model\Order\Invoice $invoice */
         $invoice = $observer->getInvoice();
@@ -53,16 +53,8 @@ class OrderPaymentPayObserver implements \Magento\Framework\Event\ObserverInterf
                 return $item->getQuoteItemId();
             }, (array)$order->getAllItems());
 
-            /** @var StockItemReserveCollection $reserveCollection */
-            $reserveCollection = $this->objectManager->create(StockItemReserveCollection::class);
-            $reserveCollection->addFieldToFilter('quote_item_id', ['in' => $quoteItemIds]);
-
-            /** @var StockItemResource $stockItemResource */
-            $stockItemResource = $this->objectManager->create(StockItemResource::class);
-
             /** @var StockItemReserve[] $reservedStockbaseItems */
-            $reservedStockbaseItems = $reserveCollection->getItems();
-            
+            $reservedStockbaseItems = $this->stockbaseStockManagement->getReserveForQuoteItem($quoteItemIds);
             if (!empty($reservedStockbaseItems)) {
 
                 $client = $this->stockbaseClientFactory->create();
@@ -77,10 +69,10 @@ class OrderPaymentPayObserver implements \Magento\Framework\Event\ObserverInterf
                     //$order->save();
 
                     // Decrement local Stockbase stock amount
-                    $stockItemResource->updateStockAmount($reserve->getEan(), $reserve->getAmount(), '-');
+                    $this->stockbaseStockManagement->updateStockAmount($reserve->getEan(), $reserve->getAmount(), '-');
                     
                     // Release the reserve
-                    $reserve->delete();
+                    $this->stockbaseStockManagement->releaseReserve($reserve);
                     
                     $order->addStatusHistoryComment(__(
                         'Local Stockbase stock index for item with EAN "%1" has been updated.',

@@ -10,6 +10,7 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Strategery\Stockbase\Model\ResourceModel\StockItem as StockItemResource;
+use Strategery\Stockbase\Model\ResourceModel\StockItemReserve\Collection as StockItemReserveCollection;
 use Strategery\Stockbase\Model\StockItemReserve;
 
 class StockbaseStockManagement
@@ -50,18 +51,30 @@ class StockbaseStockManagement
         $this->objectManager = $objectManager;
     }
 
+    /**
+     * Gets the amount of items available in the Stockbase stock.
+     * 
+     * @param int $productId
+     * @return float
+     */
     public function getStockbaseStockAmount($productId)
     {
         $qty = 0;
         
         $ean = $this->getStockbaseEan($productId);
-        if ($ean) {
+        if (!empty($ean)) {
             $qty += max($this->stockItemResource->getNotReservedStockAmount($ean), 0);
         }
         
         return $qty;
     }
 
+    /**
+     * Gets the Stockbase EAN for given product (if any).
+     * 
+     * @param int $productId
+     * @return string|null
+     */
     public function getStockbaseEan($productId)
     {
         $stockItem = $this->stockRegistry->getStockItem($productId);
@@ -80,14 +93,40 @@ class StockbaseStockManagement
             }
         }
         
-        return false;
+        return null;
     }
 
+    /**
+     * Checks if given product is properly configured to be processed as a Stockbase product.
+     * 
+     * @param int $productId
+     * @return bool
+     */
     public function isStockbaseProduct($productId)
     {
-        return $this->getStockbaseEan($productId) !== false;
+        return !empty($this->getStockbaseEan($productId));
     }
 
+    /**
+     * Increments/decrements the amount of items in stock.
+     * 
+     * @param string $ean
+     * @param float $amount
+     * @param string $operation
+     */
+    public function updateStockAmount($ean, $amount, $operation = '-')
+    {
+        $this->stockItemResource->updateStockAmount($ean, $amount, $operation);
+    }
+
+    /**
+     * Creates a stock reserve for given item.
+     * 
+     * @param QuoteItem $quoteItem
+     * @param float $stockbaseAmount
+     * @param float $magentoStockAmount
+     * @return StockItemReserve
+     */
     public function createReserve(QuoteItem $quoteItem, $stockbaseAmount, $magentoStockAmount)
     {
         $ean = $this->getStockbaseEan($quoteItem->getProductId());
@@ -107,4 +146,53 @@ class StockbaseStockManagement
         return $stockItemReserve;
     }
     
+    /**
+     * Releases the stock reserve.
+     * 
+     * @param StockItemReserve $reserve
+     */
+    public function releaseReserve(StockItemReserve $reserve)
+    {
+        $reserve->delete();
+    }
+
+    /**
+     * Gets stock reserve entries for given products.
+     * 
+     * @param int|int[] $productIds
+     * @return StockItemReserve[]
+     */
+    public function getReserveForProduct($productIds)
+    {
+        $productIds = is_array($productIds) ? $productIds : [$productIds];
+
+        /** @var StockItemReserveCollection $reserveCollection */
+        $reserveCollection = $this->objectManager->create(StockItemReserveCollection::class);
+        $reserveCollection->addFieldToFilter('product_id', ['in' => $productIds]);
+
+        /** @var StockItemReserve[] $reservedStockbaseItems */
+        $reservedStockbaseItems = $reserveCollection->getItems();
+
+        return $reservedStockbaseItems;
+    }
+
+    /**
+     * Gets stock reserve entries for given quote items.
+     * 
+     * @param int|int[] $quoteItemIds
+     * @return StockItemReserve[]
+     */
+    public function getReserveForQuoteItem($quoteItemIds)
+    {
+        $quoteItemIds = is_array($quoteItemIds) ? $quoteItemIds : [$quoteItemIds];
+        
+        /** @var StockItemReserveCollection $reserveCollection */
+        $reserveCollection = $this->objectManager->create(StockItemReserveCollection::class);
+        $reserveCollection->addFieldToFilter('quote_item_id', ['in' => $quoteItemIds]);
+
+        /** @var StockItemReserve[] $reservedStockbaseItems */
+        $reservedStockbaseItems = $reserveCollection->getItems();
+        
+        return $reservedStockbaseItems;
+    }
 }
