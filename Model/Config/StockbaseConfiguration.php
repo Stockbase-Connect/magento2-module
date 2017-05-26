@@ -14,6 +14,7 @@ class StockbaseConfiguration
     const CONFIG_USERNAME = 'stockbase_section/general/username';
     const CONFIG_PASSWORD = 'stockbase_section/general/password';
     const CONFIG_EAN_FIELD = 'stockbase_section/general/ean_field';
+    const CONFIG_ORDER_PREFIX = 'stockbase_section/general/order_prefix';
 
     /**
      * @var ScopeConfigInterface
@@ -34,6 +35,14 @@ class StockbaseConfiguration
             $this->configResource->saveConfig(
                 self::CONFIG_ENVIRONMENT,
                 Environment::STAGING,
+                'default',
+                0
+            );
+        }
+        if (!$this->scopeConfig->getValue(self::CONFIG_ORDER_PREFIX)) {
+            $this->configResource->saveConfig(
+                self::CONFIG_ORDER_PREFIX,
+                'MAGE-' . mt_rand(0, 999),
                 'default',
                 0
             );
@@ -67,6 +76,6 @@ class StockbaseConfiguration
 
     public function getOrderPrefix()
     {
-        return 'MAGE-' . mt_rand(0, 999); //TODO: Order prefix configuration
+        return $this->scopeConfig->getValue(self::CONFIG_ORDER_PREFIX);
     }
 }
