@@ -14,14 +14,6 @@ use Strategery\Stockbase\Model\StockItemFactory;
 
 class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvider
 {
-//    /**
-//     * @var StockbaseConfiguration
-//     */
-//    protected $config;
-//    /**
-//     * @var StockItemFactory
-//     */
-//    private $stockItemFactory;
     /**
      * @var StockbaseStockManagement
      */
@@ -42,9 +34,6 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
      * @param bool $qtyCheckApplicable
      */
     public function __construct(
-        //StockbaseConfiguration $config,
-        //StockItemFactory $stockItemFactory,
-//        StockbaseStockManagement $stockbaseStockManagement,
         ObjectManagerInterface $objectManager,
         MathDivision $mathDivision,
         FormatInterface $localeFormat,
@@ -53,10 +42,6 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
         $qtyCheckApplicable = true
     ) {
         parent::__construct($mathDivision, $localeFormat, $objectFactory, $productFactory, $qtyCheckApplicable);
-
-        //$this->config = $config;
-        //$this->stockItemFactory = $stockItemFactory;
-//        $this->stockbaseStockManagement = $stockbaseStockManagement;
         $this->objectManager = $objectManager;
     }
     
@@ -97,43 +82,6 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
             }
         }
         return true;
-        
-//        if (!$this->qtyCheckApplicable) {
-//            return true;
-//        }
-//        if (
-//            !$this->config->isModuleEnabled()|| 
-//            !$stockItem->getManageStock() ||
-//            $stockItem->getBackorders() != \Magento\CatalogInventory\Model\Stock::BACKORDERS_NO
-//        ) {
-//            return parent::checkQty($stockItem, $qty);
-//        }
-//
-//        $product = $this->productFactory->create();
-//        $product->load($stockItem->getProductId());
-//        $ean = $product->getData($this->config->getEanFieldName());
-//
-//        if (!$product->getData('stockbase_product') || empty($ean)) {
-//            // This is not a Stockbase product
-//            return parent::checkQty($stockItem, $qty);
-//        }
-//        
-//        $stockbaseStockItem = $this->stockItemFactory->create();
-//        $stockbaseStockItem->load($ean);
-//        
-//        if ($stockbaseStockItem->isEmpty()) {
-//            // Stockbase stock info not found for this item
-//            return parent::checkQty($stockItem, $qty);
-//        }
-//        
-//        $stockbaseQty = max($stockbaseStockItem->getAmount(), 0);
-//        
-//        if ($stockItem->getQty() + $stockbaseQty - $stockItem->getMinQty() - $qty < 0) {
-//            // Not enough stock
-//            return false;
-//        }
-//        
-//        return true;
     }
 
     /**
@@ -147,29 +95,7 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
     public function getStockQty(StockItemInterface $stockItem)
     {
         $qty = parent::getStockQty($stockItem);
-        
         $qty += $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
-        
-//        if (
-//            $this->config->isModuleEnabled() &&
-//            $stockItem->getManageStock() &&
-//            $stockItem->getBackorders() == \Magento\CatalogInventory\Model\Stock::BACKORDERS_NO
-//        ) {
-//
-//            $product = $this->productFactory->create();
-//            $product->load($stockItem->getProductId());
-//            $ean = $product->getData($this->config->getEanFieldName());
-//
-//            if ($product->getData('stockbase_product') && !empty($ean)) {
-//                $stockbaseStockItem = $this->stockItemFactory->create();
-//                $stockbaseStockItem->load($ean);
-//
-//                if (!$stockbaseStockItem->isEmpty()) {
-//                    
-//                    $qty += max($stockbaseStockItem->getAmount(), 0);
-//                }
-//            }
-//        }
         
         return $qty;
     }

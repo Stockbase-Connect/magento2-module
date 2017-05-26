@@ -3,17 +3,12 @@
 
 namespace Strategery\Stockbase\Model\Observer;
 
-use Magento\Catalog\Model\ProductFactory;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\CatalogInventory\Observer\ItemsForReindex;
 use Magento\CatalogInventory\Observer\ProductQty;
-use Magento\Framework\Event\ObserverInterface;
 use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\Framework\Event\Observer as EventObserver;
-use Magento\Quote\Model\Quote\Item as QuoteItem;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
-use Strategery\Stockbase\Model\StockItemFactory;
 
 class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\SubtractQuoteInventoryObserver
 {
@@ -21,18 +16,7 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
      * @var StockRegistryInterface
      */
     private $stockRegistry;
-//    /**
-//     * @var StockbaseConfiguration
-//     */
-//    private $config;
-//    /**
-//     * @var ProductFactory
-//     */
-//    private $productFactory;
-//    /**
-//     * @var StockItemFactory
-//     */
-//    private $stockItemFactory;
+    
     /**
      * @var StockbaseStockManagement
      */
@@ -49,27 +33,15 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
         ProductQty $productQty,
         ItemsForReindex $itemsForReindex,
         StockRegistryInterface $stockRegistry,
-//        StockbaseConfiguration $config,
-//        ProductFactory $productFactory,
-//        StockItemFactory $stockItemFactory,
         StockbaseStockManagement $stockbaseStockManagement
     ) {
         parent::__construct($stockManagement, $productQty, $itemsForReindex);
         $this->stockRegistry = $stockRegistry;
-//        $this->config = $config;
-//        $this->productFactory = $productFactory;
-//        $this->stockItemFactory = $stockItemFactory;
         $this->stockbaseStockManagement = $stockbaseStockManagement;
     }
 
     /**
-     * Subtract quote items qtys from stock items related with quote items products.
-     *
-     * Used before order placing to make order save/place transaction smaller
-     * Also called after every successful order placement to ensure subtraction of inventory
-     *
-     * @param EventObserver $observer
-     * @return $this
+     * {@inheritdoc}
      */
     public function execute(EventObserver $observer)
     {
@@ -124,9 +96,6 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
                         $reserveItem->getEan(),
                         $reserveItem->getAmount()
                     ));
-                    
-                    //TODO: RevertQuoteInventoryObserver
-                    //TODO: Update order_item_id on reserve item after successful order placement
                 }
             }
         }
@@ -143,52 +112,4 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
         $quote->setInventoryProcessed(true);
         return $this;
     }
-
-
-//    /**
-//     * Prepare array with information about used product qty and product stock item
-//     *
-//     * @param array $relatedItems
-//     * @return array
-//     */
-//    public function getProductQty($relatedItems)
-//    {
-//        $items = [];
-//        foreach ($relatedItems as $item) {
-//            $productId = $item->getProductId();
-//            if (!$productId) {
-//                continue;
-//            }
-//            $children = $item->getChildrenItems();
-//            if ($children) {
-//                foreach ($children as $childItem) {
-//                    $this->_addItemToQtyArray($childItem, $items);
-//                }
-//            } else {
-//                $this->_addItemToQtyArray($item, $items);
-//            }
-//        }
-//        return $items;
-//    }
-//
-//    /**
-//     * Adds stock item qty to $items (creates new entry or increments existing one)
-//     *
-//     * @param QuoteItem $quoteItem
-//     * @param array &$items
-//     * @return void
-//     */
-//    protected function _addItemToQtyArray(QuoteItem $quoteItem, &$items)
-//    {
-//        $productId = $quoteItem->getProductId();
-//        if (!$productId) {
-//            return;
-//        }
-//        if (isset($items[$productId])) {
-//            $items[$productId] += $quoteItem->getTotalQty();
-//        } else {
-//            $items[$productId] = $quoteItem->getTotalQty();
-//        }
-//    }
-    
 }
