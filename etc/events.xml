@@ -5,16 +5,38 @@
     <event name="sales_quote_item_qty_set_after">
         <observer name="inventory" instance="Strategery\Stockbase\Model\Observer\QuantityValidatorObserver"/>
     </event>
-    <event name="sales_model_service_quote_submit_before">
-        <observer name="inventory" instance="Magento\CatalogInventory\Observer\SubtractQuoteInventoryObserver"/>
-    </event>
-    <event name="sales_model_service_quote_submit_failure">
-        <observer name="inventory" instance="Magento\CatalogInventory\Observer\RevertQuoteInventoryObserver"/>
-    </event>
     -->
     
     <event name="sales_order_payment_pay">
-        <observer name="save_order" instance="Strategery\Stockbase\Model\Observer\OrderPaymentPayObserver" />
+        <observer name="stockbase_create_order" instance="Strategery\Stockbase\Model\Observer\OrderPaymentPayObserver" />
+    </event>
+    
+    <event name="sales_model_service_quote_submit_success">
+        <observer name="stockbase_update_reserve_item" instance="Strategery\Stockbase\Model\Observer\SalesOrderAfterPlaceObserver"/>
+    </event>
+
+    <event name="sales_model_service_quote_submit_before">
+        <!-- Overrides "Magento\CatalogInventory\Observer\SubtractQuoteInventoryObserver" -->
+        <observer name="inventory" instance="Strategery\Stockbase\Model\Observer\SubtractQuoteInventoryObserver"/>
+    </event>
+    
+    <event name="sales_model_service_quote_submit_failure">
+        <!-- Overrides "Magento\CatalogInventory\Observer\RevertQuoteInventoryObserver" -->
+        <observer name="inventory" instance="Strategery\Stockbase\Model\Observer\RevertQuoteInventoryObserver"/>
+    </event>
+    <event name="restore_quote">
+        <!-- Overrides "Magento\CatalogInventory\Observer\RevertQuoteInventoryObserver" -->
+        <observer name="inventory" instance="Strategery\Stockbase\Model\Observer\RevertQuoteInventoryObserver"/>
+    </event>
+
+    <event name="sales_order_item_cancel">
+        <!-- Overrides "Magento\CatalogInventory\Observer\CancelOrderItemObserver" -->
+        <observer name="inventory" instance="Strategery\Stockbase\Model\Observer\CancelOrderItemObserver"/>
+    </event>
+
+    <event name="sales_order_creditmemo_save_after">
+        <!-- Overrides "Magento\CatalogInventory\Observer\RefundOrderInventoryObserver" -->
+        <observer name="inventory" instance="Strategery\Stockbase\Model\Observer\RefundOrderInventoryObserver"/>
     </event>
 
 </config>
