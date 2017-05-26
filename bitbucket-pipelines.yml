@@ -1,5 +1,5 @@
 # Check our guides at https://confluence.atlassian.com/x/e8YWN for more examples.
-image: beanbee/magento2-php:7.0-cli
+image: meanbee/magento2-php:7.0-cli
 
 pipelines:
   default:
