@@ -9,6 +9,9 @@ use Magento\Sales\Model\Order;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Strategery\Stockbase\Model\StockItemReserve;
 
+/**
+ * Stockbase API client.
+ */
 class StockbaseClient
 {
     const STOCKBASE_STOCK_ENDPOINT = 'stockbase_stock';
@@ -25,16 +28,22 @@ class StockbaseClient
      */
     private $stockbaseConfiguration;
 
+    /**
+     * StockbaseClient constructor.
+     * @param DivideIQ               $divideIqClient
+     * @param StockbaseConfiguration $stockbaseConfiguration
+     */
     public function __construct(
         DivideIQ $divideIqClient,
         StockbaseConfiguration $stockbaseConfiguration
-    )
-    {
+    ) {
         $this->divideIqClient = $divideIqClient;
         $this->stockbaseConfiguration = $stockbaseConfiguration;
     }
 
     /**
+     * Gets current Stockbase stock state.
+     *
      * @param \DateTime|null $since
      * @param \DateTime|null $until
      * @return object
@@ -49,10 +58,13 @@ class StockbaseClient
         if ($until !== null) {
             $data['Until'] = $until->getTimestamp();
         }
+        
         return $this->divideIqClient->request(self::STOCKBASE_STOCK_ENDPOINT, $data);
     }
 
     /**
+     * Gets images for specified EANs.
+     *
      * @param string[] $eans
      * @return object
      * @throws \Exception
@@ -64,11 +76,14 @@ class StockbaseClient
         $data = [
             'ean' => implode(',', $eans),
         ];
+        
         return $this->divideIqClient->request(self::STOCKBASE_IMAGES_ENDPOINT, $data);
     }
 
     /**
-     * @param Order $order
+     * Creates an order on Stockbase from reserved items for specified Magento order.
+     *
+     * @param Order              $order
      * @param StockItemReserve[] $reservedStockbaseItems
      * @return object
      * @throws \Exception
@@ -78,25 +93,25 @@ class StockbaseClient
         $orderPrefix = $this->stockbaseConfiguration->getOrderPrefix();
         $shippingAddress = $order->getShippingAddress();
         $now = new \DateTime('now', new \DateTimeZone('UTC'));
-        $Orderlines = [];
+        $orderLines = [];
 
         $orderLineNumber = 0;
         foreach ($reservedStockbaseItems as $reserve) {
             $orderLineNumber++;
-            $Orderlines[] = [
+            $orderLines[] = [
                 'Number' => $orderLineNumber, // Number starting from 1
                 'EAN' => $reserve->getEan(),
-                'Amount' => (int)$reserve->getAmount(),
+                'Amount' => (int) $reserve->getAmount(),
             ];
         }
 
-        $OrderHeader = [
-            'OrderNumber' => $orderPrefix . '#' . $order->getRealOrderId(),
+        $orderHeader = [
+            'OrderNumber' => $orderPrefix.'#'.$order->getRealOrderId(),
             'TimeStamp' => $now->format('Y-m-d h:i:s'),
             'Attention' => $order->getCustomerNote() ? $order->getCustomerNote() : ' ',
         ];
         
-        $OrderDelivery = [
+        $orderDelivery = [
             'Person' => [
                 'FirstName' => $shippingAddress->getFirstname(),
                 'Surname' => $shippingAddress->getLastname(),
@@ -111,19 +126,19 @@ class StockbaseClient
             ],
         ];
 
-        $OrderRequest = [
-            'OrderHeader' => $OrderHeader,
-            'OrderLines' => $Orderlines,
-            'OrderDelivery' => $OrderDelivery,
+        $orderRequest = [
+            'OrderHeader' => $orderHeader,
+            'OrderLines' => $orderLines,
+            'OrderDelivery' => $orderDelivery,
         ];
 
-        $response = $this->divideIqClient->request(self::STOCKBASE_ORDER_REQUEST_ENDPOINT, $OrderRequest, 'POST');
-        if ($response->StatusCode != 1) {
+        $response = $this->divideIqClient->request(self::STOCKBASE_ORDER_REQUEST_ENDPOINT, $orderRequest, 'POST');
+        if ($response->{'StatusCode'} != 1) {
             $message = '';
-            if (isset($response->Items) && is_array($response->Items)) {
-                foreach ($response->Items as $item) {
-                    if ($item->StatusCode != 1) {
-                        $message .= ' ' . trim($item->ExceptionMessage);
+            if (isset($response->{'Items'}) && is_array($response->{'Items'})) {
+                foreach ($response->{'Items'} as $item) {
+                    if ($item->{'StatusCode'} != 1) {
+                        $message .= ' '.trim($item->{'ExceptionMessage'});
                     }
                 }
             }

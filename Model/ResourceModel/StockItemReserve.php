@@ -3,6 +3,9 @@
 
 namespace Strategery\Stockbase\Model\ResourceModel;
 
+/**
+ * Class StockItemReserve
+ */
 class StockItemReserve extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
     protected function _construct()

@@ -8,6 +8,9 @@ use Strategery\Stockbase\Api\Client\StockbaseClientFactory;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Strategery\Stockbase\Model\ResourceModel\StockItem as StockItemResource;
 
+/**
+ * Stockbase stock synchronization cron job.
+ */
 class Sync
 {
     /**
@@ -27,6 +30,13 @@ class Sync
      */
     private $config;
 
+    /**
+     * Sync constructor.
+     * @param LoggerInterface        $logger
+     * @param ObjectManagerInterface $objectManager
+     * @param StockbaseClientFactory $stockbaseClientFactory
+     * @param StockbaseConfiguration $config
+     */
     public function __construct(
         LoggerInterface $logger,
         ObjectManagerInterface $objectManager,
@@ -39,6 +49,9 @@ class Sync
         $this->config = $config;
     }
 
+    /**
+     * Executes the job.
+     */
     public function execute()
     {
         if (!$this->config->isModuleEnabled()) {

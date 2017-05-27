@@ -9,6 +9,9 @@ use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
 use Strategery\Stockbase\Model\StockItemReserve;
 
+/**
+ * Class OrderPaymentPayObserver
+ */
 class OrderPaymentPayObserver implements ObserverInterface
 {
     /**
@@ -26,6 +29,12 @@ class OrderPaymentPayObserver implements ObserverInterface
      */
     private $stockbaseStockManagement;
 
+    /**
+     * OrderPaymentPayObserver constructor.
+     * @param StockbaseConfiguration   $stockbaseConfiguration
+     * @param StockbaseStockManagement $stockbaseStockManagement
+     * @param StockbaseClientFactory   $stockbaseClientFactory
+     */
     public function __construct(
         StockbaseConfiguration $stockbaseConfiguration,
         StockbaseStockManagement $stockbaseStockManagement,
@@ -37,8 +46,7 @@ class OrderPaymentPayObserver implements ObserverInterface
     }
 
     /**
-     * @param Observer $observer
-     * @return $this
+     * {@inheritdoc}
      */
     public function execute(Observer $observer)
     {
@@ -48,15 +56,13 @@ class OrderPaymentPayObserver implements ObserverInterface
         $order = $invoice->getOrder();
         
         if ($this->stockbaseConfiguration->isModuleEnabled()) {
-
-            $quoteItemIds = array_map(function(OrderItem $item) {
+            $quoteItemIds = array_map(function (OrderItem $item) {
                 return $item->getQuoteItemId();
-            }, (array)$order->getAllItems());
+            }, (array) $order->getAllItems());
 
             /** @var StockItemReserve[] $reservedStockbaseItems */
             $reservedStockbaseItems = $this->stockbaseStockManagement->getReserveForQuoteItem($quoteItemIds);
             if (!empty($reservedStockbaseItems)) {
-
                 $client = $this->stockbaseClientFactory->create();
                 $client->createOrder($order, $reservedStockbaseItems);
 
@@ -80,7 +86,6 @@ class OrderPaymentPayObserver implements ObserverInterface
                     ));
                     //$order->save();
                 }
-                
             }
         }
         

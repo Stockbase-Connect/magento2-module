@@ -9,9 +9,10 @@ use Magento\Framework\Locale\FormatInterface;
 use Magento\Framework\Math\Division as MathDivision;
 use Magento\Framework\DataObject\Factory as ObjectFactory;
 use Magento\Framework\ObjectManagerInterface;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
-use Strategery\Stockbase\Model\StockItemFactory;
 
+/**
+ * Class StockStateProvider
+ */
 class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvider
 {
     /**
@@ -24,14 +25,12 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
     private $objectManager;
 
     /**
-     * @param StockbaseConfiguration $config
-     * @param StockbaseStockManagement $stockbaseStockManagement
-     * @param StockItemFactory $stockItemFactory
-     * @param MathDivision $mathDivision
-     * @param FormatInterface $localeFormat
-     * @param ObjectFactory $objectFactory
-     * @param ProductFactory $productFactory
-     * @param bool $qtyCheckApplicable
+     * @param ObjectManagerInterface $objectManager
+     * @param MathDivision           $mathDivision
+     * @param FormatInterface        $localeFormat
+     * @param ObjectFactory          $objectFactory
+     * @param ProductFactory         $productFactory
+     * @param bool                   $qtyCheckApplicable
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -45,22 +44,8 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
         $this->objectManager = $objectManager;
     }
     
-    protected function getStockbaseStockManagement()
-    {
-        // Lazy initialization to avoid circular dependency injection
-        if ($this->stockbaseStockManagement == null) {
-            $this->stockbaseStockManagement = $this->objectManager->create(StockbaseStockManagement::class);
-        }
-        return $this->stockbaseStockManagement;
-    }
-    
     /**
-     * Check quantity
-     *
-     * @param StockItemInterface $stockItem
-     * @param int|float $qty
-     * @exception \Magento\Framework\Exception\LocalizedException
-     * @return bool
+     * {@inheritdoc}
      */
     public function checkQty(StockItemInterface $stockItem, $qty)
     {
@@ -81,16 +66,12 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
                     return false;
             }
         }
+        
         return true;
     }
 
     /**
-     * Retrieve stock qty whether product is composite or no
-     *
-     * @param StockItemInterface $stockItem
-     * @return float
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     * {@inheritdoc}
      */
     public function getStockQty(StockItemInterface $stockItem)
     {
@@ -98,5 +79,15 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
         $qty += $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
         
         return $qty;
+    }
+
+    protected function getStockbaseStockManagement()
+    {
+        // Lazy initialization to avoid circular dependency injection
+        if ($this->stockbaseStockManagement == null) {
+            $this->stockbaseStockManagement = $this->objectManager->create(StockbaseStockManagement::class);
+        }
+
+        return $this->stockbaseStockManagement;
     }
 }

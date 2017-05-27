@@ -3,6 +3,9 @@
 
 namespace Strategery\Stockbase\Model\ResourceModel;
 
+/**
+ * Class StockItem
+ */
 class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
     const BULK_INSERT_CHUNK_SIZE = 100;
@@ -12,11 +15,12 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      */
     protected $entityManager;
 
-    protected function _construct()
-    {
-        $this->_init('stockbase_stock', 'ean');
-    }
-
+    /**
+     * Gets the amount of items available on stock.
+     *
+     * @param string|string[] $eans
+     * @return array|string
+     */
     public function getNotReservedStockAmount($eans)
     {
         $connection = $this->getConnection();
@@ -39,21 +43,30 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return is_array($eans) ? $pairs : reset($pairs);
     }
 
+    /**
+     * Updates the amount of items available on stock for given EAN.
+     *
+     * @param string $ean
+     * @param float  $amount
+     * @param string $operation
+     * @return bool
+     */
     public function updateStockAmount($ean, $amount, $operation = '-')
     {
-        $amount = (float)$amount;
+        $amount = (float) $amount;
         $operation = $operation == '-' ? '-' : '+';
         
         $connection = $this->getConnection();
 
         $result = $connection->update(
             $this->getMainTable(),
-            ['amount' => new \Zend_Db_Expr('amount ' . $operation . ' ' . $amount)],
+            ['amount' => new \Zend_Db_Expr(sprintf('amount %s %s', $operation, $amount))],
             ['ean = ?' => $ean]
         );
         if ($result == 1) {
             return true;
         }
+        
         return false;
     }
 
@@ -86,18 +99,18 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     {
         $data = [];
         $total = 0;
-        foreach ($stock->Groups as $group) {
-            foreach ($group->Items as $item) {
+        foreach ($stock->{'Groups'} as $group) {
+            foreach ($group->{'Items'} as $item) {
                 $total++;
                 $data[] = [
-                    'ean' => $item->EAN,
-                    'brand' => !empty($group->Brand) ? $group->Brand : null,
-                    'code' => !empty($group->Code) ? $group->Code : null,
-                    'supplier_code' => !empty($group->SupplierCode) ? $group->SupplierCode : null,
-                    'supplier_gln' => !empty($group->SupplierGLN) ? $group->SupplierGLN : null,
-                    'amount' => $item->Amount,
-                    'noos' => $item->NOOS,
-                    'timestamp' => date('Y-m-d H:i:s', $item->Timestamp),
+                    'ean' => $item->{'EAN'},
+                    'brand' => !empty($group->{'Brand'}) ? $group->{'Brand'} : null,
+                    'code' => !empty($group->{'Code'}) ? $group->{'Code'} : null,
+                    'supplier_code' => !empty($group->{'SupplierCode'}) ? $group->{'SupplierCode'} : null,
+                    'supplier_gln' => !empty($group->{'SupplierGLN'}) ? $group->{'SupplierGLN'} : null,
+                    'amount' => $item->{'Amount'},
+                    'noos' => $item->{'NOOS'}, //TODO: Implement NOOS feature
+                    'timestamp' => date('Y-m-d H:i:s', $item->{'Timestamp'}),
                 ];
                 if (count($data) >= self::BULK_INSERT_CHUNK_SIZE) {
                     $this->bulkUpdate($data);
@@ -108,9 +121,22 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         if (count($data) > 0) {
             $this->bulkUpdate($data);
         }
+        
         return $total;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function _construct()
+    {
+        $this->_init('stockbase_stock', 'ean');
+    }
+
+    /**
+     * @param array $data
+     * @throws \Exception
+     */
     protected function bulkUpdate(array $data)
     {
         $connection = $this->getConnection();

@@ -7,6 +7,9 @@ use DivideBV\PHPDivideIQ\DivideIQ;
 use Magento\Framework\ObjectManagerInterface;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 
+/**
+ * DivideIQClient Factory.
+ */
 class DivideIQClientFactory
 {
     /**
@@ -24,12 +27,17 @@ class DivideIQClientFactory
      */
     protected $config;
 
+    /**
+     * DivideIQClientFactory constructor.
+     * @param ObjectManagerInterface $objectManager
+     * @param StockbaseConfiguration $config
+     * @param string                 $instanceName
+     */
     public function __construct(
         ObjectManagerInterface $objectManager,
         StockbaseConfiguration $config,
         $instanceName = DivideIQClient::class
-    )
-    {
+    ) {
         $this->objectManager = $objectManager;
         $this->instanceName = $instanceName;
         $this->config = $config;
@@ -50,6 +58,7 @@ class DivideIQClientFactory
             'password' => $this->config->getPassword(),
             'environment' => $this->config->getEnvironment(),
         ], $data);
+        
         return $this->objectManager->create($this->instanceName, $data);
     }
 }

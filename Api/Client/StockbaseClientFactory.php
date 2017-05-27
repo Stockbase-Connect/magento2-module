@@ -8,6 +8,9 @@ use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Magento\Framework\ObjectManagerInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * StockbaseClient Factory
+ */
 class StockbaseClientFactory
 {
     
@@ -36,6 +39,14 @@ class StockbaseClientFactory
      */
     private $divideIQClientFactory;
 
+    /**
+     * StockbaseClientFactory constructor.
+     * @param LoggerInterface        $logger
+     * @param ObjectManagerInterface $objectManager
+     * @param StockbaseConfiguration $config
+     * @param DivideIQClientFactory  $divideIQClientFactory
+     * @param string                 $instanceName
+     */
     public function __construct(
         LoggerInterface $logger,
         ObjectManagerInterface $objectManager,
@@ -62,6 +73,7 @@ class StockbaseClientFactory
         if (!isset($data['divideIqClient'])) {
             $data['divideIqClient'] = $this->divideIQClientFactory->create();
         }
+        
         return $this->objectManager->create($this->instanceName, $data);
     }
 }

@@ -3,7 +3,6 @@
 
 namespace Strategery\Stockbase\Model\Inventory;
 
-
 use Magento\Catalog\Model\ProductFactory;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\Framework\ObjectManagerInterface;
@@ -13,6 +12,9 @@ use Strategery\Stockbase\Model\ResourceModel\StockItem as StockItemResource;
 use Strategery\Stockbase\Model\ResourceModel\StockItemReserve\Collection as StockItemReserveCollection;
 use Strategery\Stockbase\Model\StockItemReserve;
 
+/**
+ * Class StockbaseStockManagement
+ */
 class StockbaseStockManagement
 {
     /**
@@ -36,6 +38,14 @@ class StockbaseStockManagement
      */
     private $objectManager;
 
+    /**
+     * StockbaseStockManagement constructor.
+     * @param StockRegistryInterface $stockRegistry
+     * @param StockbaseConfiguration $config
+     * @param ProductFactory         $productFactory
+     * @param StockItemResource      $stockItemResource
+     * @param ObjectManagerInterface $objectManager
+     */
     public function __construct(
         StockRegistryInterface $stockRegistry,
         StockbaseConfiguration $config,
@@ -53,7 +63,7 @@ class StockbaseStockManagement
 
     /**
      * Gets the amount of items available in the Stockbase stock.
-     * 
+     *
      * @param int $productId
      * @return float
      */
@@ -71,19 +81,17 @@ class StockbaseStockManagement
 
     /**
      * Gets the Stockbase EAN for given product (if any).
-     * 
+     *
      * @param int $productId
      * @return string|null
      */
     public function getStockbaseEan($productId)
     {
         $stockItem = $this->stockRegistry->getStockItem($productId);
-        if (
-            $this->config->isModuleEnabled() &&
+        if ($this->config->isModuleEnabled() &&
             $stockItem->getManageStock() &&
             $stockItem->getBackorders() == \Magento\CatalogInventory\Model\Stock::BACKORDERS_NO
         ) {
-
             $product = $this->productFactory->create();
             $product->load($productId);
             $ean = $product->getData($this->config->getEanFieldName());
@@ -98,7 +106,7 @@ class StockbaseStockManagement
 
     /**
      * Checks if given product is properly configured to be processed as a Stockbase product.
-     * 
+     *
      * @param int $productId
      * @return bool
      */
@@ -109,9 +117,9 @@ class StockbaseStockManagement
 
     /**
      * Increments/decrements the amount of items in stock.
-     * 
+     *
      * @param string $ean
-     * @param float $amount
+     * @param float  $amount
      * @param string $operation
      */
     public function updateStockAmount($ean, $amount, $operation = '-')
@@ -121,10 +129,10 @@ class StockbaseStockManagement
 
     /**
      * Creates a stock reserve for given item.
-     * 
+     *
      * @param QuoteItem $quoteItem
-     * @param float $stockbaseAmount
-     * @param float $magentoStockAmount
+     * @param float     $stockbaseAmount
+     * @param float     $magentoStockAmount
      * @return StockItemReserve
      */
     public function createReserve(QuoteItem $quoteItem, $stockbaseAmount, $magentoStockAmount)
@@ -148,7 +156,7 @@ class StockbaseStockManagement
     
     /**
      * Releases the stock reserve.
-     * 
+     *
      * @param StockItemReserve $reserve
      */
     public function releaseReserve(StockItemReserve $reserve)
@@ -158,7 +166,7 @@ class StockbaseStockManagement
 
     /**
      * Gets stock reserve entries for given products.
-     * 
+     *
      * @param int|int[] $productIds
      * @return StockItemReserve[]
      */
@@ -178,7 +186,7 @@ class StockbaseStockManagement
 
     /**
      * Gets stock reserve entries for given quote items.
-     * 
+     *
      * @param int|int[] $quoteItemIds
      * @return StockItemReserve[]
      */

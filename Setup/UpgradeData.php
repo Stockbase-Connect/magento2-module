@@ -9,6 +9,9 @@ use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 
+/**
+ * Class UpgradeData
+ */
 class UpgradeData implements UpgradeDataInterface
 {
     /**
@@ -16,6 +19,10 @@ class UpgradeData implements UpgradeDataInterface
      */
     private $categorySetupFactory;
 
+    /**
+     * UpgradeData constructor.
+     * @param CategorySetupFactory $categorySetupFactory
+     */
     public function __construct(CategorySetupFactory $categorySetupFactory)
     {
         $this->categorySetupFactory = $categorySetupFactory;
@@ -38,7 +45,7 @@ class UpgradeData implements UpgradeDataInterface
                 'visible_on_front' => false,
                 'apply_to' => 'simple',
                 'unique' => false,
-                'group' => 'Stockbase'
+                'group' => 'Stockbase',
             ]);
         }
     }

@@ -8,10 +8,17 @@ use Magento\Eav\Model\ResourceModel\Entity\Attribute;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Option\ArrayInterface;
 
+/**
+ * Field selector source for the EAN field select.
+ */
 class EanField implements ArrayInterface
 {
     private $objectManager;
 
+    /**
+     * EanField constructor.
+     * @param ObjectManagerInterface $interface
+     */
     public function __construct(ObjectManagerInterface $interface)
     {
         $this->objectManager = $interface;
@@ -36,7 +43,7 @@ class EanField implements ArrayInterface
         foreach ($attributes as $attribute) {
             $optionArray[] = [
                 'label' => $attribute->getFrontendLabel(),
-                'value' => $attribute->getAttributeCode()
+                'value' => $attribute->getAttributeCode(),
             ];
         }
 

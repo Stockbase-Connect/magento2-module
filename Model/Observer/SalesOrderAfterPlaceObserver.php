@@ -4,10 +4,12 @@
 namespace Strategery\Stockbase\Model\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
-use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\Framework\Event\Observer as EventObserver;
 use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
 
+/**
+ * Class SalesOrderAfterPlaceObserver
+ */
 class SalesOrderAfterPlaceObserver implements ObserverInterface
 {
     /**
@@ -15,10 +17,13 @@ class SalesOrderAfterPlaceObserver implements ObserverInterface
      */
     private $stockbaseStockManagement;
 
+    /**
+     * SalesOrderAfterPlaceObserver constructor.
+     * @param StockbaseStockManagement $stockbaseStockManagement
+     */
     public function __construct(
         StockbaseStockManagement $stockbaseStockManagement
-    )
-    {
+    ) {
         $this->stockbaseStockManagement = $stockbaseStockManagement;
     }
 
@@ -40,5 +45,4 @@ class SalesOrderAfterPlaceObserver implements ObserverInterface
             }
         }
     }
-    
 }

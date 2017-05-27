@@ -3,13 +3,18 @@
 
 namespace Strategery\Stockbase\Api\Client\DivideIQ;
 
-
 use DivideBV\PHPDivideIQ\DivideIQ;
 
+/**
+ * DivideIQ API client with extended functionality.
+ */
 class DivideIQClient extends DivideIQ
 {
     const DEFAULT_REQUEST_TIMEOUT = 60.0;
-    
+
+    /**
+     * {@inheritdoc}
+     */
     public function __construct($username, $password, $environment = 'production')
     {
         parent::__construct($username, $password, $environment);
@@ -17,19 +22,20 @@ class DivideIQClient extends DivideIQ
         $this->setRequestTimeout(self::DEFAULT_REQUEST_TIMEOUT);
     }
 
+    /**
+     * Sets the request timeout value.
+     *
+     * @param float $timeout Timeout in seconds.
+     */
     public function setRequestTimeout($timeout)
     {
         $this->client->setDefaultOption('timeout', $timeout);
     }
 
-    protected function setup()
-    {
-        parent::setup();
-        
-        //TODO: Fire the state changed event
-    }
 
-
+    /**
+     * {@inheritdoc}
+     */
     public function request($serviceName, $payload = [], $method = 'GET')
     {
         // Setup the connection.
@@ -59,7 +65,7 @@ class DivideIQClient extends DivideIQ
         $body = $response->json(['object' => true])->{'nl.divide.iq'};
 
         // Check if the settings object is outdated. If so, unset it.
-        if ($this->settings->isOutdated($body->settings_updated)) {
+        if ($this->settings->isOutdated($body->{'settings_updated'})) {
             unset($this->settings);
         }
 
@@ -74,5 +80,15 @@ class DivideIQClient extends DivideIQ
 
         // Return only the response content, without the metadata.
         return $body->response->content;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setup()
+    {
+        parent::setup();
+
+        //TODO: Fire the state changed event
     }
 }

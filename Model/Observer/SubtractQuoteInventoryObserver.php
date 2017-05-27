@@ -10,6 +10,9 @@ use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\Framework\Event\Observer as EventObserver;
 use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
 
+/**
+ * Class SubtractQuoteInventoryObserver
+ */
 class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\SubtractQuoteInventoryObserver
 {
     /**
@@ -25,8 +28,10 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
     /**
      * SubtractQuoteInventoryObserver constructor.
      * @param StockManagementInterface $stockManagement
-     * @param ProductQty $productQty
-     * @param ItemsForReindex $itemsForReindex
+     * @param ProductQty               $productQty
+     * @param ItemsForReindex          $itemsForReindex
+     * @param StockRegistryInterface   $stockRegistry
+     * @param StockbaseStockManagement $stockbaseStockManagement
      */
     public function __construct(
         StockManagementInterface $stockManagement,
@@ -76,8 +81,7 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
                 $items[$productId] += $childItem->getTotalQty();
 
                 $stockItem = $this->stockRegistry->getStockItem($productId);
-                if (
-                    $this->stockbaseStockManagement->isStockbaseProduct($productId) &&
+                if ($this->stockbaseStockManagement->isStockbaseProduct($productId) &&
                     $items[$productId] > $stockItem->getQty()
                 ) {
                     $diff = $items[$productId] - $stockItem->getQty();
@@ -110,6 +114,7 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
         $this->itemsForReindex->setItems($itemsForReindex);
 
         $quote->setInventoryProcessed(true);
+        
         return $this;
     }
 }

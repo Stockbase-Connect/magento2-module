@@ -4,6 +4,9 @@ namespace Strategery\Stockbase\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
 
+/**
+ * Selector source for the Environment configuration option.
+ */
 class Environment implements ArrayInterface
 {
     const PRODUCTION = 'production';
