@@ -192,6 +192,96 @@ class InstallSchema implements InstallSchemaInterface
             $setup->getConnection()->createTable($table);
         }
 
+        $tableName = $setup->getTable('stockbase_ordered_item');
+        if (!$setup->getConnection()->isTableExists($tableName)) {
+            $table = $setup->getConnection()
+                ->newTable($tableName)
+                ->setComment('Stockbase orders')
+                ->addColumn(
+                    'id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                    'ID'
+                )
+                ->addColumn(
+                    'order_id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['unsigned' => true, 'nullable' => true],
+                    'Order Item ID'
+                )
+                ->addColumn(
+                    'order_item_id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['unsigned' => true, 'nullable' => true],
+                    'Order Item ID'
+                )
+                ->addColumn(
+                    'product_id',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['unsigned' => true, 'nullable' => false],
+                    'Product ID'
+                )
+                ->addColumn(
+                    'ean',
+                    Table::TYPE_BIGINT,
+                    null,
+                    ['unsigned' => true, 'nullable' => false],
+                    'International/European Article Number'
+                )
+                ->addColumn(
+                    'amount',
+                    Table::TYPE_FLOAT,
+                    null,
+                    ['nullable' => false, 'default' => '0'],
+                    'Reserved amount'
+                )
+                ->addColumn(
+                    'stockbase_guid',
+                    Table::TYPE_TEXT,
+                    36,
+                    ['nullable' => true],
+                    'Stockbase GUID'
+                )
+                ->addColumn(
+                    'created_at',
+                    Table::TYPE_DATETIME,
+                    null,
+                    ['nullable' => false],
+                    'Created at'
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['order_id']),
+                    ['order_id'],
+                    ['type' => AdapterInterface::INDEX_TYPE_INDEX]
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['order_item_id']),
+                    ['order_item_id'],
+                    ['type' => AdapterInterface::INDEX_TYPE_INDEX]
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['product_id']),
+                    ['product_id'],
+                    ['type' => AdapterInterface::INDEX_TYPE_INDEX]
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['ean']),
+                    ['ean'],
+                    ['type' => AdapterInterface::INDEX_TYPE_INDEX]
+                )
+                ->addIndex(
+                    $setup->getIdxName($tableName, ['amount']),
+                    ['amount'],
+                    ['type' => AdapterInterface::INDEX_TYPE_INDEX]
+                );
+
+            $setup->getConnection()->createTable($table);
+        }
+
         $setup->endSetup();
     }
 }
