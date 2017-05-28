@@ -43,6 +43,26 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
         parent::__construct($mathDivision, $localeFormat, $objectFactory, $productFactory, $qtyCheckApplicable);
         $this->objectManager = $objectManager;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function verifyStock(StockItemInterface $stockItem)
+    {
+        if ($stockItem->getQty() === null && $stockItem->getManageStock()) {
+            return false;
+        }
+        if ($stockItem->getBackorders() == StockItemInterface::BACKORDERS_NO) {
+            $stockbaseQty = $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
+            
+            $qty = $stockItem->getQty() + $stockbaseQty;
+            if ($qty <= $stockItem->getMinQty()) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
     
     /**
      * {@inheritdoc}
