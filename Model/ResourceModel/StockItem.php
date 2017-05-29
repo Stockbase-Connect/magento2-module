@@ -28,7 +28,7 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $query = $connection->select()
             ->from(
                 ['s' => $this->getMainTable()],
-                ['s.ean', 'amount' => new \Zend_Db_Expr('s.amount - COALESCE(SUM(r.amount), 0)')]
+                ['s.ean', 'amount' => new \Zend_Db_Expr('IF(s.noos = 1, 1000000000, s.amount - COALESCE(SUM(r.amount), 0))')]
             )
             ->joinLeft(
                 ['r' => $this->getTable('stockbase_stock_reserve')],
