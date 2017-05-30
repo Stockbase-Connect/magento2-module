@@ -109,7 +109,7 @@ class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                     'supplier_code' => !empty($group->{'SupplierCode'}) ? $group->{'SupplierCode'} : null,
                     'supplier_gln' => !empty($group->{'SupplierGLN'}) ? $group->{'SupplierGLN'} : null,
                     'amount' => $item->{'Amount'},
-                    'noos' => $item->{'NOOS'}, //TODO: Implement NOOS feature
+                    'noos' => $item->{'NOOS'},
                     'timestamp' => date('Y-m-d H:i:s', $item->{'Timestamp'}),
                 ];
                 if (count($data) >= self::BULK_INSERT_CHUNK_SIZE) {
