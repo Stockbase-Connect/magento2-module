@@ -142,7 +142,7 @@ class StockbaseClient
                     }
                 }
             }
-            //throw new \Exception('Failed sending order to stockbase.' . $message); //TODO: TMP
+            throw new \Exception('Failed sending order to stockbase.'.$message);
         }
         
         return $response;
