@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Api\Client;
+namespace Strategery\Stockbase\StockbaseApi\Client;
 
 use Assert\Assertion;
 use DivideBV\PHPDivideIQ\DivideIQ;

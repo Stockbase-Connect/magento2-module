@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Api\Client\DivideIQ;
+namespace Strategery\Stockbase\StockbaseApi\Client\DivideIQ;
 
 use DivideBV\PHPDivideIQ\DivideIQ;
 use Magento\Framework\ObjectManagerInterface;

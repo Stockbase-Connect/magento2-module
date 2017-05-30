@@ -4,7 +4,7 @@ namespace Strategery\Stockbase\Cron;
 
 use Magento\Framework\ObjectManagerInterface;
 use Psr\Log\LoggerInterface;
-use Strategery\Stockbase\Api\Client\StockbaseClientFactory;
+use Strategery\Stockbase\StockbaseApi\Client\StockbaseClientFactory;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Strategery\Stockbase\Model\ResourceModel\StockItem as StockItemResource;
 

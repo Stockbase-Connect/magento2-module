@@ -5,7 +5,7 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Model\Order\Item as OrderItem;
-use Strategery\Stockbase\Api\Client\StockbaseClientFactory;
+use Strategery\Stockbase\StockbaseApi\Client\StockbaseClientFactory;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
 use Strategery\Stockbase\Model\OrderedItem as StockbaseOrderedItem;
