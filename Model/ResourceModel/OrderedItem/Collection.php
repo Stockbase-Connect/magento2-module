@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\ResourceModel\StockItemReserve;
+namespace Strategery\Stockbase\Model\ResourceModel\OrderedItem;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 

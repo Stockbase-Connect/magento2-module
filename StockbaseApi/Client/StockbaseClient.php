@@ -5,7 +5,7 @@ namespace Strategery\Stockbase\StockbaseApi\Client;
 
 use Assert\Assertion;
 use DivideBV\PHPDivideIQ\DivideIQ;
-use Magento\Sales\Model\Order;
+use Magento\Sales\Api\Data\OrderInterface;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Strategery\Stockbase\Model\StockItemReserve;
 
@@ -83,12 +83,12 @@ class StockbaseClient
     /**
      * Creates an order on Stockbase from reserved items for specified Magento order.
      *
-     * @param Order              $order
+     * @param OrderInterface     $order
      * @param StockItemReserve[] $reservedStockbaseItems
      * @return object
      * @throws \Exception
      */
-    public function createOrder(Order $order, array $reservedStockbaseItems)
+    public function createOrder(OrderInterface $order, array $reservedStockbaseItems)
     {
         $orderPrefix = $this->stockbaseConfiguration->getOrderPrefix();
         $shippingAddress = $order->getShippingAddress();

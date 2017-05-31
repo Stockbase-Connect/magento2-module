@@ -124,6 +124,6 @@ class OrderedItem extends AbstractModel
 
     protected function _construct()
     {
-        $this->_init(\Strategery\Stockbase\Model\ResourceModel\OrderedItem::class);
+        $this->_init(ResourceModel\OrderedItem::class);
     }
 }
