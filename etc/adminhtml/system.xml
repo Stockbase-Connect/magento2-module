@@ -4,7 +4,7 @@
         <tab id="stockbase_tab" translate="label" sortOrder="1000">
             <label>Stockbase</label>
         </tab>
-        <section id="stockbase_section" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="stockbase" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Configuration</label>
             <tab>stockbase_tab</tab>
             <resource>Strategery_Stockbase::config</resource>

@@ -12,12 +12,12 @@ use Strategery\Stockbase\Model\Config\Source\Environment;
  */
 class StockbaseConfiguration
 {
-    const CONFIG_MODULE_ENABLED = 'stockbase_section/general/module_enabled';
-    const CONFIG_ENVIRONMENT = 'stockbase_section/general/environment';
-    const CONFIG_USERNAME = 'stockbase_section/general/username';
-    const CONFIG_PASSWORD = 'stockbase_section/general/password';
-    const CONFIG_EAN_FIELD = 'stockbase_section/general/ean_field';
-    const CONFIG_ORDER_PREFIX = 'stockbase_section/general/order_prefix';
+    const CONFIG_MODULE_ENABLED = 'stockbase/general/module_enabled';
+    const CONFIG_ENVIRONMENT = 'stockbase/general/environment';
+    const CONFIG_USERNAME = 'stockbase/general/username';
+    const CONFIG_PASSWORD = 'stockbase/general/password';
+    const CONFIG_EAN_FIELD = 'stockbase/general/ean_field';
+    const CONFIG_ORDER_PREFIX = 'stockbase/general/order_prefix';
 
     /**
      * @var ScopeConfigInterface
