@@ -3,7 +3,6 @@
 
 namespace Strategery\Stockbase\Model\Config;
 
-use Magento\Config\Model\ResourceModel\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Strategery\Stockbase\Model\Config\Source\Environment;
 
@@ -23,38 +22,14 @@ class StockbaseConfiguration
      * @var ScopeConfigInterface
      */
     private $scopeConfig;
-    
-    /**
-     * @var Config
-     */
-    private $configResource;
 
     /**
      * StockbaseConfiguration constructor.
      * @param ScopeConfigInterface $scopeConfig
-     * @param Config               $configResource
      */
-    public function __construct(ScopeConfigInterface $scopeConfig, Config $configResource)
+    public function __construct(ScopeConfigInterface $scopeConfig)
     {
         $this->scopeConfig = $scopeConfig;
-        $this->configResource = $configResource;
-
-        if (!$this->scopeConfig->getValue(self::CONFIG_ENVIRONMENT)) {
-            $this->configResource->saveConfig(
-                self::CONFIG_ENVIRONMENT,
-                Environment::STAGING,
-                'default',
-                0
-            );
-        }
-        if (!$this->scopeConfig->getValue(self::CONFIG_ORDER_PREFIX)) {
-            $this->configResource->saveConfig(
-                self::CONFIG_ORDER_PREFIX,
-                'MAGE-'.mt_rand(0, 999),
-                'default',
-                0
-            );
-        }
     }
 
     /**
@@ -72,7 +47,7 @@ class StockbaseConfiguration
      */
     public function getEnvironment()
     {
-        return $this->scopeConfig->getValue(self::CONFIG_ENVIRONMENT);
+        return $this->scopeConfig->getValue(self::CONFIG_ENVIRONMENT) ?: Environment::STAGING;
     }
 
     /**

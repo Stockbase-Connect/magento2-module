@@ -58,7 +58,6 @@
                     <depends>
                         <field id="*/*/module_enabled">1</field>
                     </depends>
-                    <comment>Will be generated automatically if not set.</comment>
                 </field>
 
             </group>
