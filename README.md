@@ -41,6 +41,8 @@ Prerequisites:
   Stockbase. If you don't have one, just create it and fill it in for every product you wish to integrate.
 
 
+To property configure the module, you should:
+
 1. Navigate to your Magento admin panel and open the stores configuration (**Stores** -> **Configuration**).
 2. Select the **Stockbase** -> **Configuration** section and properly fill in the configuration options.
 3. Edit each product you want to integrate with Stockbase:
