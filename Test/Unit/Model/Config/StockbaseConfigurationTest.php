@@ -7,6 +7,9 @@ use Strategery\Stockbase\Model\Config\Source\Environment;
 use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
 use Strategery\Stockbase\Test\Unit\Model\Config\Stub\MutableScopeConfigMock;
 
+/**
+ * Test for StockbaseConfiguration
+ */
 class StockbaseConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -19,12 +22,18 @@ class StockbaseConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     protected $configScope;
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setUp()
     {
         $this->configScope = new MutableScopeConfigMock();
         $this->config = new StockbaseConfiguration($this->configScope);
     }
 
+    /**
+     *
+     */
     public function testDefaultValues()
     {
         $this->assertFalse($this->config->isModuleEnabled());
@@ -35,6 +44,9 @@ class StockbaseConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->config->getOrderPrefix());
     }
 
+    /**
+     *
+     */
     public function testGetters()
     {
         $this->configScope->setValue(StockbaseConfiguration::CONFIG_MODULE_ENABLED, '1');

@@ -3,10 +3,12 @@
 
 namespace Strategery\Stockbase\Test\Unit\Model\Config\Stub;
 
-
 use Magento\Framework\App\Config\MutableScopeConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
+/**
+ * Class MutableScopeConfigMock
+ */
 class MutableScopeConfigMock implements MutableScopeConfigInterface
 {
     private $data = [];
@@ -33,6 +35,7 @@ class MutableScopeConfigMock implements MutableScopeConfigInterface
         if (isset($this->data[$key])) {
             return $this->data[$key];
         }
+        
         return null;
     }
 
@@ -45,6 +48,7 @@ class MutableScopeConfigMock implements MutableScopeConfigInterface
         if (isset($this->data[$key])) {
             return $this->data[$key];
         }
+        
         return null;
     }
 }
