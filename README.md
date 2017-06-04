@@ -33,7 +33,8 @@ bin/magento setup:upgrade
 
 ### 3. Configure
 
-Prerequisites:  
+Prerequisites:
+
 * You should have a Stockbase username and password with suppliers connected to the Stockbase account.
 * The Magento cron set up and running.
 * You have to have a product attribute that contains a valid EAN for products that you're planning to integrate with
