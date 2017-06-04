@@ -49,19 +49,15 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
      */
     public function verifyStock(StockItemInterface $stockItem)
     {
-        if ($stockItem->getQty() === null && $stockItem->getManageStock()) {
-            return false;
-        }
-        if ($stockItem->getBackorders() == StockItemInterface::BACKORDERS_NO) {
-            $stockbaseQty = $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
-            
-            $qty = $stockItem->getQty() + $stockbaseQty;
-            if ($qty <= $stockItem->getMinQty()) {
-                return false;
-            }
-        }
-        
-        return true;
+        return parent::verifyStock($this->ensureStockbaseStockItem($stockItem));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkQuoteItemQty(StockItemInterface $stockItem, $qty, $summaryQty, $origQty = 0)
+    {
+        return parent::checkQuoteItemQty($this->ensureStockbaseStockItem($stockItem), $qty, $summaryQty, $origQty);
     }
     
     /**
@@ -69,25 +65,7 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
      */
     public function checkQty(StockItemInterface $stockItem, $qty)
     {
-        if (!$this->qtyCheckApplicable) {
-            return true;
-        }
-        if (!$stockItem->getManageStock()) {
-            return true;
-        }
-        $stockbaseQty = $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
-        
-        if ($stockItem->getQty() + $stockbaseQty - $stockItem->getMinQty() - $qty < 0) {
-            switch ($stockItem->getBackorders()) {
-                case \Magento\CatalogInventory\Model\Stock::BACKORDERS_YES_NONOTIFY:
-                case \Magento\CatalogInventory\Model\Stock::BACKORDERS_YES_NOTIFY:
-                    break;
-                default:
-                    return false;
-            }
-        }
-        
-        return true;
+        return parent::checkQty($this->ensureStockbaseStockItem($stockItem), $qty);
     }
 
     /**
@@ -95,10 +73,7 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
      */
     public function getStockQty(StockItemInterface $stockItem)
     {
-        $qty = parent::getStockQty($stockItem);
-        $qty += $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
-        
-        return $qty;
+        return parent::getStockQty($this->ensureStockbaseStockItem($stockItem));
     }
 
     protected function getStockbaseStockManagement()
@@ -109,5 +84,15 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
         }
 
         return $this->stockbaseStockManagement;
+    }
+
+    protected function ensureStockbaseStockItem(StockItemInterface $stockItem)
+    {
+        if (!($stockItem instanceof CombinedStockbaseStockItem)) {
+            $stockbaseQty = $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
+            $stockItem = new CombinedStockbaseStockItem($stockItem, $stockbaseQty);
+        }
+        
+        return $stockItem;
     }
 }
