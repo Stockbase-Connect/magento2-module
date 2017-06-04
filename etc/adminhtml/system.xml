@@ -48,16 +48,18 @@
                     <depends>
                         <field id="*/*/module_enabled">1</field>
                     </depends>
+                    <validate>validate-no-empty</validate>
                     <source_model>Strategery\Stockbase\Model\Config\Source\EanField</source_model>
                     <comment>Please select a product attribute that contains a valid EAN. Products with empty EAN will be ignored. Only simple products can have EAN.</comment>
                 </field>
 
                 <field id="order_prefix" translate="label" type="text" sortOrder="40" showInDefault="1"
                        showInWebsite="1" showInStore="1">
-                    <label>Custom order prefix for Stockbase orders</label>
+                    <label>Order prefix for Stockbase orders</label>
                     <depends>
                         <field id="*/*/module_enabled">1</field>
                     </depends>
+                    <validate>validate-no-empty</validate>
                 </field>
 
             </group>

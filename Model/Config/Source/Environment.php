@@ -18,8 +18,8 @@ class Environment implements ArrayInterface
     public function toOptionArray()
     {
         return [
-            ['value' => self::PRODUCTION, 'label' => __('Production')],
             ['value' => self::STAGING, 'label' => __('Staging')],
+            ['value' => self::PRODUCTION, 'label' => __('Production')],
         ];
     }
 }

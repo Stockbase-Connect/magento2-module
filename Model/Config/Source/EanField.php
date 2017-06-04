@@ -40,6 +40,7 @@ class EanField implements ArrayInterface
 
         // Empty array for the option array to return for the configuration source model in stockbase settings
         $optionArray = [];
+        $optionArray[] = ['label' => '', 'value' => ''];
         foreach ($attributes as $attribute) {
             $optionArray[] = [
                 'label' => $attribute->getFrontendLabel(),
