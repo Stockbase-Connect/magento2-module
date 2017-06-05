@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Strategery\Stockbase\StockbaseApi\Client;
+namespace Stockbase\Integration\StockbaseApi\Client;
 
 use Assert\Assertion;
 use DivideBV\PHPDivideIQ\DivideIQ;
 use Magento\Sales\Api\Data\OrderInterface;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
-use Strategery\Stockbase\Model\StockItemReserve;
+use Stockbase\Integration\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\Model\StockItemReserve;
 
 /**
  * Stockbase API client.

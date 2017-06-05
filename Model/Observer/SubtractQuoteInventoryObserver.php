@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\Observer;
+namespace Stockbase\Integration\Model\Observer;
 
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\CatalogInventory\Observer\ItemsForReindex;
 use Magento\CatalogInventory\Observer\ProductQty;
 use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\Framework\Event\Observer as EventObserver;
-use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
+use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
 
 /**
  * Class SubtractQuoteInventoryObserver

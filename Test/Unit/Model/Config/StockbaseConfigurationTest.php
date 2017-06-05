@@ -1,11 +1,11 @@
 <?php
 
-namespace Strategery\Stockbase\Test\Unit\Model\Config;
+namespace Stockbase\Integration\Test\Unit\Model\Config;
 
 use Magento\Framework\App\Config\MutableScopeConfigInterface;
-use Strategery\Stockbase\Model\Config\Source\Environment;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
-use Strategery\Stockbase\Test\Unit\Model\Config\Stub\MutableScopeConfigMock;
+use Stockbase\Integration\Model\Config\Source\Environment;
+use Stockbase\Integration\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\Test\Unit\Model\Config\Stub\MutableScopeConfigMock;
 
 /**
  * Test for StockbaseConfiguration

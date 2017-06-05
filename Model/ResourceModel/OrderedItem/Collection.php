@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\ResourceModel\OrderedItem;
+namespace Stockbase\Integration\Model\ResourceModel\OrderedItem;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
 
@@ -13,8 +13,8 @@ class Collection extends AbstractCollection
     protected function _construct()
     {
         $this->_init(
-            \Strategery\Stockbase\Model\OrderedItem::class,
-            \Strategery\Stockbase\Model\ResourceModel\OrderedItem::class
+            \Stockbase\Integration\Model\OrderedItem::class,
+            \Stockbase\Integration\Model\ResourceModel\OrderedItem::class
         );
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model;
+namespace Stockbase\Integration\Model;
 
 use Magento\Framework\Model\AbstractModel;
 

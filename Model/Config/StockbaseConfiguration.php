@@ -1,22 +1,22 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\Config;
+namespace Stockbase\Integration\Model\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Strategery\Stockbase\Model\Config\Source\Environment;
+use Stockbase\Integration\Model\Config\Source\Environment;
 
 /**
  * Stockbase main mobule configuration resource wrapper.
  */
 class StockbaseConfiguration
 {
-    const CONFIG_MODULE_ENABLED = 'stockbase/general/module_enabled';
-    const CONFIG_ENVIRONMENT = 'stockbase/general/environment';
-    const CONFIG_USERNAME = 'stockbase/general/username';
-    const CONFIG_PASSWORD = 'stockbase/general/password';
-    const CONFIG_EAN_FIELD = 'stockbase/general/ean_field';
-    const CONFIG_ORDER_PREFIX = 'stockbase/general/order_prefix';
+    const CONFIG_MODULE_ENABLED = 'stockbase/integration/module_enabled';
+    const CONFIG_ENVIRONMENT = 'stockbase/integration/environment';
+    const CONFIG_USERNAME = 'stockbase/integration/username';
+    const CONFIG_PASSWORD = 'stockbase/integration/password';
+    const CONFIG_EAN_FIELD = 'stockbase/integration/ean_field';
+    const CONFIG_ORDER_PREFIX = 'stockbase/integration/order_prefix';
 
     /**
      * @var ScopeConfigInterface

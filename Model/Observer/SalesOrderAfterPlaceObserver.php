@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\Observer;
+namespace Stockbase\Integration\Model\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer as EventObserver;
-use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
+use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
 
 /**
  * Class SalesOrderAfterPlaceObserver

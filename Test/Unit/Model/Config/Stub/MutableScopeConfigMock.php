@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Test\Unit\Model\Config\Stub;
+namespace Stockbase\Integration\Test\Unit\Model\Config\Stub;
 
 use Magento\Framework\App\Config\MutableScopeConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\Inventory;
+namespace Stockbase\Integration\Model\Inventory;
 
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 

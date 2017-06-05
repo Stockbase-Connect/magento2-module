@@ -5,12 +5,12 @@
             <label>Stockbase</label>
         </tab>
         <section id="stockbase" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Configuration</label>
+            <label>Integration</label>
             <tab>stockbase_tab</tab>
-            <resource>Strategery_Stockbase::config</resource>
-            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <resource>Stockbase_Integration::config</resource>
+            <group id="integration" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
 
-                <label>Stockbase configuration</label>
+                <label>Stockbase Integration configuration</label>
 
                 <field id="module_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Module enabled</label>
@@ -40,7 +40,7 @@
                     <depends>
                         <field id="*/*/module_enabled">1</field>
                     </depends>
-                    <source_model>Strategery\Stockbase\Model\Config\Source\Environment</source_model>
+                    <source_model>Stockbase\Integration\Model\Config\Source\Environment</source_model>
                 </field>
 
                 <field id="ean_field" translate="label comment" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -49,7 +49,7 @@
                         <field id="*/*/module_enabled">1</field>
                     </depends>
                     <validate>validate-no-empty</validate>
-                    <source_model>Strategery\Stockbase\Model\Config\Source\EanField</source_model>
+                    <source_model>Stockbase\Integration\Model\Config\Source\EanField</source_model>
                     <comment>Please select a product attribute that contains a valid EAN. Products with empty EAN will be ignored. Only simple products can have EAN.</comment>
                 </field>
 

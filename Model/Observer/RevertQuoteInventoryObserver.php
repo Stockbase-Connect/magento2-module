@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\Observer;
+namespace Stockbase\Integration\Model\Observer;
 
 use Magento\CatalogInventory\Observer\ProductQty;
 use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\CatalogInventory\Model\Indexer\Stock\Processor as IndexStockProcessor;
 use Magento\Catalog\Model\Indexer\Product\Price\Processor as ProductPriceProcessor;
 use Magento\Framework\Event\Observer as EventObserver;
-use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
+use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
 
 /**
  * Class RevertQuoteInventoryObserver

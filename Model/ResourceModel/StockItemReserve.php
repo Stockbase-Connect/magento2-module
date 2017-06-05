@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\ResourceModel;
+namespace Stockbase\Integration\Model\ResourceModel;
 
 /**
  * Class StockItemReserve

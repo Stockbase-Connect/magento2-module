@@ -1,6 +1,6 @@
 <?php
 
-namespace Strategery\Stockbase\Model\Config\Source;
+namespace Stockbase\Integration\Model\Config\Source;
 
 use Magento\Framework\Option\ArrayInterface;
 

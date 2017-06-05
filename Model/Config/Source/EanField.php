@@ -1,6 +1,6 @@
 <?php
 
-namespace Strategery\Stockbase\Model\Config\Source;
+namespace Stockbase\Integration\Model\Config\Source;
 
 use Magento\Eav\Model\Entity\Attribute\Set;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection;

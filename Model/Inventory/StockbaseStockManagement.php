@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\Inventory;
+namespace Stockbase\Integration\Model\Inventory;
 
 use Magento\Catalog\Model\ProductFactory;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
-use Strategery\Stockbase\Model\ResourceModel\StockItem as StockItemResource;
-use Strategery\Stockbase\Model\ResourceModel\StockItemReserve\Collection as StockItemReserveCollection;
-use Strategery\Stockbase\Model\StockItemReserve;
+use Stockbase\Integration\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\Model\ResourceModel\StockItem as StockItemResource;
+use Stockbase\Integration\Model\ResourceModel\StockItemReserve\Collection as StockItemReserveCollection;
+use Stockbase\Integration\Model\StockItemReserve;
 
 /**
  * Class StockbaseStockManagement

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Strategery\Stockbase\StockbaseApi\Client;
+namespace Stockbase\Integration\StockbaseApi\Client;
 
-use Strategery\Stockbase\StockbaseApi\Client\DivideIQ\DivideIQClientFactory;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\StockbaseApi\Client\DivideIQ\DivideIQClientFactory;
+use Stockbase\Integration\Model\Config\StockbaseConfiguration;
 use Magento\Framework\ObjectManagerInterface;
 use Psr\Log\LoggerInterface;
 

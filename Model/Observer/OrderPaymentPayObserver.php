@@ -1,5 +1,5 @@
 <?php
-namespace Strategery\Stockbase\Model\Observer;
+namespace Stockbase\Integration\Model\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -7,11 +7,11 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Strategery\Stockbase\StockbaseApi\Client\StockbaseClientFactory;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
-use Strategery\Stockbase\Model\Inventory\StockbaseStockManagement;
-use Strategery\Stockbase\Model\OrderedItem as StockbaseOrderedItem;
-use Strategery\Stockbase\Model\StockItemReserve;
+use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
+use Stockbase\Integration\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
+use Stockbase\Integration\Model\OrderedItem as StockbaseOrderedItem;
+use Stockbase\Integration\Model\StockItemReserve;
 
 /**
  * Class OrderPaymentPayObserver

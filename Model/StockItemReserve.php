@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model;
+namespace Stockbase\Integration\Model;
 
 use Magento\Framework\Model\AbstractModel;
 
@@ -124,6 +124,6 @@ class StockItemReserve extends AbstractModel
 
     protected function _construct()
     {
-        $this->_init(\Strategery\Stockbase\Model\ResourceModel\StockItemReserve::class);
+        $this->_init(\Stockbase\Integration\Model\ResourceModel\StockItemReserve::class);
     }
 }

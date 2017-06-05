@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Setup;
+namespace Stockbase\Integration\Setup;
 
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Setup\CategorySetupFactory;
@@ -10,7 +10,7 @@ use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Config\Model\ResourceModel\Config as ConfigResourceModel;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\Model\Config\StockbaseConfiguration;
 
 /**
  * Class UpgradeData

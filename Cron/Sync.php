@@ -1,12 +1,12 @@
 <?php
 
-namespace Strategery\Stockbase\Cron;
+namespace Stockbase\Integration\Cron;
 
 use Magento\Framework\ObjectManagerInterface;
 use Psr\Log\LoggerInterface;
-use Strategery\Stockbase\StockbaseApi\Client\StockbaseClientFactory;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
-use Strategery\Stockbase\Model\ResourceModel\StockItem as StockItemResource;
+use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
+use Stockbase\Integration\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\Model\ResourceModel\StockItem as StockItemResource;
 
 /**
  * Stockbase stock synchronization cron job.

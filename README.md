@@ -13,13 +13,13 @@ the Stockbase to satisfy customer's needs.
 
 Execute the following command in the Magento installation directory:  
 ```
-composer require strategery/stockbase-magento2
+composer require stockbase/magento2-integration
 ```  
 
 **Or manually**:
 
 1. Download the zip archive with the extension.
-2. Extract it into the `<magento root folder>/app/code/Strategery/Stockbase` directory inside your Magento installation.
+2. Extract it into the `<magento root folder>/app/code/Stockbase/Integration` directory inside your Magento installation.
    If you don't have such folder, create one.
 
 
@@ -27,8 +27,8 @@ composer require strategery/stockbase-magento2
 
 Execute the following commands in the Magento installation directory:  
 ```
-bin/magento module:enable Strategery_Stockbase
-bin/magento setup:upgrade
+php bin/magento module:enable Stockbase_Integration
+php bin/magento setup:upgrade
 ```
 
 ### 3. Configure

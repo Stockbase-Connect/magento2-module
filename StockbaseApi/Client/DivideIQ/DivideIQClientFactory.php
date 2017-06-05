@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Strategery\Stockbase\StockbaseApi\Client\DivideIQ;
+namespace Stockbase\Integration\StockbaseApi\Client\DivideIQ;
 
 use DivideBV\PHPDivideIQ\DivideIQ;
 use Magento\Framework\ObjectManagerInterface;
-use Strategery\Stockbase\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\Model\Config\StockbaseConfiguration;
 
 /**
  * DivideIQClient Factory.

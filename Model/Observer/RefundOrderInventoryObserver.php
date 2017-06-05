@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Model\Observer;
+namespace Stockbase\Integration\Model\Observer;
 
 /**
  * Class RefundOrderInventoryObserver

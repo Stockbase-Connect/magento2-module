@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\StockbaseApi\Client\DivideIQ;
+namespace Stockbase\Integration\StockbaseApi\Client\DivideIQ;
 
 use DivideBV\PHPDivideIQ\DivideIQ;
 

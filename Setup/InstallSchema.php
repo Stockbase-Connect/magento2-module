@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Strategery\Stockbase\Setup;
+namespace Stockbase\Integration\Setup;
 
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Setup\InstallSchemaInterface;
