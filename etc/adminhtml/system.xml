@@ -35,7 +35,7 @@
                     <validate>validate-no-empty</validate>
                 </field>
 
-                <field id="environment" translate="label" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="environment" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Environment selection</label>
                     <depends>
                         <field id="*/*/module_enabled">1</field>
@@ -43,7 +43,7 @@
                     <source_model>Stockbase\Integration\Model\Config\Source\Environment</source_model>
                 </field>
 
-                <field id="ean_field" translate="label comment" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="ean_field" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Product EAN field</label>
                     <depends>
                         <field id="*/*/module_enabled">1</field>
@@ -52,8 +52,17 @@
                     <source_model>Stockbase\Integration\Model\Config\Source\EanField</source_model>
                     <comment>Please select a product attribute that contains a valid EAN. Products with empty EAN will be ignored. Only simple products can have EAN.</comment>
                 </field>
+                
+                <field id="create_ean_attribute" translate="comment" type="button" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Stockbase\Integration\Block\Adminhtml\System\Config\CreateEanAttributeButton</frontend_model>
+                    <comment>Create the EAN attribute for simple products.</comment>
+                    <depends>
+                        <field id="*/*/module_enabled">1</field>
+                        <field id="*/*/ean_field"><![CDATA[]]></field>
+                    </depends>
+                </field>
 
-                <field id="order_prefix" translate="label" type="text" sortOrder="40" showInDefault="1"
+                <field id="order_prefix" translate="label" type="text" sortOrder="45" showInDefault="1"
                        showInWebsite="1" showInStore="1">
                     <label>Order prefix for Stockbase orders</label>
                     <depends>
