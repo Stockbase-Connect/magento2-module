@@ -16,11 +16,14 @@ Execute the following command in the Magento installation directory:
 composer require stockbase/magento2-integration
 ```  
 
-**Or manually**:
+**Or manually** (recommended only for development):
 
 1. Download the zip archive with the extension.
 2. Extract it into the `<magento root folder>/app/code/Stockbase/Integration` directory inside your Magento installation.
    If you don't have such folder, create one.
+3. Install all required dependencies from the extension's `composer.json` file into your main magento project.
+   For example: `composer require dividebv/phpdivideiq:^0.5.0 beberlei/assert:^2.4`.
+   See the `require` section in the module's `composer.json` file.
 
 
 ### 2. Install the module
