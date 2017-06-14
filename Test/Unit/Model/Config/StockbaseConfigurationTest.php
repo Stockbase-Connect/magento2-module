@@ -10,7 +10,7 @@ use Stockbase\Integration\Test\Unit\Model\Config\Stub\MutableScopeConfigMock;
 /**
  * Test for StockbaseConfiguration
  */
-class StockbaseConfigurationTest extends \PHPUnit_Framework_TestCase
+class StockbaseConfigurationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var StockbaseConfiguration

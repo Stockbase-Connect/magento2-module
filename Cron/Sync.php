@@ -80,7 +80,7 @@ class Sync
         if ($total > 0) {
             $this->logger->info("{$total} Stockbase items updated.");
         } else {
-            $this->logger->info("No new updated was found.");
+            $this->logger->info("No new updates were found.");
         }
 
         $this->logger->info("Stockbase stock index synchronization complete.");
