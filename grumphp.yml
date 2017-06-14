@@ -3,3 +3,4 @@ parameters:
     bin_dir: vendor/bin
     tasks:
       phpcs:
+      phpunit:
