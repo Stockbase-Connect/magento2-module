@@ -4,7 +4,7 @@
          colors="true"
          debug="true"
          verbose="true"
-         bootstrap="./vendor/autoload.php"
+         bootstrap="./bootstrap.php"
 >
     <testsuite name="Magento Unit Tests">
         <directory suffix="Test.php">Test/Unit</directory>

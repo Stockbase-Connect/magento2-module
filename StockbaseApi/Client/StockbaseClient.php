@@ -142,7 +142,7 @@ class StockbaseClient
                     }
                 }
             }
-            throw new \Exception('Failed sending order to stockbase.'.$message);
+            throw new StockbaseClientException('Failed sending order to stockbase.'.$message);
         }
         
         return $response;

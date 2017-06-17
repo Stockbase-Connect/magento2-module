@@ -21,10 +21,6 @@ use Magento\Framework\Controller\ResultFactory;
 class CreateEanAttribute extends Action
 {
     /**
-     * @var JsonFactory
-     */
-    protected $resultJsonFactory;
-    /**
      * @var AttributeFactory
      */
     private $attributeFactory;
@@ -39,20 +35,17 @@ class CreateEanAttribute extends Action
 
     /**
      * @param Context                       $context
-     * @param JsonFactory                   $resultJsonFactory
      * @param AttributeFactory              $attributeFactory
      * @param AttributeManagementInterface  $attributeManagement
      * @param AttributeSetCollectionFactory $attributeSetCollectionFactory
      */
     public function __construct(
         Context $context,
-        JsonFactory $resultJsonFactory,
         AttributeFactory $attributeFactory,
         AttributeManagementInterface $attributeManagement,
         AttributeSetCollectionFactory $attributeSetCollectionFactory
     ) {
         parent::__construct($context);
-        $this->resultJsonFactory = $resultJsonFactory;
         $this->attributeFactory = $attributeFactory;
         $this->attributeManagement = $attributeManagement;
         $this->attributeSetCollectionFactory = $attributeSetCollectionFactory;
@@ -77,11 +70,9 @@ class CreateEanAttribute extends Action
         
         $result = [];
 
-        $entityTypeId = $this->_objectManager->create(
-            'Magento\Eav\Model\Entity'
-        )->setType(
-            ProductAttributeInterface::ENTITY_TYPE_CODE
-        )->getTypeId();
+        $entityTypeId = $this->_objectManager->create(\Magento\Eav\Model\Entity::class)
+            ->setType(ProductAttributeInterface::ENTITY_TYPE_CODE)
+            ->getTypeId();
 
         $attribute = $this->attributeFactory->create();
         $attribute->loadByCode(ProductAttributeInterface::ENTITY_TYPE_CODE, 'ean');
