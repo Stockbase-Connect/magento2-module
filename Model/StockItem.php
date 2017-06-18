@@ -111,7 +111,7 @@ class StockItem extends AbstractModel
      */
     public function getNoos()
     {
-        return (bool) $this->getData('noos');
+        return $this->getData('noos');
     }
 
     /**

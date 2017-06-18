@@ -32,6 +32,40 @@ class StockbaseClientTest extends TestCase
     }
 
     /**
+     * testGetStock
+     */
+    public function testGetStock()
+    {
+        $expectedData = [
+            'Since' => 1497797012,
+            'Until' => 1497797015,
+        ];
+        $this->divideIqClient->expects($this->once())->method('request')
+            ->with(StockbaseClient::STOCKBASE_STOCK_ENDPOINT, $expectedData, 'GET')
+            ->willReturn('TEST_ANSWER');
+
+        $client = new StockbaseClient($this->divideIqClient, $this->stockbaseConfiguration);
+        $this->assertEquals('TEST_ANSWER', $client->getStock(new \DateTime('@1497797012'), new \DateTime('@1497797015')));
+    }
+
+    /**
+     * testGetImages
+     */
+    public function testGetImages()
+    {
+        $expectedData = [
+            'ean' => '101,102,103,104,105',
+        ];
+        
+        $this->divideIqClient->expects($this->once())->method('request')
+            ->with(StockbaseClient::STOCKBASE_IMAGES_ENDPOINT, $expectedData, 'GET')
+            ->willReturn('TEST_ANSWER');
+
+        $client = new StockbaseClient($this->divideIqClient, $this->stockbaseConfiguration);
+        $this->assertEquals('TEST_ANSWER', $client->getImages([101, 102, 103, 104, 105]));
+    }
+
+    /**
      * testCreateOrder
      */
     public function testCreateOrder()
