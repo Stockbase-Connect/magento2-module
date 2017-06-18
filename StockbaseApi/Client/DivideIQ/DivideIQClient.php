@@ -31,14 +31,4 @@ class DivideIQClient extends DivideIQ
     {
         $this->client->setDefaultOption('timeout', $timeout);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setup()
-    {
-        parent::setup();
-
-        //TODO: Fire the state changed event
-    }
 }

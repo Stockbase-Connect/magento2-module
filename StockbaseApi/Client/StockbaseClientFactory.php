@@ -23,16 +23,6 @@ class StockbaseClientFactory
      * @var string
      */
     protected $instanceName;
-
-    /**
-     * @var StockbaseConfiguration
-     */
-    protected $config;
-    
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
     
     /**
      * @var DivideIQClientFactory
@@ -41,24 +31,18 @@ class StockbaseClientFactory
 
     /**
      * StockbaseClientFactory constructor.
-     * @param LoggerInterface        $logger
      * @param ObjectManagerInterface $objectManager
-     * @param StockbaseConfiguration $config
      * @param DivideIQClientFactory  $divideIQClientFactory
      * @param string                 $instanceName
      */
     public function __construct(
-        LoggerInterface $logger,
         ObjectManagerInterface $objectManager,
-        StockbaseConfiguration $config,
         DivideIQClientFactory $divideIQClientFactory,
         $instanceName = StockbaseClient::class
     ) {
     
         $this->objectManager = $objectManager;
         $this->instanceName = $instanceName;
-        $this->logger = $logger;
-        $this->config = $config;
         $this->divideIQClientFactory = $divideIQClientFactory;
     }
 

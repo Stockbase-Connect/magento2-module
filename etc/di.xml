@@ -4,9 +4,5 @@
     <preference
             for="Magento\CatalogInventory\Model\Spi\StockStateProviderInterface"
             type="Stockbase\Integration\Model\Inventory\StockStateProvider" />
-
-    <!--<preference
-            for="Magento\SalesInventory\Model\Order\ReturnProcessor"
-            type="Stockbase\Integration\Model\Inventory\ReturnProcessor" />-->
     
 </config>
