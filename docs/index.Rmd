@@ -1,0 +1,53 @@
+---
+title: "Stockbase Module for Magento 2"
+author: ""
+site: bookdown::bookdown_site
+documentclass: book
+output:
+  bookdown::gitbook: default
+  bookdown::pdf_book: default
+---
+
+# About {.unnumbered} 
+
+This is a Magento 2 module for integrating Stockbase into your Magento webshop.
+
+Stockbase is an independent platform that is open to retailers and suppliers who are willing to work smarter together and thus to achieve a better return.
+For more information: [www.stockbase.nl](http://www.stockbase.nl)
+
+## Features {.unnumbered} 
+
+### Addition to your Magento product stock {.unnumbered}
+
+Our module extends your local stock with items available for your Stockbase account.
+When you don't have enough product amount available on your Magento stock, this module allows to order missing items from
+the Stockbase to satisfy your customer's needs.
+
+Your local stock is always in priority. On every purchase, Magento will always try to use your local stock in the first place.
+And only if you don't have enough items on your local stock, Stockbase stock will be used.
+
+
+### Automated order creation on Stockbase {.unnumbered}
+
+When a customer makes an order, we always check if your own stock meets the required amount for the order.
+We only order the shortage for you, and notify you about this.
+Missing amount of products will be ordered from Stockbase automatically, you don't have to place an order on Stockbase by yourself.
+
+
+### Per-product configuration {.unnumbered}
+
+You can enable Stockbase functionality for each product individually, any other products in your store will continue to work as usual.
+
+
+### Never-out-of-stock support {.unnumbered}
+
+Stockbase Never-out-of-stock products will always be available to order, despite the actual amount requested.
+With our module, you can allow your customers to order any amount of such products.
+
+
+### Local Stockbase stock copy {.unnumbered}
+
+To speed everything up, we will keep your Stockbase stock copy in your Magento database and synchronize it on a schedule.
+Your customers won't notice any difference in your website responsiveness.
+
+
