@@ -2,8 +2,8 @@
 
 ## Stockbase stock synchronization issues
 
-Our module uses the Magento cron schedule to run the synchronization procedure.
-If your local Stockbase stock copy is not sinchronizing properly (for example, if your `stockbase_stock` table is empty), 
-please check your `cron_schedule` for any errors from our module (job code prefix `stockbase_`).
+Our module uses the Magento cron schedule to synchronize.
+If your local Stockbase stock copy is not synchronizing properly (for example, if your `stockbase_stock` table is empty), 
+please check your `cron_schedule` for error logs or messages reported by our module (job code prefix `stockbase_`).
 
 

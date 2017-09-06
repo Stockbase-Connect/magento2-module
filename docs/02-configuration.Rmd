@@ -8,9 +8,9 @@ You can find all module configuration options in your Magento admin panel:
 Navigate to **Stores** -> **Configuration** -> **Stockbase** -> **Configuration**.
 
 
-By default, module will be disabled.
+The module will be disabled by default.
 
-To enable the module, you should fill in all required options:
+To enable the module, fill in all required options:
 
 ```{r echo = FALSE, out.width = "65%"}
 knitr::include_graphics("images/system-config.png")
@@ -18,16 +18,19 @@ knitr::include_graphics("images/system-config.png")
 
 #### Your Stockbase username and password {.unnumbered}
 
-Please specify your username and password that you're using to access your stockbase control panel.
+Please specify the username and password you use to access your Stockbase control panel.
 
 
 #### Environment selection {.unnumbered}
 
-Depends on type of your Stockbase account. If you're not sure, select the **Production** mode.
+This depends on your Stockbase account type. If you're not sure of the type, select **Production** mode.
 
 
 #### Product EAN field {#ean-field .unnumbered}
 
-To associate your Magento product with a Stockbase product, you should specify the product's EAN in an attribute.
-If you don't have such attribute, you can click on the **Create EAN attribute** button and it will be created automatically.
+European Article Number (also known as EAN) is used as a unique identifier of 
+an individual Stockbase product.
+
+To associate your Magento product with a Stockbase product, specify the product's EAN in an attribute.
+If you don't have such attribute, you can click the **Create EAN attribute** button to create it automatically.
 
