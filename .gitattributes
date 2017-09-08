@@ -1,0 +1,12 @@
+# git files
+.gitattributes export-ignore
+.gitignore export-ignore
+
+# documentation
+docs export-ignore
+
+# build chain
+bitbucket-pipelines.yml export-ignore
+grumphp.yml export-ignore
+phpcs.xml export-ignore
+phpunit.xml.dist export-ignore
