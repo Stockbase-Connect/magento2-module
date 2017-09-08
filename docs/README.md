@@ -6,10 +6,6 @@ This directory forms a Bookdown production project, with an eye toward publishin
 
 ### Requirements:
 * [Docker](https://www.docker.com/)
-* [Composer](https://getcomposer.org)
-
-### Set Up
-Run `composer.phar install` to downlaod the templates.
 
 ### Build
 To build the project on Mac/Linux:
