@@ -88,7 +88,7 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
 
     protected function ensureStockbaseStockItem(StockItemInterface $stockItem)
     {
-        if (!($stockItem instanceof CombinedStockbaseStockItem)) {
+        if (!$stockItem instanceof CombinedStockbaseStockItem) {
             $stockbaseQty = $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
             $stockItem = new CombinedStockbaseStockItem($stockItem, $stockbaseQty);
         }

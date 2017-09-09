@@ -1,12 +1,13 @@
 <?php
 
-
 namespace Stockbase\Integration\Model\ResourceModel;
+
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 /**
  * Class StockItem
  */
-class StockItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+class StockItem extends AbstractDb
 {
     const BULK_INSERT_CHUNK_SIZE = 100;
     
