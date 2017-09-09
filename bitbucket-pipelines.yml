@@ -4,6 +4,8 @@ image: meanbee/magento2-php:7.0-cli
 pipelines:
   default:
     - step:
+        caches:
+          - composer
         script:
           - docker-environment
           - composer install -n
