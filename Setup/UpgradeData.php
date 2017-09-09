@@ -5,11 +5,11 @@ namespace Stockbase\Integration\Setup;
 
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Setup\CategorySetupFactory;
+use Magento\Config\Model\ResourceModel\Config as ConfigResourceModel;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Setup\UpgradeDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
-use Magento\Config\Model\ResourceModel\Config as ConfigResourceModel;
+use Magento\Framework\Setup\UpgradeDataInterface;
 use Stockbase\Integration\Model\Config\StockbaseConfiguration;
 
 /**
@@ -21,12 +21,12 @@ class UpgradeData implements UpgradeDataInterface
      * @var CategorySetupFactory
      */
     private $categorySetupFactory;
-    
+
     /**
      * @var ConfigResourceModel
      */
     private $configResource;
-    
+
     /**
      * @var ScopeConfigInterface
      */
@@ -61,21 +61,25 @@ class UpgradeData implements UpgradeDataInterface
                 0
             );
         }
-        
+
         if (version_compare($context->getVersion(), '1.0.0') < 0) {
             $categorySetup = $this->categorySetupFactory->create(['setup' => $setup]);
             $entityTypeId = $categorySetup->getEntityTypeId(Product::ENTITY);
-            
-            $categorySetup->addAttribute($entityTypeId, 'stockbase_product', [
-                'type' => 'int',
-                'label' => 'Stockbase product',
-                'input' => 'boolean',
-                'required' => false,
-                'visible_on_front' => false,
-                'apply_to' => 'simple',
-                'unique' => false,
-                'group' => 'Stockbase',
-            ]);
+
+            $categorySetup->addAttribute(
+                $entityTypeId,
+                'stockbase_product',
+                [
+                    'type' => 'int',
+                    'label' => 'Stockbase product',
+                    'input' => 'boolean',
+                    'required' => false,
+                    'visible_on_front' => false,
+                    'apply_to' => 'simple',
+                    'unique' => false,
+                    'group' => 'Stockbase',
+                ]
+            );
         }
     }
 }

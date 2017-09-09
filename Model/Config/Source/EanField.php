@@ -4,7 +4,6 @@ namespace Stockbase\Integration\Model\Config\Source;
 
 use Magento\Eav\Model\Entity\Attribute\Set;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Option\ArrayInterface;
 

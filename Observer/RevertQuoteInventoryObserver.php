@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Stockbase\Integration\Model\Observer;
+namespace Stockbase\Integration\Observer;
 
-use Magento\CatalogInventory\Observer\ProductQty;
+use Magento\Catalog\Model\Indexer\Product\Price\Processor as ProductPriceProcessor;
 use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\CatalogInventory\Model\Indexer\Stock\Processor as IndexStockProcessor;
-use Magento\Catalog\Model\Indexer\Product\Price\Processor as ProductPriceProcessor;
+use Magento\CatalogInventory\Observer\ProductQty;
 use Magento\Framework\Event\Observer as EventObserver;
 use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
 
@@ -53,7 +53,7 @@ class RevertQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\Re
             if (!$productId) {
                 continue;
             }
-            $children = $item->getChildrenItems() ?: [$item];
+            $children = $item->getChildrenItems() ? : [$item];
             foreach ($children as $childItem) {
                 $productId = $childItem->getProductId();
                 if (!$productId) {
@@ -76,7 +76,7 @@ class RevertQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\Re
                 $items[$productId] += $amount;
             }
         }
-        
+
         $this->stockManagement->revertProductsSale($items, $quote->getStore()->getWebsiteId());
         $productIds = array_keys($items);
         if (!empty($productIds)) {

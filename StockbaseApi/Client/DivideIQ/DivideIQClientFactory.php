@@ -52,13 +52,16 @@ class DivideIQClientFactory
     public function create(array $data = [])
     {
         //TODO: Cache authentication state using DivideIQ::fromJson() and DivideIQ::toJson()
-        
-        $data = array_merge([
-            'username' => $this->config->getUsername(),
-            'password' => $this->config->getPassword(),
-            'environment' => $this->config->getEnvironment(),
-        ], $data);
-        
+
+        $data = array_merge(
+            [
+                'username' => $this->config->getUsername(),
+                'password' => $this->config->getPassword(),
+                'environment' => $this->config->getEnvironment(),
+            ],
+            $data
+        );
+
         return $this->objectManager->create($this->instanceName, $data);
     }
 }

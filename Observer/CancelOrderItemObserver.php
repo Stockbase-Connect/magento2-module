@@ -1,7 +1,6 @@
 <?php
 
-
-namespace Stockbase\Integration\Model\Observer;
+namespace Stockbase\Integration\Observer;
 
 use Magento\Catalog\Model\Indexer\Product\Price\Processor as ProductPriceProcessor;
 use Magento\CatalogInventory\Api\StockManagementInterface;
@@ -40,7 +39,7 @@ class CancelOrderItemObserver extends \Magento\CatalogInventory\Observer\CancelO
     {
         /** @var \Magento\Sales\Model\Order\Item $item */
         $item = $observer->getEvent()->getItem();
-        
+
         $children = $item->getChildrenItems();
         $qty = $item->getQtyOrdered() - max($item->getQtyShipped(), $item->getQtyInvoiced()) - $item->getQtyCanceled();
         if ($item->getId() && $item->getProductId() && empty($children) && $qty) {

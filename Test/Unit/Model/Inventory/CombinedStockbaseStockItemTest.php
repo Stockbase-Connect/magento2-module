@@ -3,6 +3,7 @@
 
 namespace Stockbase\Integration\Test\Unit\Model\Inventory;
 
+use Magento\CatalogInventory\Api\Data\StockItemExtensionInterface;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
 use PHPUnit\Framework\TestCase;
 use Stockbase\Integration\Model\Inventory\CombinedStockbaseStockItem;
@@ -34,7 +35,7 @@ class CombinedStockbaseStockItemTest extends TestCase
     public function testGetQty($magentoStockQty, $stockbaseStockQty, $expectedResult)
     {
         $this->magentoStockItem->expects($this->once())->method('getQty')->willReturn($magentoStockQty);
-        
+
         $item = new CombinedStockbaseStockItem($this->magentoStockItem, $stockbaseStockQty);
         $this->assertEquals($expectedResult, $item->getQty());
     }
@@ -60,7 +61,7 @@ class CombinedStockbaseStockItemTest extends TestCase
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Can not set quantity on combined Stockbase stock item.');
-        
+
         $item = new CombinedStockbaseStockItem($this->magentoStockItem, 0);
         $item->setQty(1);
     }
@@ -76,7 +77,7 @@ class CombinedStockbaseStockItemTest extends TestCase
     public function testMethodPassThrough($method, $arg, $returnSelf)
     {
         $item = new CombinedStockbaseStockItem($this->magentoStockItem, 0);
-        
+
         $methodMock = $this->magentoStockItem->expects($this->at(0))->method($method);
         if ($returnSelf) {
             $methodMock->willReturnSelf();
@@ -85,7 +86,7 @@ class CombinedStockbaseStockItemTest extends TestCase
             $methodMock->willReturn('TEST_RESULT');
             $expectedResult = 'TEST_RESULT';
         }
-        
+
         if ($arg === null) {
             $methodMock->with();
             $result = $item->{$method}();
@@ -155,7 +156,11 @@ class CombinedStockbaseStockItemTest extends TestCase
             ['getStockStatusChangedAuto', null, false],
             ['setStockStatusChangedAuto', 1111, true],
             ['getExtensionAttributes', null, false],
-            ['setExtensionAttributes', $this->getMockBuilder(\Magento\CatalogInventory\Api\Data\StockItemExtensionInterface::class)->getMock(), true],
+            [
+                'setExtensionAttributes',
+                $this->getMockBuilder(StockItemExtensionInterface::class)->getMock(),
+                true,
+            ],
         ];
     }
 

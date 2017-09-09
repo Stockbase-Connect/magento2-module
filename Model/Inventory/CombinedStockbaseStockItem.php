@@ -14,7 +14,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
      * @var StockItemInterface
      */
     private $magentoStockItem;
-    
+
     /**
      * @var float
      */
@@ -71,7 +71,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setItemId($itemId)
     {
         $this->magentoStockItem->setItemId($itemId);
-        
+
         return $this;
     }
 
@@ -89,7 +89,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setProductId($productId)
     {
         $this->magentoStockItem->setProductId($productId);
-        
+
         return $this;
     }
 
@@ -107,7 +107,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setStockId($stockId)
     {
         $this->magentoStockItem->setStockId($stockId);
-        
+
         return $this;
     }
 
@@ -125,7 +125,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setIsInStock($isInStock)
     {
         $this->magentoStockItem->setIsInStock($isInStock);
-        
+
         return $this;
     }
 
@@ -143,7 +143,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setIsQtyDecimal($isQtyDecimal)
     {
         $this->magentoStockItem->setIsQtyDecimal($isQtyDecimal);
-        
+
         return $this;
     }
 
@@ -169,7 +169,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setUseConfigMinQty($useConfigMinQty)
     {
         $this->magentoStockItem->setUseConfigMinQty($useConfigMinQty);
-        
+
         return $this;
     }
 
@@ -187,7 +187,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setMinQty($minQty)
     {
         $this->magentoStockItem->setMinQty($minQty);
-        
+
         return $this;
     }
 
@@ -205,7 +205,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setUseConfigMinSaleQty($useConfigMinSaleQty)
     {
         $this->magentoStockItem->setUseConfigMinSaleQty($useConfigMinSaleQty);
-        
+
         return $this;
     }
 
@@ -223,7 +223,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setMinSaleQty($minSaleQty)
     {
         $this->magentoStockItem->setMinSaleQty($minSaleQty);
-        
+
         return $this;
     }
 
@@ -241,7 +241,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setUseConfigMaxSaleQty($useConfigMaxSaleQty)
     {
         $this->magentoStockItem->setUseConfigMaxSaleQty($useConfigMaxSaleQty);
-        
+
         return $this;
     }
 
@@ -259,7 +259,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setMaxSaleQty($maxSaleQty)
     {
         $this->magentoStockItem->setMaxSaleQty($maxSaleQty);
-        
+
         return $this;
     }
 
@@ -277,7 +277,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setUseConfigBackorders($useConfigBackorders)
     {
         $this->magentoStockItem->setUseConfigBackorders($useConfigBackorders);
-        
+
         return $this;
     }
 
@@ -295,7 +295,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setBackorders($backOrders)
     {
         $this->magentoStockItem->setBackorders($backOrders);
-        
+
         return $this;
     }
 
@@ -313,7 +313,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setUseConfigNotifyStockQty($useConfigNotifyStockQty)
     {
         $this->magentoStockItem->setUseConfigNotifyStockQty($useConfigNotifyStockQty);
-        
+
         return $this;
     }
 
@@ -331,7 +331,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setNotifyStockQty($notifyStockQty)
     {
         $this->magentoStockItem->setNotifyStockQty($notifyStockQty);
-        
+
         return $this;
     }
 
@@ -349,7 +349,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setUseConfigQtyIncrements($useConfigQtyIncrements)
     {
         $this->magentoStockItem->setUseConfigQtyIncrements($useConfigQtyIncrements);
-        
+
         return $this;
     }
 
@@ -367,7 +367,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setQtyIncrements($qtyIncrements)
     {
         $this->magentoStockItem->setQtyIncrements($qtyIncrements);
-        
+
         return $this;
     }
 
@@ -385,7 +385,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setUseConfigEnableQtyInc($useConfigEnableQtyInc)
     {
         $this->magentoStockItem->setUseConfigEnableQtyInc($useConfigEnableQtyInc);
-        
+
         return $this;
     }
 
@@ -403,7 +403,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setEnableQtyIncrements($enableQtyIncrements)
     {
         $this->magentoStockItem->setEnableQtyIncrements($enableQtyIncrements);
-        
+
         return $this;
     }
 
@@ -421,7 +421,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setUseConfigManageStock($useConfigManageStock)
     {
         $this->magentoStockItem->setUseConfigManageStock($useConfigManageStock);
-        
+
         return $this;
     }
 
@@ -439,7 +439,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setManageStock($manageStock)
     {
         $this->magentoStockItem->setManageStock($manageStock);
-        
+
         return $this;
     }
 
@@ -457,7 +457,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setLowStockDate($lowStockDate)
     {
         $this->magentoStockItem->setLowStockDate($lowStockDate);
-        
+
         return $this;
     }
 
@@ -475,7 +475,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setIsDecimalDivided($isDecimalDivided)
     {
         $this->magentoStockItem->setIsDecimalDivided($isDecimalDivided);
-        
+
         return $this;
     }
 
@@ -493,7 +493,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
     public function setStockStatusChangedAuto($stockStatusChangedAuto)
     {
         $this->magentoStockItem->setStockStatusChangedAuto($stockStatusChangedAuto);
-        
+
         return $this;
     }
 
@@ -512,7 +512,7 @@ class CombinedStockbaseStockItem implements StockItemInterface
         \Magento\CatalogInventory\Api\Data\StockItemExtensionInterface $extensionAttributes
     ) {
         $this->magentoStockItem->setExtensionAttributes($extensionAttributes);
-        
+
         return $this;
     }
 }

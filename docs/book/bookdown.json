@@ -1,11 +1,13 @@
 {
-    "title": "Stockbase Module for Magento 2",
-    "content": [
-        {"intro": "../../README.md"},
-        "installation.md",
-        "configuration.md",
-        "troubleshooting.md"
-    ],
-    "target": "../html/",
-    "template": "../vendor/tobiju/bookdown-bootswatch-templates/templates/main.php"
+  "title": "Stockbase Module for Magento 2",
+  "content": [
+    {
+      "intro": "../../README.md"
+    },
+    "installation.md",
+    "configuration.md",
+    "troubleshooting.md"
+  ],
+  "target": "../html/",
+  "template": "../vendor/tobiju/bookdown-bootswatch-templates/templates/main.php"
 }

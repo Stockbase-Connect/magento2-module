@@ -3,17 +3,15 @@
 
 namespace Stockbase\Integration\StockbaseApi\Client;
 
-use Stockbase\Integration\StockbaseApi\Client\DivideIQ\DivideIQClientFactory;
-use Stockbase\Integration\Model\Config\StockbaseConfiguration;
 use Magento\Framework\ObjectManagerInterface;
-use Psr\Log\LoggerInterface;
+use Stockbase\Integration\StockbaseApi\Client\DivideIQ\DivideIQClientFactory;
 
 /**
  * StockbaseClient Factory
  */
 class StockbaseClientFactory
 {
-    
+
     /**
      * @var ObjectManagerInterface
      */
@@ -23,7 +21,7 @@ class StockbaseClientFactory
      * @var string
      */
     protected $instanceName;
-    
+
     /**
      * @var DivideIQClientFactory
      */
@@ -40,7 +38,7 @@ class StockbaseClientFactory
         DivideIQClientFactory $divideIQClientFactory,
         $instanceName = StockbaseClient::class
     ) {
-    
+
         $this->objectManager = $objectManager;
         $this->instanceName = $instanceName;
         $this->divideIQClientFactory = $divideIQClientFactory;
@@ -57,7 +55,7 @@ class StockbaseClientFactory
         if (!isset($data['divideIqClient'])) {
             $data['divideIqClient'] = $this->divideIQClientFactory->create();
         }
-        
+
         return $this->objectManager->create($this->instanceName, $data);
     }
 }

@@ -23,15 +23,6 @@ class StockbaseConfigurationTest extends \PHPUnit\Framework\TestCase
     protected $configScope;
 
     /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-        $this->configScope = new MutableScopeConfigMock();
-        $this->config = new StockbaseConfiguration($this->configScope);
-    }
-
-    /**
      *
      */
     public function testDefaultValues()
@@ -55,12 +46,21 @@ class StockbaseConfigurationTest extends \PHPUnit\Framework\TestCase
         $this->configScope->setValue(StockbaseConfiguration::CONFIG_PASSWORD, 'test_password');
         $this->configScope->setValue(StockbaseConfiguration::CONFIG_EAN_FIELD, 'test_ean_field');
         $this->configScope->setValue(StockbaseConfiguration::CONFIG_ORDER_PREFIX, 'test_order_prefix');
-        
+
         $this->assertTrue($this->config->isModuleEnabled());
         $this->assertEquals('test_environment', $this->config->getEnvironment());
         $this->assertEquals('test_username', $this->config->getUsername());
         $this->assertEquals('test_password', $this->config->getPassword());
         $this->assertEquals('test_ean_field', $this->config->getEanFieldName());
         $this->assertEquals('test_order_prefix', $this->config->getOrderPrefix());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        $this->configScope = new MutableScopeConfigMock();
+        $this->config = new StockbaseConfiguration($this->configScope);
     }
 }

@@ -1,17 +1,16 @@
 <?php
 
 
-namespace Stockbase\Integration\Test\Unit\Model\Observer;
+namespace Stockbase\Integration\Test\Unit\Observer;
 
+use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\CatalogInventory\Observer\ItemsForReindex;
 use Magento\CatalogInventory\Observer\ProductQty;
-use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\Framework\Event\Observer as EventObserver;
 use Magento\Framework\TestFramework\Unit\Matcher\MethodInvokedAtIndex;
 use PHPUnit\Framework\TestCase;
 use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
-use Stockbase\Integration\Model\Observer\SubtractQuoteInventoryObserver;
 use Stockbase\Integration\Model\StockItemReserve;
 
 /**
@@ -20,7 +19,7 @@ use Stockbase\Integration\Model\StockItemReserve;
 class SubtractQuoteInventoryObserverTest extends TestCase
 {
     const TEST_WEBSITE_ID = 0xdeadbeef;
-    
+
     /** @var StockManagementInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $stockManagement;
 
@@ -58,31 +57,37 @@ class SubtractQuoteInventoryObserverTest extends TestCase
 
         $this->quote = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->disableOriginalConstructor()
-            ->setMethods([
-                'getInventoryProcessed',
-                'setInventoryProcessed',
-                'getAllItems',
-                'getStore',
-            ])
+            ->setMethods(
+                [
+                    'getInventoryProcessed',
+                    'setInventoryProcessed',
+                    'getAllItems',
+                    'getStore',
+                ]
+            )
             ->getMock();
-        
+
         $this->order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['addStatusHistoryComment'])
             ->getMock();
-        
+
         $store = $this->createMock(\Magento\Store\Api\Data\StoreInterface::class);
         $store->method('getWebsiteId')->willReturn(self::TEST_WEBSITE_ID);
-        
+
         $this->quote->method('getStore')->willReturn($store);
-        
-        
-        $this->observer = new \Magento\Framework\Event\Observer([
-            'event' => new \Magento\Framework\Event([
-                'quote' => $this->quote,
-                'order' => $this->order,
-            ]),
-        ]);
+
+
+        $this->observer = new \Magento\Framework\Event\Observer(
+            [
+                'event' => new \Magento\Framework\Event(
+                    [
+                        'quote' => $this->quote,
+                        'order' => $this->order,
+                    ]
+                ),
+            ]
+        );
     }
 
     /**
@@ -91,9 +96,9 @@ class SubtractQuoteInventoryObserverTest extends TestCase
     public function testInventoryProcessed()
     {
         $this->quote->method('getInventoryProcessed')->willReturn(true);
-        
+
         $this->quote->expects($this->never())->method('setInventoryProcessed');
-        
+
         $handler = $this->createHandler();
         $this->assertEquals($handler, $handler->execute($this->observer));
     }
@@ -113,7 +118,7 @@ class SubtractQuoteInventoryObserverTest extends TestCase
 
         $this->itemsForReindex->expects($this->once())->method('setItems')->with([]);
         $this->quote->expects($this->once())->method('setInventoryProcessed')->with(true);
-        
+
         $handler = $this->createHandler();
         $this->assertEquals($handler, $handler->execute($this->observer));
     }
@@ -145,14 +150,16 @@ class SubtractQuoteInventoryObserverTest extends TestCase
 
             $stockItem = $this->createMock(\Magento\CatalogInventory\Api\Data\StockItemInterface::class);
             $stockItem->method('getQty')->willReturn($itemPrototype['magentoQty']);
-            
+
             $this->stockRegistry->expects(new MethodInvokedAtIndex($index))->method('getStockItem')
                 ->with($itemPrototype['productId'])
                 ->willReturn($stockItem);
-            
+
             if (!empty($itemPrototype['qtyException'])) {
                 $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
-                $this->expectExceptionMessageRegExp('/Not all of your products are available in the requested quantity\./');
+                $this->expectExceptionMessageRegExp(
+                    '/Not all of your products are available in the requested quantity\./'
+                );
             } else {
                 $reserveItem = $this->createMock(StockItemReserve::class);
                 $reserveItem->method('getEan')->willReturn($itemPrototype['productId']);
@@ -163,15 +170,17 @@ class SubtractQuoteInventoryObserverTest extends TestCase
                     ->willReturn($reserveItem);
             }
         }
-        
-        
+
+
         $this->stockbaseStockManagement->method('isStockbaseProduct')->willReturn(true);
 
         $this->stockbaseStockManagement->method('getStockbaseStockAmount')
-            ->willReturnCallback(function ($productId) use ($stockbaseAmounts) {
-                return $stockbaseAmounts[$productId];
-            });
-        
+            ->willReturnCallback(
+                function ($productId) use ($stockbaseAmounts) {
+                    return $stockbaseAmounts[$productId];
+                }
+            );
+
         $this->quote->method('getInventoryProcessed')->willReturn(false);
         $this->quote->method('getAllItems')->willReturn($items);
 
@@ -180,7 +189,7 @@ class SubtractQuoteInventoryObserverTest extends TestCase
                 ->method('registerProductsSale')
                 ->with($magentoReserve, self::TEST_WEBSITE_ID)
                 ->willReturn([]);
-            
+
             $this->itemsForReindex->expects($this->once())->method('setItems')->with([]);
 
             $this->quote->expects($this->once())->method('setInventoryProcessed')->with(true);
@@ -231,7 +240,7 @@ class SubtractQuoteInventoryObserverTest extends TestCase
 
     protected function createHandler()
     {
-        return new SubtractQuoteInventoryObserver(
+        return new \Stockbase\Integration\Observer\SubtractQuoteInventoryObserver(
             $this->stockManagement,
             $this->productQty,
             $this->itemsForReindex,

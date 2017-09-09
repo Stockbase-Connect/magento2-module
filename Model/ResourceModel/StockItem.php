@@ -5,12 +5,12 @@ namespace Stockbase\Integration\Model\ResourceModel;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 /**
- * Class StockItem
+ * Represents an item available in StockBase
  */
 class StockItem extends AbstractDb
 {
     const BULK_INSERT_CHUNK_SIZE = 100;
-    
+
     /**
      * @var \Magento\Framework\EntityManager\EntityManager
      */
@@ -29,7 +29,12 @@ class StockItem extends AbstractDb
         $query = $connection->select()
             ->from(
                 ['s' => $this->getMainTable()],
-                ['s.ean', 'amount' => new \Zend_Db_Expr('IF(s.noos = 1, 1000000000, s.amount - COALESCE(SUM(r.amount), 0))')]
+                [
+                    's.ean',
+                    'amount' => new \Zend_Db_Expr(
+                        'IF(s.noos = 1, 1000000000, s.amount - COALESCE(SUM(r.amount), 0))'
+                    ),
+                ]
             )
             ->joinLeft(
                 ['r' => $this->getTable('stockbase_stock_reserve')],
@@ -38,7 +43,7 @@ class StockItem extends AbstractDb
             )
             ->where('s.ean in (?)', $eans)
             ->group('s.ean');
-        
+
         $pairs = $connection->fetchPairs($query);
 
         return is_array($eans) ? $pairs : reset($pairs);
@@ -56,7 +61,7 @@ class StockItem extends AbstractDb
     {
         $amount = (float) $amount;
         $operation = $operation == '-' ? '-' : '+';
-        
+
         $connection = $this->getConnection();
 
         $result = $connection->update(
@@ -67,7 +72,7 @@ class StockItem extends AbstractDb
         if ($result == 1) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -86,7 +91,7 @@ class StockItem extends AbstractDb
             ->limit(1);
 
         $result = $connection->fetchCol($query);
-        
+
         return !empty($result[0]) ? new \DateTime($result[0]) : null;
     }
 
@@ -122,16 +127,8 @@ class StockItem extends AbstractDb
         if (count($data) > 0) {
             $this->bulkUpdate($data);
         }
-        
-        return $total;
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function _construct()
-    {
-        $this->_init('stockbase_stock', 'ean');
+        return $total;
     }
 
     /**
@@ -141,15 +138,23 @@ class StockItem extends AbstractDb
     protected function bulkUpdate(array $data)
     {
         $connection = $this->getConnection();
-        
+
         $connection->beginTransaction();
         try {
             $connection->insertOnDuplicate($this->getMainTable(), $data);
-            
+
             $connection->commit();
         } catch (\Exception $e) {
             $connection->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _construct()
+    {
+        $this->_init('stockbase_stock', 'ean');
     }
 }

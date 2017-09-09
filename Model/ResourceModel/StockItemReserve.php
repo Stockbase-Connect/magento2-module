@@ -1,12 +1,13 @@
 <?php
 
-
 namespace Stockbase\Integration\Model\ResourceModel;
 
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+
 /**
- * Class StockItemReserve
+ * Represents an amount of stock from a Stockbase item, reserved for a future purchase
  */
-class StockItemReserve extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+class StockItemReserve extends AbstractDb
 {
     protected function _construct()
     {

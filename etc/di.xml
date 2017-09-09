@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
     <preference for="Magento\CatalogInventory\Model\Spi\StockStateProviderInterface"
-                type="Stockbase\Integration\Model\Inventory\StockStateProvider" />
+                type="Stockbase\Integration\Model\Inventory\StockStateProvider"/>
 
     <type name="Magento\CatalogInventory\Model\ResourceModel\Stock">
         <plugin name="Stockbase\Integration\Plugin\Stock\StatusPlugin"
                 type="Stockbase\Integration\Plugin\Stock\StatusPlugin"
-                sortOrder="1" />
+                sortOrder="1"/>
     </type>
 </config>

@@ -38,10 +38,12 @@ class CreateEanAttributeButton extends Field
     {
         /** @var Button $button */
         $button = $this->getLayout()->createBlock(Button::class);
-        $button->setData([
-            'id' => 'create_ean_attribute',
-            'label' => __('Create EAN attribute'),
-        ]);
+        $button->setData(
+            [
+                'id' => 'create_ean_attribute',
+                'label' => __('Create EAN attribute'),
+            ]
+        );
 
         return $button->toHtml();
     }
@@ -56,7 +58,7 @@ class CreateEanAttributeButton extends Field
     {
         // Remove scope label
         $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
-        
+
         return parent::render($element);
     }
 

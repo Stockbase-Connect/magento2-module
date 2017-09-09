@@ -18,13 +18,13 @@ use Stockbase\Integration\Controller\Adminhtml\System\Config\CreateEanAttribute;
 class CreateEanAttributeTest extends TestCase
 {
     const TEST_PRODUCT_TYPE_ID = 0xdeadbeef;
-    
+
     /** @var \Magento\Framework\App\RequestInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $request;
-    
+
     /** @var \Magento\Framework\App\ResponseInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $response;
-    
+
     /** @var \Magento\Backend\App\Action\Context|\PHPUnit_Framework_MockObject_MockObject */
     private $context;
 
@@ -61,13 +61,13 @@ class CreateEanAttributeTest extends TestCase
     public function setUp()
     {
         $this->attribute = $this->createMock(\Magento\Catalog\Model\ResourceModel\Eav\Attribute::class);
-        
+
         $this->attributeFactory = $this->getMockBuilder(AttributeFactory::class)->setMethods(['create'])->getMock();
         $this->attributeFactory->method('create')
             ->willReturn($this->attribute);
-        
+
         $this->attributeManagement = $this->createMock(AttributeManagementInterface::class);
-        
+
         $this->eavEntity = $this->createMock(\Magento\Eav\Model\Entity::class);
         $this->eavEntity
             ->method('setType')
@@ -77,8 +77,10 @@ class CreateEanAttributeTest extends TestCase
             ->willReturn(self::TEST_PRODUCT_TYPE_ID);
 
 
-        $this->attributeSetCollection = $this->createMock(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection::class);
-        
+        $this->attributeSetCollection = $this->createMock(
+            \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\Collection::class
+        );
+
         $this->attributeSetCollectionFactory = $this->getMockBuilder(AttributeSetCollectionFactory::class)
             ->setMethods(['create'])->getMock();
 
@@ -114,7 +116,7 @@ class CreateEanAttributeTest extends TestCase
         $this->jsonResult->expects($this->once())
             ->method('setHttpResponseCode')
             ->with(\Magento\Framework\Webapi\Exception::HTTP_BAD_REQUEST);
-        
+
         $controller = $this->createController();
         $this->assertEquals($this->jsonResult, $controller->execute());
     }
@@ -125,7 +127,7 @@ class CreateEanAttributeTest extends TestCase
     public function testLoadExistingAttribute()
     {
         $this->request->expects($this->once())->method('isPost')->willReturn(true);
-        
+
         $this->attribute->expects($this->once())->method('loadByCode')
             ->with(ProductAttributeInterface::ENTITY_TYPE_CODE, 'ean');
         $this->attribute->expects($this->once())->method('isEmpty')->willReturn(false);
@@ -133,16 +135,18 @@ class CreateEanAttributeTest extends TestCase
         $this->attribute->expects($this->any())->method('getAttributeCode')->willReturn('TEST_VALUE');
 
         $this->attribute->expects($this->never())->method('save');
-        
+
         $this->jsonResult->expects($this->once())
             ->method('setData')
-            ->with([
-                'eanField' => [
-                    'label' => 'TEST_LABEL',
-                    'value' => 'TEST_VALUE',
-                ],
-            ]);
-        
+            ->with(
+                [
+                    'eanField' => [
+                        'label' => 'TEST_LABEL',
+                        'value' => 'TEST_VALUE',
+                    ],
+                ]
+            );
+
         $controller = $this->createController();
         $this->assertEquals($this->jsonResult, $controller->execute());
     }
@@ -164,24 +168,24 @@ class CreateEanAttributeTest extends TestCase
         $this->attribute->expects($this->any())->method('getDefaultFrontendLabel')->willReturn('EAN');
         $this->attribute->expects($this->any())->method('getAttributeCode')->willReturn('ean');
         $this->attribute->expects($this->once())->method('save');
-        
+
         $this->attributeSetCollection->expects($this->once())
             ->method('setEntityTypeFilter')
             ->with(self::TEST_PRODUCT_TYPE_ID);
-        
+
         $attributeSets = [];
         for ($i = 0; $i < 2; $i++) {
             $attributeSet = $this->getMockBuilder(\Magento\Eav\Model\Entity\Attribute\Set::class)
                 ->disableOriginalConstructor()
                 ->setMethods(['getAttributeSetId', 'getDefaultGroupId'])
                 ->getMock();
-            
-            $attributeSet->expects($this->any())->method('getAttributeSetId')->willReturn($i*100+1);
-            $attributeSet->expects($this->any())->method('getDefaultGroupId')->willReturn($i*100+2);
-            
+
+            $attributeSet->expects($this->any())->method('getAttributeSetId')->willReturn($i * 100 + 1);
+            $attributeSet->expects($this->any())->method('getDefaultGroupId')->willReturn($i * 100 + 2);
+
             $attributeSets[$i] = $attributeSet;
         }
-        
+
         $this->attributeSetCollection->expects($this->once())->method('getItems')->willReturn($attributeSets);
 
         foreach ($attributeSets as $index => $attributeSet) {
@@ -197,12 +201,14 @@ class CreateEanAttributeTest extends TestCase
 
         $this->jsonResult->expects($this->once())
             ->method('setData')
-            ->with([
-                'eanField' => [
-                    'label' => 'EAN',
-                    'value' => 'ean',
-                ],
-            ]);
+            ->with(
+                [
+                    'eanField' => [
+                        'label' => 'EAN',
+                        'value' => 'ean',
+                    ],
+                ]
+            );
 
         $controller = $this->createController();
         $this->assertEquals($this->jsonResult, $controller->execute());

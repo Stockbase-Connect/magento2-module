@@ -1,20 +1,21 @@
 <?php
 
-
 namespace Stockbase\Integration\Model\ResourceModel\OrderedItem;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use Stockbase\Integration\Model\OrderedItem;
+use Stockbase\Integration\Model\ResourceModel\OrderedItem as OrderedItemResource;
 
 /**
- * Class Collection
+ * OrderedItem collection
  */
 class Collection extends AbstractCollection
 {
+    /**
+     * @return void
+     */
     protected function _construct()
     {
-        $this->_init(
-            \Stockbase\Integration\Model\OrderedItem::class,
-            \Stockbase\Integration\Model\ResourceModel\OrderedItem::class
-        );
+        $this->_init(OrderedItem::class, OrderedItemResource::class);
     }
 }

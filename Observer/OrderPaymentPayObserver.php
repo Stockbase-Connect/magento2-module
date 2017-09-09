@@ -1,5 +1,6 @@
 <?php
-namespace Stockbase\Integration\Model\Observer;
+
+namespace Stockbase\Integration\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -7,11 +8,11 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
 use Stockbase\Integration\Model\Config\StockbaseConfiguration;
 use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
 use Stockbase\Integration\Model\OrderedItem as StockbaseOrderedItem;
 use Stockbase\Integration\Model\StockItemReserve;
+use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
 
 /**
  * Class OrderPaymentPayObserver
@@ -79,9 +80,12 @@ class OrderPaymentPayObserver implements ObserverInterface
             $order = $repository->get($invoice->getOrderId());
         }
 
-        $quoteItemIds = \array_map(function (OrderItemInterface $item) {
-            return $item->getQuoteItemId();
-        }, (array) $order->getAllItems());
+        $quoteItemIds = \array_map(
+            function (OrderItemInterface $item) {
+                return $item->getQuoteItemId();
+            },
+            (array) $order->getAllItems()
+        );
 
         /** @var StockItemReserve[] $reservedStockbaseItems */
         $reservedStockbaseItems = $this->stockbaseStockManagement->getReserveForQuoteItem($quoteItemIds);
@@ -94,11 +98,14 @@ class OrderPaymentPayObserver implements ObserverInterface
         $result = $client->createOrder($order, $reservedStockbaseItems);
 
         foreach ($reservedStockbaseItems as $reserve) {
-            $this->addStatusHistoryComment($order, __(
-                'Item with EAN "%1" (%2 pc.) has been ordered from Stockbase.',
-                $reserve->getEan(),
-                $reserve->getAmount()
-            ));
+            $this->addStatusHistoryComment(
+                $order,
+                __(
+                    'Item with EAN "%1" (%2 pc.) has been ordered from Stockbase.',
+                    $reserve->getEan(),
+                    $reserve->getAmount()
+                )
+            );
             //$order->save();
 
             /** @var StockbaseOrderedItem $stockbaseOrderedItem */
@@ -117,10 +124,13 @@ class OrderPaymentPayObserver implements ObserverInterface
             // Release the reserve
             $this->stockbaseStockManagement->releaseReserve($reserve);
 
-            $this->addStatusHistoryComment($order, __(
-                'Local Stockbase stock index for item with EAN "%1" has been updated.',
-                $reserve->getEan()
-            ));
+            $this->addStatusHistoryComment(
+                $order,
+                __(
+                    'Local Stockbase stock index for item with EAN "%1" has been updated.',
+                    $reserve->getEan()
+                )
+            );
             //$order->save();
         }
 
@@ -131,8 +141,8 @@ class OrderPaymentPayObserver implements ObserverInterface
      * Safe add status history comment.
      *
      * @param OrderInterface $order
-     * @param string $comment
-     * @param $status
+     * @param string         $comment
+     * @param                $status
      * @return void
      */
     private function addStatusHistoryComment(OrderInterface $order, string $comment, $status = false)

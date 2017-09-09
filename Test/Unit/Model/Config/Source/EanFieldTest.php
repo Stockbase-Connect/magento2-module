@@ -27,7 +27,7 @@ class EanFieldTest extends TestCase
     public function setUp()
     {
         $this->collection = $this->createMock(Collection::class);
-        
+
         $this->objectManager = $this->createMock(ObjectManagerInterface::class);
         $this->objectManager->method('get')->with(Collection::class)->willReturn($this->collection);
     }
@@ -39,27 +39,27 @@ class EanFieldTest extends TestCase
     {
         $this->collection->expects($this->once())->method('addFieldToFilter')
             ->with(Set::KEY_ENTITY_TYPE_ID, 4);
-        
+
         $this->collection->expects($this->once())->method('load')
             ->willReturnSelf();
-        
+
         $items = [];
         $item = $this->createMock(AttributeMetadataInterface::class);
         $item->method('getFrontendLabel')->willReturn('Test Attribute');
         $item->method('getAttributeCode')->willReturn('test');
         $items[] = $item;
-        
+
         $this->collection->expects($this->once())->method('getItems')
             ->willReturn($items);
-        
+
         $fieldSource = new EanField($this->objectManager);
         $result = $fieldSource->toOptionArray();
-        
+
         $expectedResult = [
             ['label' => '', 'value' => ''],
             ['label' => 'Test Attribute', 'value' => 'test'],
         ];
-        
+
         $this->assertEquals($expectedResult, $result);
     }
 }

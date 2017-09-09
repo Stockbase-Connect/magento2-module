@@ -3,16 +3,15 @@
 
 namespace Stockbase\Integration\Controller\Adminhtml\System\Config;
 
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
 use Magento\Catalog\Api\Data\ProductAttributeInterface;
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 use Magento\Catalog\Model\ResourceModel\Eav\AttributeFactory;
-use Magento\Backend\App\Action;
-use Magento\Backend\App\Action\Context;
 use Magento\Eav\Api\AttributeManagementInterface;
 use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory as AttributeSetCollectionFactory;
 use Magento\Framework\App\Request\Http;
-use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultFactory;
 
 /**
@@ -50,7 +49,7 @@ class CreateEanAttribute extends Action
         $this->attributeManagement = $attributeManagement;
         $this->attributeSetCollectionFactory = $attributeSetCollectionFactory;
     }
-    
+
 
     /**
      * {@inheritdoc}
@@ -59,7 +58,7 @@ class CreateEanAttribute extends Action
     {
         /** @var \Magento\Framework\Controller\Result\Json $response */
         $response = $this->resultFactory->create(ResultFactory::TYPE_JSON);
-        
+
         $request = $this->getRequest();
         if (!$request instanceof Http || !$request->isPost()) {
             $response->setHttpResponseCode(\Magento\Framework\Webapi\Exception::HTTP_BAD_REQUEST);
@@ -67,7 +66,7 @@ class CreateEanAttribute extends Action
 
             return $response;
         }
-        
+
         $result = [];
 
         $entityTypeId = $this->_objectManager->create(\Magento\Eav\Model\Entity::class)
@@ -76,7 +75,7 @@ class CreateEanAttribute extends Action
 
         $attribute = $this->attributeFactory->create();
         $attribute->loadByCode(ProductAttributeInterface::ENTITY_TYPE_CODE, 'ean');
-        
+
         if ($attribute->isEmpty()) {
             // Create the attribute
             $attribute->setEntityTypeId($entityTypeId);
@@ -114,7 +113,7 @@ class CreateEanAttribute extends Action
             'value' => $attribute->getAttributeCode(),
         ];
         $response->setData($result);
-        
+
         return $response;
     }
 }

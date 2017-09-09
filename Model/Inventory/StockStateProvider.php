@@ -5,9 +5,9 @@ namespace Stockbase\Integration\Model\Inventory;
 
 use Magento\Catalog\Model\ProductFactory;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
+use Magento\Framework\DataObject\Factory as ObjectFactory;
 use Magento\Framework\Locale\FormatInterface;
 use Magento\Framework\Math\Division as MathDivision;
-use Magento\Framework\DataObject\Factory as ObjectFactory;
 use Magento\Framework\ObjectManagerInterface;
 
 /**
@@ -59,7 +59,7 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
     {
         return parent::checkQuoteItemQty($this->ensureStockbaseStockItem($stockItem), $qty, $summaryQty, $origQty);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -76,6 +76,16 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
         return parent::getStockQty($this->ensureStockbaseStockItem($stockItem));
     }
 
+    protected function ensureStockbaseStockItem(StockItemInterface $stockItem)
+    {
+        if (!$stockItem instanceof CombinedStockbaseStockItem) {
+            $stockbaseQty = $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
+            $stockItem = new CombinedStockbaseStockItem($stockItem, $stockbaseQty);
+        }
+
+        return $stockItem;
+    }
+
     protected function getStockbaseStockManagement()
     {
         // Lazy initialization to avoid circular dependency injection
@@ -84,15 +94,5 @@ class StockStateProvider extends \Magento\CatalogInventory\Model\StockStateProvi
         }
 
         return $this->stockbaseStockManagement;
-    }
-
-    protected function ensureStockbaseStockItem(StockItemInterface $stockItem)
-    {
-        if (!$stockItem instanceof CombinedStockbaseStockItem) {
-            $stockbaseQty = $this->getStockbaseStockManagement()->getStockbaseStockAmount($stockItem->getProductId());
-            $stockItem = new CombinedStockbaseStockItem($stockItem, $stockbaseQty);
-        }
-        
-        return $stockItem;
     }
 }

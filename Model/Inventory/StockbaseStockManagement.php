@@ -70,12 +70,12 @@ class StockbaseStockManagement
     public function getStockbaseStockAmount($productId)
     {
         $qty = 0;
-        
+
         $ean = $this->getStockbaseEan($productId);
         if (!empty($ean)) {
             $qty += max($this->stockItemResource->getNotReservedStockAmount($ean), 0);
         }
-        
+
         return $qty;
     }
 
@@ -100,7 +100,7 @@ class StockbaseStockManagement
                 return $ean;
             }
         }
-        
+
         return null;
     }
 
@@ -138,22 +138,24 @@ class StockbaseStockManagement
     public function createReserve(QuoteItem $quoteItem, $stockbaseAmount, $magentoStockAmount)
     {
         $ean = $this->getStockbaseEan($quoteItem->getProductId());
-        
+
         /** @var StockItemReserve $stockItemReserve */
         $stockItemReserve = $this->objectManager->create(StockItemReserve::class);
-        $stockItemReserve->setData([
-            'ean' => $ean,
-            'amount' => $stockbaseAmount,
-            'magento_stock_amount' => $magentoStockAmount,
-            'quote_item_id' => $quoteItem->getId(),
-            'product_id' => $quoteItem->getProductId(),
-            'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
-        ]);
+        $stockItemReserve->setData(
+            [
+                'ean' => $ean,
+                'amount' => $stockbaseAmount,
+                'magento_stock_amount' => $magentoStockAmount,
+                'quote_item_id' => $quoteItem->getId(),
+                'product_id' => $quoteItem->getProductId(),
+                'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+            ]
+        );
         $stockItemReserve->save();
-        
+
         return $stockItemReserve;
     }
-    
+
     /**
      * Releases the stock reserve.
      *
@@ -193,14 +195,14 @@ class StockbaseStockManagement
     public function getReserveForQuoteItem($quoteItemIds)
     {
         $quoteItemIds = is_array($quoteItemIds) ? $quoteItemIds : [$quoteItemIds];
-        
+
         /** @var StockItemReserveCollection $reserveCollection */
         $reserveCollection = $this->objectManager->create(StockItemReserveCollection::class);
         $reserveCollection->addFieldToFilter('quote_item_id', ['in' => $quoteItemIds]);
 
         /** @var StockItemReserve[] $reservedStockbaseItems */
         $reservedStockbaseItems = $reserveCollection->getItems();
-        
+
         return $reservedStockbaseItems;
     }
 }

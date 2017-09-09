@@ -18,7 +18,7 @@ class DivideIQClient extends DivideIQ
     public function __construct($username, $password, $environment = 'production')
     {
         parent::__construct($username, $password, $environment);
-        
+
         $this->setRequestTimeout(self::DEFAULT_REQUEST_TIMEOUT);
     }
 

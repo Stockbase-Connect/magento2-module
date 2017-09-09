@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Stockbase\Integration\Model\Observer;
+namespace Stockbase\Integration\Observer;
 
+use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\CatalogInventory\Observer\ItemsForReindex;
 use Magento\CatalogInventory\Observer\ProductQty;
-use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\Framework\Event\Observer as EventObserver;
 use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
 
@@ -19,7 +19,7 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
      * @var StockRegistryInterface
      */
     private $stockRegistry;
-    
+
     /**
      * @var StockbaseStockManagement
      */
@@ -52,10 +52,10 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
     {
         /** @var \Magento\Quote\Model\Quote $quote */
         $quote = $observer->getEvent()->getQuote();
-        
+
         /** @var \Magento\Sales\Model\Order $order */
         $order = $observer->getEvent()->getOrder();
-        
+
         // Maybe we've already processed this quote in some event during order placement
         // e.g. call in event 'sales_model_service_quote_submit_before' and later in 'checkout_submit_all_after'
         if ($quote->getInventoryProcessed()) {
@@ -68,13 +68,13 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
             if (!$productId) {
                 continue;
             }
-            $children = $item->getChildrenItems() ?: [$item];
+            $children = $item->getChildrenItems() ? : [$item];
             foreach ($children as $childItem) {
                 $productId = $childItem->getProductId();
                 if (!$productId) {
                     continue;
                 }
-                
+
                 if (!isset($items[$productId])) {
                     $items[$productId] = 0;
                 }
@@ -86,7 +86,7 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
                 ) {
                     $diff = $items[$productId] - $stockItem->getQty();
                     $items[$productId] = $stockItem->getQty();
-                    
+
                     $stockbaseAmount = $this->stockbaseStockManagement->getStockbaseStockAmount($productId);
                     if ($stockbaseAmount - $diff < 0) {
                         throw new \Magento\Framework\Exception\LocalizedException(
@@ -94,16 +94,23 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
                         );
                     }
 
-                    $reserveItem = $this->stockbaseStockManagement->createReserve($childItem, $diff, $childItem->getTotalQty() - $diff);
-                    $order->addStatusHistoryComment(__(
-                        'Local Stockbase reserve created for EAN "%1" (%2 pc.)',
-                        $reserveItem->getEan(),
-                        $reserveItem->getAmount()
-                    ));
+                    $reserveItem = $this->stockbaseStockManagement->createReserve(
+                        $childItem,
+                        $diff,
+                        $childItem->getTotalQty() - $diff
+                    );
+
+                    $order->addStatusHistoryComment(
+                        __(
+                            'Local Stockbase reserve created for EAN "%1" (%2 pc.)',
+                            $reserveItem->getEan(),
+                            $reserveItem->getAmount()
+                        )
+                    );
                 }
             }
         }
-        
+
         /**
          * Remember items
          */
@@ -114,7 +121,7 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
         $this->itemsForReindex->setItems($itemsForReindex);
 
         $quote->setInventoryProcessed(true);
-        
+
         return $this;
     }
 }

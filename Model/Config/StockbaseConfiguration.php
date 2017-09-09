@@ -7,7 +7,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Stockbase\Integration\Model\Config\Source\Environment;
 
 /**
- * Stockbase main mobule configuration resource wrapper.
+ * Stockbase main module configuration resource wrapper.
  */
 class StockbaseConfiguration
 {
@@ -47,7 +47,7 @@ class StockbaseConfiguration
      */
     public function getEnvironment()
     {
-        return $this->scopeConfig->getValue(self::CONFIG_ENVIRONMENT) ?: Environment::STAGING;
+        return $this->scopeConfig->getValue(self::CONFIG_ENVIRONMENT) ? : Environment::STAGING;
     }
 
     /**

@@ -1,17 +1,17 @@
 <?php
 
 
-namespace Stockbase\Integration\Test\Unit\Model\Observer;
+namespace Stockbase\Integration\Test\Unit\Observer;
 
 use Magento\Framework\ObjectManagerInterface;
 use PHPUnit\Framework\TestCase;
 use Stockbase\Integration\Model\Config\StockbaseConfiguration;
 use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
-use Stockbase\Integration\Model\Observer\OrderPaymentPayObserver;
+use Stockbase\Integration\Model\OrderedItem as StockbaseOrderedItem;
 use Stockbase\Integration\Model\StockItemReserve;
+use Stockbase\Integration\Observer\OrderPaymentPayObserver;
 use Stockbase\Integration\StockbaseApi\Client\StockbaseClient;
 use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
-use Stockbase\Integration\Model\OrderedItem as StockbaseOrderedItem;
 
 /**
  * Class OrderPaymentPayObserverTest
@@ -48,25 +48,25 @@ class OrderPaymentPayObserverTest extends TestCase
     public function setUp()
     {
         $this->stockbaseConfiguration = $this->createMock(StockbaseConfiguration::class);
-        
+
         $this->stockbaseStockManagement = $this->createMock(StockbaseStockManagement::class);
 
         $this->stockbaseClientFactory = $this->createMock(StockbaseClientFactory::class);
-        
+
         $this->stockbaseClient = $this->createMock(StockbaseClient::class);
-        
+
         $this->objectManager = $this->createMock(ObjectManagerInterface::class);
-        
+
         $this->order = $this->getMockBuilder(\Magento\Sales\Model\Order::class)
             ->disableOriginalConstructor()
             ->setMethods(['getAllItems', 'getId', 'save', 'addStatusHistoryComment'])
             ->getMock();
-        
+
         $this->invoice = $this->getMockBuilder(\Magento\Sales\Model\Order\Invoice::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOrder', 'getOrderId'])
             ->getMock();
-        
+
         $this->observer = $this->getMockBuilder(\Magento\Framework\Event\Observer::class)
             ->setMethods(['getData', 'getInvoice'])
             ->getMock();
@@ -83,7 +83,7 @@ class OrderPaymentPayObserverTest extends TestCase
 
         $this->observer->expects($this->never())->method('getData');
         $this->observer->expects($this->never())->method('getInvoice');
-        
+
         $handler = $this->createHandler();
         $this->assertEquals($handler, $handler->execute($this->observer));
     }
@@ -99,7 +99,7 @@ class OrderPaymentPayObserverTest extends TestCase
 
         $this->observer->method('getData')->with('invoice')->willReturn($this->invoice);
         $this->invoice->method('getOrder')->willReturn($this->order);
-        
+
         $this->order->method('getAllItems')->willReturn($this->createOrderItems([101, 102]));
 
         $this->stockbaseStockManagement->expects($this->once())
@@ -124,7 +124,7 @@ class OrderPaymentPayObserverTest extends TestCase
 
         $this->observer->method('getData')->with('invoice')->willReturn($this->invoice);
         $this->invoice->method('getOrder')->willReturn($this->order);
-        
+
         $this->order->method('getAllItems')->willReturn($this->createOrderItems([101]));
 
         $reservedStockbaseItem = $this->createMock(StockItemReserve::class);
@@ -132,7 +132,7 @@ class OrderPaymentPayObserverTest extends TestCase
         $reservedStockbaseItem->method('getAmount')->willReturn(5.0);
         $reservedStockbaseItem->method('getOrderItemId')->willReturn(12345);
         $reservedStockbaseItem->method('getProductId')->willReturn(1234);
-        
+
         $reservedStockbaseItems = [$reservedStockbaseItem];
 
         $this->stockbaseStockManagement->expects($this->once())
@@ -150,7 +150,7 @@ class OrderPaymentPayObserverTest extends TestCase
         $stockbaseOrderedItem->expects($this->any())->method('setEan')->with('12345');
         $stockbaseOrderedItem->expects($this->any())->method('setAmount')->with(5.0);
         $stockbaseOrderedItem->expects($this->once())->method('save');
-        
+
         $this->objectManager->expects($this->once())->method('create')->with(StockbaseOrderedItem::class)
             ->willReturn($stockbaseOrderedItem);
 
@@ -169,7 +169,7 @@ class OrderPaymentPayObserverTest extends TestCase
         $handler = $this->createHandler();
         $this->assertEquals($handler, $handler->execute($this->observer));
     }
-    
+
     protected function createHandler()
     {
         return new OrderPaymentPayObserver(
@@ -179,7 +179,7 @@ class OrderPaymentPayObserverTest extends TestCase
             $this->objectManager
         );
     }
-    
+
     protected function createOrderItems(array $quoteItemIds)
     {
         $items = [];
@@ -188,7 +188,7 @@ class OrderPaymentPayObserverTest extends TestCase
             $item->method('getQuoteItemId')->willReturn($quoteItemId);
             $items[] = $item;
         }
-        
+
         return $items;
     }
 }

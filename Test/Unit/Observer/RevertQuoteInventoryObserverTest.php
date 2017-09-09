@@ -1,16 +1,15 @@
 <?php
 
 
-namespace Stockbase\Integration\Test\Unit\Model\Observer;
+namespace Stockbase\Integration\Test\Unit\Observer;
 
-use Magento\CatalogInventory\Observer\ProductQty;
+use Magento\Catalog\Model\Indexer\Product\Price\Processor as ProductPriceProcessor;
 use Magento\CatalogInventory\Api\StockManagementInterface;
 use Magento\CatalogInventory\Model\Indexer\Stock\Processor as IndexStockProcessor;
-use Magento\Catalog\Model\Indexer\Product\Price\Processor as ProductPriceProcessor;
+use Magento\CatalogInventory\Observer\ProductQty;
 use Magento\Framework\TestFramework\Unit\Matcher\MethodInvokedAtIndex;
 use PHPUnit\Framework\TestCase;
 use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
-use Stockbase\Integration\Model\Observer\RevertQuoteInventoryObserver;
 use Stockbase\Integration\Model\StockItemReserve;
 
 /**
@@ -19,7 +18,7 @@ use Stockbase\Integration\Model\StockItemReserve;
 class RevertQuoteInventoryObserverTest extends TestCase
 {
     const TEST_WEBSITE_ID = 0xdeadbeef;
-    
+
     /** @var ProductQty|\PHPUnit_Framework_MockObject_MockObject */
     private $productQty;
 
@@ -47,38 +46,44 @@ class RevertQuoteInventoryObserverTest extends TestCase
     public function setUp()
     {
         $this->productQty = $this->createMock(ProductQty::class);
-        
+
         $this->stockManagement = $this->getMockBuilder(\Magento\CatalogInventory\Model\StockManagement::class)
             ->disableOriginalConstructor()
             ->setMethods(['revertProductsSale'])
             ->getMock();
-        
+
         $this->stockIndexerProcessor = $this->createMock(IndexStockProcessor::class);
-        
+
         $this->priceIndexer = $this->createMock(ProductPriceProcessor::class);
-        
+
         $this->stockbaseStockManagement = $this->createMock(StockbaseStockManagement::class);
 
         $this->quote = $this->getMockBuilder(\Magento\Quote\Model\Quote::class)
             ->disableOriginalConstructor()
-            ->setMethods([
-                'getInventoryProcessed',
-                'setInventoryProcessed',
-                'getAllItems',
-                'getStore',
-            ])
+            ->setMethods(
+                [
+                    'getInventoryProcessed',
+                    'setInventoryProcessed',
+                    'getAllItems',
+                    'getStore',
+                ]
+            )
             ->getMock();
 
         $store = $this->createMock(\Magento\Store\Api\Data\StoreInterface::class);
         $store->method('getWebsiteId')->willReturn(self::TEST_WEBSITE_ID);
 
         $this->quote->method('getStore')->willReturn($store);
-        
-        $this->observer = new \Magento\Framework\Event\Observer([
-            'event' => new \Magento\Framework\Event([
-                'quote' => $this->quote,
-            ]),
-        ]);
+
+        $this->observer = new \Magento\Framework\Event\Observer(
+            [
+                'event' => new \Magento\Framework\Event(
+                    [
+                        'quote' => $this->quote,
+                    ]
+                ),
+            ]
+        );
     }
 
     /**
@@ -88,7 +93,7 @@ class RevertQuoteInventoryObserverTest extends TestCase
     public function testExecute()
     {
         $itemPrototypes = func_get_args();
-        
+
         $items = [];
         $magentoReserve = [];
         foreach ($itemPrototypes as $index => $itemPrototype) {
@@ -117,12 +122,12 @@ class RevertQuoteInventoryObserverTest extends TestCase
             $this->stockbaseStockManagement->expects(new MethodInvokedAtIndex($index))->method('releaseReserve')
                 ->with($reserveItem);
         }
-        
+
         $this->quote->method('getAllItems')->willReturn($items);
-        
+
         $this->stockManagement->expects($this->once())->method('revertProductsSale')
             ->with($magentoReserve, self::TEST_WEBSITE_ID);
-        
+
         $productIds = array_keys($magentoReserve);
         if (!empty($productIds)) {
             $this->stockIndexerProcessor->expects($this->once())->method('reindexList')->with($productIds);
@@ -131,7 +136,7 @@ class RevertQuoteInventoryObserverTest extends TestCase
             $this->stockIndexerProcessor->expects($this->never())->method('reindexList');
             $this->priceIndexer->expects($this->never())->method('reindexList');
         }
-        
+
         $this->quote->expects($this->once())->method('setInventoryProcessed')->with(false);
 
         $handler = $this->createHandler();
@@ -175,7 +180,7 @@ class RevertQuoteInventoryObserverTest extends TestCase
 
     protected function createHandler()
     {
-        return new RevertQuoteInventoryObserver(
+        return new \Stockbase\Integration\Observer\RevertQuoteInventoryObserver(
             $this->productQty,
             $this->stockManagement,
             $this->stockIndexerProcessor,

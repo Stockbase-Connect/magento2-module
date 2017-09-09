@@ -16,7 +16,7 @@ class StockItemTest extends TestCase
 
     /** @var \Magento\Framework\Registry|\PHPUnit_Framework_MockObject_MockObject */
     private $registry;
-    
+
     /** @var \Magento\Framework\Model\ResourceModel\AbstractResource|\PHPUnit_Framework_MockObject_MockObject */
     private $resource;
 
@@ -41,7 +41,7 @@ class StockItemTest extends TestCase
     public function testGettersAndSetters($propertyName, $fieldName)
     {
         $model = $this->createModel();
-        
+
         $value = uniqid();
         $model->{'set'.$propertyName}($value);
         $this->assertEquals($value, $model->getData($fieldName));
@@ -64,7 +64,7 @@ class StockItemTest extends TestCase
             ['Timestamp', 'timestamp'],
         ];
     }
-    
+
     protected function createModel()
     {
         return new StockItem(

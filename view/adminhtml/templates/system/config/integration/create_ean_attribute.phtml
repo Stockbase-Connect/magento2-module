@@ -19,18 +19,18 @@
             Form.Element.disable('create_ean_attribute');
             $('create_ean_attribute').addClassName('disabled');
         }
-        
+
         function showSpinner() {
             if ($('create_ean_attribute_spinner').hasClassName('no-display')) {
                 $('create_ean_attribute_spinner').removeClassName('no-display');
             }
         }
-        
+
         function hideSpinner() {
             $('create_ean_attribute_spinner').addClassName('no-display');
         }
-        
-        jQuery('#create_ean_attribute').click(function() {
+
+        jQuery('#create_ean_attribute').click(function () {
             disableCreateAttributeButton();
             showSpinner();
 
@@ -38,13 +38,13 @@
                 onComplete: function (transport) {
                     hideSpinner();
                     enableCreateAttributeButton();
-                    
+
                     if (transport.responseText.isJSON()) {
                         var response = $H(transport.responseText.evalJSON());
                         var eanField = response.get('eanField');
                         if (eanField) {
                             var select = jQuery('#stockbase_integration_ean_field');
-                            if (select.find('option[value="'+eanField.value+'"]').size() < 1) {
+                            if (select.find('option[value="' + eanField.value + '"]').size() < 1) {
                                 select.append(
                                     jQuery('<option/>')
                                         .attr('value', eanField.value)
@@ -55,7 +55,9 @@
                             jQuery('#row_stockbase_integration_create_ean_attribute').hide();
                         }
                     } else {
-                        alert('<?php /* @escapeNotVerified */ echo __('Sorry, something went wrong. Please try again later.') ?>');
+                        alert('<?php /* @escapeNotVerified */ echo __(
+                            'Sorry, something went wrong. Please try again later.'
+                        ) ?>');
                     }
                 }.bind(this)
             });
@@ -65,7 +67,8 @@
 
 <?php echo $block->getButtonHtml() ?>
 <span id="create_ean_attribute_spinner" class="no-display">
-    <img alt="Creating..." style="margin:0 5px" src="<?php /* @escapeNotVerified */ echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
+    <img alt="Creating..." style="margin:0 5px" src="<?php /* @escapeNotVerified */
+    echo $block->getViewFileUrl('images/process_spinner.gif') ?>"/>
 </span>
 
 

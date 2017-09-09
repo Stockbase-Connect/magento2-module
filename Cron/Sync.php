@@ -4,9 +4,9 @@ namespace Stockbase\Integration\Cron;
 
 use Magento\Framework\ObjectManagerInterface;
 use Psr\Log\LoggerInterface;
-use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
 use Stockbase\Integration\Model\Config\StockbaseConfiguration;
 use Stockbase\Integration\Model\ResourceModel\StockItem as StockItemResource;
+use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
 
 /**
  * Stockbase stock synchronization cron job.
@@ -57,26 +57,28 @@ class Sync
         if (!$this->config->isModuleEnabled()) {
             return;
         }
-        
+
         $this->logger->info("Synchronizing Stockbase stock index...");
-        
+
         $client = $this->stockbaseClientFactory->create();
-        
+
         /** @var StockItemResource $stockItemResource */
         $stockItemResource = $this->objectManager->create(StockItemResource::class);
-        
+
         //$lastModifiedDate = $stockItemResource->getLastModifiedItemDate();
         $lastModifiedDate = null; // Disabled due to unstable API
 
-        $this->logger->info(sprintf(
-            "Downloading Stockbase stock data since %s...",
-            $lastModifiedDate !== null ? $lastModifiedDate->format('Y-m-d H:i:s') : 'the beginning'
-        ));
+        $this->logger->info(
+            sprintf(
+                "Downloading Stockbase stock data since %s...",
+                $lastModifiedDate !== null ? $lastModifiedDate->format('Y-m-d H:i:s') : 'the beginning'
+            )
+        );
         $stock = $client->getStock($lastModifiedDate);
 
         $this->logger->info("Updating local index...");
         $total = $stockItemResource->updateFromStockObject($stock);
-        
+
         if ($total > 0) {
             $this->logger->info("{$total} Stockbase items updated.");
         } else {

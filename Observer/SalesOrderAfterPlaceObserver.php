@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Stockbase\Integration\Model\Observer;
+namespace Stockbase\Integration\Observer;
 
-use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Event\Observer as EventObserver;
+use Magento\Framework\Event\ObserverInterface;
 use Stockbase\Integration\Model\Inventory\StockbaseStockManagement;
 
 /**
@@ -39,7 +39,7 @@ class SalesOrderAfterPlaceObserver implements ObserverInterface
             $reserve = $this->stockbaseStockManagement->getReserveForQuoteItem($item->getQuoteItemId());
             if (!empty($reserve)) {
                 $reserve = reset($reserve);
-                
+
                 $reserve->setOrderItemId($item->getId());
                 $reserve->save();
             }

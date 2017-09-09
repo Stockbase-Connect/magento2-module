@@ -1,12 +1,13 @@
 <?php
 
-
 namespace Stockbase\Integration\Model\ResourceModel;
 
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+
 /**
- * Class OrderedItem
+ * Archives an item that was ordered through StockBase
  */
-class OrderedItem extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+class OrderedItem extends AbstractDb
 {
     protected function _construct()
     {

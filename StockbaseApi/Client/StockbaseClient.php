@@ -17,12 +17,12 @@ class StockbaseClient
     const STOCKBASE_STOCK_ENDPOINT = 'stockbase_stock';
     const STOCKBASE_IMAGES_ENDPOINT = 'stockbase_images';
     const STOCKBASE_ORDER_REQUEST_ENDPOINT = 'stockbase_orderrequest';
-    
+
     /**
      * @var DivideIQ
      */
     private $divideIqClient;
-    
+
     /**
      * @var StockbaseConfiguration
      */
@@ -58,7 +58,7 @@ class StockbaseClient
         if ($until !== null) {
             $data['Until'] = $until->getTimestamp();
         }
-        
+
         return $this->divideIqClient->request(self::STOCKBASE_STOCK_ENDPOINT, $data);
     }
 
@@ -72,11 +72,11 @@ class StockbaseClient
     public function getImages(array $eans)
     {
         Assertion::allNumeric($eans);
-        
+
         $data = [
             'ean' => implode(',', $eans),
         ];
-        
+
         return $this->divideIqClient->request(self::STOCKBASE_IMAGES_ENDPOINT, $data);
     }
 
@@ -110,7 +110,7 @@ class StockbaseClient
             'TimeStamp' => $now->format('Y-m-d h:i:s'),
             'Attention' => $order->getCustomerNote() ? $order->getCustomerNote() : ' ',
         ];
-        
+
         $orderDelivery = [
             'Person' => [
                 'FirstName' => $shippingAddress->getFirstname(),
@@ -119,7 +119,7 @@ class StockbaseClient
             ],
             'Address' => [
                 'Street' => $shippingAddress->getStreetLine(1),
-                'StreetNumber' => $shippingAddress->getStreetLine(2) ?: '-',
+                'StreetNumber' => $shippingAddress->getStreetLine(2) ? : '-',
                 'ZipCode' => $shippingAddress->getPostcode(),
                 'City' => $shippingAddress->getCity(),
                 'CountryCode' => $shippingAddress->getCountryId(),
@@ -144,7 +144,7 @@ class StockbaseClient
             }
             throw new StockbaseClientException('Failed sending order to stockbase.'.$message);
         }
-        
+
         return $response;
     }
 }

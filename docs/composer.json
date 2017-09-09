@@ -1,24 +1,24 @@
 {
-    "name": "bookdown/project",
-    "type": "project",
-    "description": "A skeleton Bookdown project.",
-    "keywords": [
-        "docbook",
-        "markdown",
-        "manual",
-        "documentation",
-        "static site"
-    ],
-    "homepage": "https://github.com/bookdown/Bookdown.Project",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Bookdown.Project Contributors",
-            "homepage": "https://github.com/bookdown/Bookdown.Project/contributors"
-        }
-    ],
-    "require": {
-        "bookdown/bookdown": "~1.0",
-        "tobiju/bookdown-bootswatch-templates": "^1.1"
+  "name": "bookdown/project",
+  "type": "project",
+  "description": "A skeleton Bookdown project.",
+  "keywords": [
+    "docbook",
+    "markdown",
+    "manual",
+    "documentation",
+    "static site"
+  ],
+  "homepage": "https://github.com/bookdown/Bookdown.Project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bookdown.Project Contributors",
+      "homepage": "https://github.com/bookdown/Bookdown.Project/contributors"
     }
+  ],
+  "require": {
+    "bookdown/bookdown": "~1.0",
+    "tobiju/bookdown-bootswatch-templates": "^1.1"
+  }
 }

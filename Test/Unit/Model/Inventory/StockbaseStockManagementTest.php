@@ -48,20 +48,20 @@ class StockbaseStockManagementTest extends TestCase
     public function setUp()
     {
         $this->stockItem = $this->createMock(\Magento\CatalogInventory\Model\Stock\Item::class);
-        
+
         $this->stockRegistry = $this->createMock(StockRegistryInterface::class);
-        
+
         $this->config = $this->createMock(StockbaseConfiguration::class);
-        
+
         $this->product = $this->createMock(\Magento\Catalog\Model\Product::class);
-        
+
         $this->productFactory = $this->getMockBuilder('\Magento\Catalog\Model\ProductFactory')
             ->setMethods(['create'])
             ->getMock();
         $this->productFactory->method('create')->willReturn($this->product);
-        
+
         $this->stockItemResource = $this->createMock(StockItemResource::class);
-        
+
         $this->objectManager = $this->createMock(ObjectManagerInterface::class);
     }
 
@@ -75,10 +75,10 @@ class StockbaseStockManagementTest extends TestCase
         $this->stockItemResource->expects($this->once())->method('getNotReservedStockAmount')
             ->with('12345')
             ->willReturn(5.0);
-        
+
         $model = $this->createModel();
         $result = $model->getStockbaseStockAmount(101);
-        
+
         $this->assertEquals(5.0, $result);
     }
 
@@ -88,10 +88,10 @@ class StockbaseStockManagementTest extends TestCase
     public function testGetStockbaseEan()
     {
         $this->configureStockbaseEan(101, '12345');
-        
+
         $model = $this->createModel();
         $result = $model->getStockbaseEan(101);
-        
+
         $this->assertEquals('12345', $result);
     }
 
@@ -101,10 +101,10 @@ class StockbaseStockManagementTest extends TestCase
     public function testIsStockbaseProduct()
     {
         $this->configureStockbaseEan(101, '12345');
-        
+
         $model = $this->createModel();
         $result = $model->isStockbaseProduct(101);
-        
+
         $this->assertEquals(true, $result);
     }
 
@@ -120,7 +120,7 @@ class StockbaseStockManagementTest extends TestCase
     {
         $this->stockItemResource->expects($this->once())->method('updateStockAmount')
             ->with($ean, $amount, $operation);
-        
+
         $model = $this->createModel();
         $model->updateStockAmount($ean, $amount, $operation);
     }
@@ -152,30 +152,32 @@ class StockbaseStockManagementTest extends TestCase
         $quoteItem->method('getId')->willReturn(201);
 
         $stockItemReserve = $this->createMock(StockItemReserve::class);
-        
+
         $this->objectManager->expects($this->once())->method('create')->with(StockItemReserve::class)
             ->willReturn($stockItemReserve);
 
-        $stockItemReserve->expects($this->at(0))->method('setData')->willReturnCallback(function ($data) {
-            $this->assertArrayHasKey('ean', $data);
-            $this->assertArrayHasKey('amount', $data);
-            $this->assertArrayHasKey('magento_stock_amount', $data);
-            $this->assertArrayHasKey('quote_item_id', $data);
-            $this->assertArrayHasKey('product_id', $data);
-            $this->assertArrayHasKey('created_at', $data);
-            
-            $this->assertEquals('12345', $data['ean']);
-            $this->assertEquals(5, $data['amount']);
-            $this->assertEquals(7, $data['magento_stock_amount']);
-            $this->assertEquals(201, $data['quote_item_id']);
-            $this->assertEquals(101, $data['product_id']);
-            $this->assertRegExp('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $data['created_at']);
-        });
+        $stockItemReserve->expects($this->at(0))->method('setData')->willReturnCallback(
+            function ($data) {
+                $this->assertArrayHasKey('ean', $data);
+                $this->assertArrayHasKey('amount', $data);
+                $this->assertArrayHasKey('magento_stock_amount', $data);
+                $this->assertArrayHasKey('quote_item_id', $data);
+                $this->assertArrayHasKey('product_id', $data);
+                $this->assertArrayHasKey('created_at', $data);
+
+                $this->assertEquals('12345', $data['ean']);
+                $this->assertEquals(5, $data['amount']);
+                $this->assertEquals(7, $data['magento_stock_amount']);
+                $this->assertEquals(201, $data['quote_item_id']);
+                $this->assertEquals(101, $data['product_id']);
+                $this->assertRegExp('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $data['created_at']);
+            }
+        );
         $stockItemReserve->expects($this->at(1))->method('save');
-        
+
         $model = $this->createModel();
         $result = $model->createReserve($quoteItem, 5, 7);
-        
+
         $this->assertEquals($stockItemReserve, $result);
     }
 
@@ -186,7 +188,7 @@ class StockbaseStockManagementTest extends TestCase
     {
         $reserve = $this->createMock(StockItemReserve::class);
         $reserve->expects($this->once())->method('delete');
-        
+
         $model = $this->createModel();
         $model->releaseReserve($reserve);
     }
@@ -197,22 +199,22 @@ class StockbaseStockManagementTest extends TestCase
     public function testGetReserveForProduct()
     {
         $reserveCollection = $this->createMock(StockItemReserveCollection::class);
-        
+
         $this->objectManager->expects($this->once())->method('create')
             ->with(StockItemReserveCollection::class)
             ->willReturn($reserveCollection);
 
         $reserve = $this->createMock(StockItemReserve::class);
-        
+
         $reserveCollection->expects($this->any())->method('addFieldToFilter')
             ->with('product_id', ['in' => [101]]);
-        
+
         $reserveCollection->expects($this->once())->method('getItems')
             ->willReturn([$reserve]);
-        
+
         $model = $this->createModel();
         $result = $model->getReserveForProduct(101);
-        
+
         $this->assertEquals([$reserve], $result);
     }
 
@@ -222,36 +224,25 @@ class StockbaseStockManagementTest extends TestCase
     public function testGetReserveForQuoteItem()
     {
         $reserveCollection = $this->createMock(StockItemReserveCollection::class);
-        
+
         $this->objectManager->expects($this->once())->method('create')
             ->with(StockItemReserveCollection::class)
             ->willReturn($reserveCollection);
 
         $reserve = $this->createMock(StockItemReserve::class);
-        
+
         $reserveCollection->expects($this->any())->method('addFieldToFilter')
             ->with('quote_item_id', ['in' => [101]]);
-        
+
         $reserveCollection->expects($this->once())->method('getItems')
             ->willReturn([$reserve]);
-        
+
         $model = $this->createModel();
         $result = $model->getReserveForQuoteItem(101);
-            
+
         $this->assertEquals([$reserve], $result);
     }
-    
-    protected function createModel()
-    {
-        return new StockbaseStockManagement(
-            $this->stockRegistry,
-            $this->config,
-            $this->productFactory,
-            $this->stockItemResource,
-            $this->objectManager
-        );
-    }
-    
+
     protected function configureStockbaseEan($productId, $ean)
     {
         $this->stockRegistry->method('getStockItem')->with($productId)->willReturn($this->stockItem);
@@ -266,5 +257,16 @@ class StockbaseStockManagementTest extends TestCase
         $this->product->expects(new MethodInvokedAtIndex(0))->method('getData')->with('ean')->willReturn($ean);
         $this->product->expects(new MethodInvokedAtIndex(1))->method('getData')->with('stockbase_product')
             ->willReturn(true);
+    }
+
+    protected function createModel()
+    {
+        return new StockbaseStockManagement(
+            $this->stockRegistry,
+            $this->config,
+            $this->productFactory,
+            $this->stockItemResource,
+            $this->objectManager
+        );
     }
 }

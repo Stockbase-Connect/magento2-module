@@ -12,7 +12,7 @@ use Stockbase\Integration\Model\ResourceModel\StockItem;
 class StockItemTest extends TestCase
 {
     const TEST_PREFIX = 'TEST_';
-    
+
     /** @var \Magento\Framework\App\ResourceConnection|\PHPUnit_Framework_MockObject_MockObject */
     private $resources;
 
@@ -31,17 +31,19 @@ class StockItemTest extends TestCase
     public function setUp()
     {
         $this->select = $this->createMock(\Magento\Framework\DB\Select::class);
-        
+
         $this->connection = $this->createMock(\Magento\Framework\DB\Adapter\AdapterInterface::class);
         $this->connection->method('select')->willReturn($this->select);
-        
+
         $this->resources = $this->createMock(\Magento\Framework\App\ResourceConnection::class);
         $this->resources->method('getConnection')->willReturn($this->connection);
         $this->resources->method('getTableName')
-            ->willReturnCallback(function ($table, $connectionName) {
-                return self::TEST_PREFIX.$table;
-            });
-        
+            ->willReturnCallback(
+                function ($table, $connectionName) {
+                    return self::TEST_PREFIX.$table;
+                }
+            );
+
         $this->context = $this->createMock(\Magento\Framework\Model\ResourceModel\Db\Context::class);
         $this->context->method('getResources')->willReturn($this->resources);
     }
@@ -59,10 +61,15 @@ class StockItemTest extends TestCase
         $this->select->expects($this->once())->method('from')
             ->with(
                 ['s' => self::TEST_PREFIX.'stockbase_stock'],
-                ['s.ean', 'amount' => new \Zend_Db_Expr('IF(s.noos = 1, 1000000000, s.amount - COALESCE(SUM(r.amount), 0))')]
+                [
+                    's.ean',
+                    'amount' => new \Zend_Db_Expr(
+                        'IF(s.noos = 1, 1000000000, s.amount - COALESCE(SUM(r.amount), 0))'
+                    ),
+                ]
             )
             ->willReturnSelf();
-        
+
         $this->select->expects($this->once())->method('joinLeft')
             ->with(
                 ['r' => self::TEST_PREFIX.'stockbase_stock_reserve'],
@@ -70,21 +77,21 @@ class StockItemTest extends TestCase
                 null
             )
             ->willReturnSelf();
-        
+
         $this->select->expects($this->once())->method('where')
             ->with('s.ean in (?)', $request)
             ->willReturnSelf();
-        
+
         $this->select->expects($this->once())->method('group')
             ->with('s.ean')
             ->willReturnSelf();
-        
+
         $this->connection->expects($this->once())->method('fetchPairs')
             ->with($this->select)
             ->willReturn($data);
-        
+
         $resourceModel = $this->createResourceModel();
-        
+
         $result = $resourceModel->getNotReservedStockAmount($request);
         $this->assertEquals($expectedResult, $result);
     }
@@ -120,7 +127,7 @@ class StockItemTest extends TestCase
                 ['ean = ?' => $ean]
             )
             ->willReturn($numRows);
-        
+
         $resourceModel = $this->createResourceModel();
 
         $result = $resourceModel->updateStockAmount($ean, $amount, $operation);
@@ -152,11 +159,11 @@ class StockItemTest extends TestCase
         $this->select->expects($this->once())->method('from')
             ->with(self::TEST_PREFIX.'stockbase_stock', 'timestamp')
             ->willReturnSelf();
-        
+
         $this->select->expects($this->once())->method('order')
             ->with('timestamp DESC')
             ->willReturnSelf();
-        
+
         $this->select->expects($this->once())->method('limit')
             ->with(1)
             ->willReturnSelf();
@@ -202,17 +209,17 @@ class StockItemTest extends TestCase
         $item->{'Amount'} = 5;
         $item->{'NOOS'} = false;
         $item->{'Timestamp'} = 1497797012;
-        
+
         $group = new \stdClass();
         $group->{'Brand'} = 'TEST_BRAND';
         $group->{'Code'} = 'TEST_CODE';
         $group->{'SupplierCode'} = 'TEST_SUPPLIER_CODE';
         $group->{'SupplierGLN'} = 'TEST_SUPPLIER_GLN';
         $group->{'Items'} = [$item];
-        
+
         $data = new \stdClass();
         $data->{'Groups'} = [$group];
-        
+
         $expectedData = [
             [
                 'ean' => '12345',
@@ -225,9 +232,9 @@ class StockItemTest extends TestCase
                 'timestamp' => '2017-06-18 16:43:32',
             ],
         ];
-        
+
         $this->connection->expects($this->exactly(1))->method('beginTransaction');
-        
+
         $this->connection->expects($this->exactly(1))->method('insertOnDuplicate')
             ->with(self::TEST_PREFIX.'stockbase_stock', $expectedData);
         $this->connection->expects($this->exactly(1))->method('commit');
@@ -253,7 +260,7 @@ class StockItemTest extends TestCase
         $result = $resourceModel->updateFromStockObject($data);
         $this->assertEquals(0, $result);
     }
-    
+
     protected function createResourceModel()
     {
         return new StockItem($this->context);

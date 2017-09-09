@@ -35,7 +35,7 @@ class MutableScopeConfigMock implements MutableScopeConfigInterface
         if (isset($this->data[$key])) {
             return $this->data[$key];
         }
-        
+
         return null;
     }
 
@@ -48,7 +48,7 @@ class MutableScopeConfigMock implements MutableScopeConfigInterface
         if (isset($this->data[$key])) {
             return $this->data[$key];
         }
-        
+
         return null;
     }
 }
