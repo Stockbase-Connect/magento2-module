@@ -5,8 +5,9 @@
     "license": "proprietary",
     "require": {
         "php": "^7.0",
-        "magento/framework": "100.0.*|100.1.*",
-        "magento/module-catalog-inventory": "100.0.*|100.1.*",
+        "magento/framework": "^100.0|^100.1|^100.2",
+        "magento/module-catalog-inventory": "^100.0|^100.1|^100.2",
+        "magento/module-swatches": "^100.0|^100.1|^100.2",
         "dividebv/phpdivideiq": "^0.5.0",
         "beberlei/assert": "^2.4"
     },

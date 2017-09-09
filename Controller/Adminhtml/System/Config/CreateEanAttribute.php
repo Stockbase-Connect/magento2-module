@@ -61,7 +61,7 @@ class CreateEanAttribute extends Action
         $response = $this->resultFactory->create(ResultFactory::TYPE_JSON);
         
         $request = $this->getRequest();
-        if (!($request instanceof Http) || !$request->isPost()) {
+        if (!$request instanceof Http || !$request->isPost()) {
             $response->setHttpResponseCode(\Magento\Framework\Webapi\Exception::HTTP_BAD_REQUEST);
             $response->setData(['message' => __('Invalid request.')]);
 
