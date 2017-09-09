@@ -14,7 +14,7 @@
     "autoload": {
         "files": [ "registration.php" ],
         "psr-4": {
-            "Stockbase\\Integration\\": ""
+            "Stockbase\\Integration\\": "."
         }
     },
     "require-dev": {
