@@ -12,12 +12,12 @@ To build the project on Mac/Linux:
 
     ./build.sh
 
-To build in other platforms, simply inspect the command inside that file and run it manually.
+To build in other platforms, simply inspect the command inside that file, modify accordingly, and run it manually.
 
-This will generate the HTML files inside the `./html` folder.
+This will generate the HTML files inside the `./docs` folder.
 
-To browse the built HTML, run the built-in PHP server:
+To browse the built HTML, run the built-in PHP server. For example:
 
-    php -S localhost:8080 -t ./html/
+    php -S localhost:8080 -t ./docs/
 
 For documentation on Bookdown visit [bookdown.io](http://bookdown.io)
