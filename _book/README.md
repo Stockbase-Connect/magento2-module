@@ -10,7 +10,8 @@ This directory forms a Bookdown production project, with an eye toward publishin
 ### Build
 To build the project on Mac/Linux:
 
-    ./build.sh
+    cd _book
+    ./bin/build.sh
 
 To build in other platforms, simply inspect the command inside that file, modify accordingly, and run it manually.
 
@@ -18,6 +19,7 @@ This will generate the HTML files inside the `./docs` folder.
 
 To browse the built HTML, run the built-in PHP server. For example:
 
+    # from the root of the repository
     php -S localhost:8080 -t ./docs/
 
 For documentation on Bookdown visit [bookdown.io](http://bookdown.io)
