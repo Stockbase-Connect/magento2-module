@@ -5,6 +5,7 @@
 # documentation
 /_book export-ignore
 /docs export-ignore
+/CHANGELOG.md export-ignore
 
 # build chain
 /bitbucket-pipelines.yml export-ignore
