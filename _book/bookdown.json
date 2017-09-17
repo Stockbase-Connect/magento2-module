@@ -7,6 +7,5 @@
         "troubleshooting.md"
     ],
     "target": "../docs/",
-    "template": "vendor/tobiju/bookdown-bootswatch-templates/templates/main.php",
-    "rootHref": "https://stockbase-connect.github.io/magento2-module/"
+    "template": "vendor/tobiju/bookdown-bootswatch-templates/templates/main.php"
 }

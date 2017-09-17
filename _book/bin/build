@@ -1,0 +1,38 @@
+#!/bin/bash
+
+usage () {
+    echo -e "Usage: $0 [--local]\n"
+    echo -e "Options:"
+    echo -e "  --preview\tBuild locally and launch the PHP built-in web server to preview."
+    exit
+}
+
+TARGET=""
+CURRENT_DIR=$(basename "$PWD")
+PREVIEW=false
+
+case "$1" in
+    "--preview")
+        ROOT_HREF=""
+        TARGET="--target=$CURRENT_DIR/html"
+        PREVIEW=true
+        ;;
+    "") ROOT_HREF="--root-href=/magento2-module/";;
+    *) usage;;
+esac
+
+if [ -z "$ROOT_HREF" ]; then
+    echo "Building with default settings."
+else
+    echo "Building with $ROOT_HREF"
+fi
+
+docker run -it --rm -e CSS_BOOTSWATCH=flatly -e CSS_PRISM=coy -v "$(pwd)/..":/app sandrokeil/bookdown \
+    $CURRENT_DIR/bookdown.json \
+    $ROOT_HREF \
+    $TARGET \
+    @a
+
+if $PREVIEW ; then
+    php -S localhost:8080 -t html
+fi
