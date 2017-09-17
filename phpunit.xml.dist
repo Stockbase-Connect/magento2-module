@@ -4,7 +4,7 @@
          colors="true"
          debug="true"
          verbose="true"
-         bootstrap="./bootstrap.php"
+         bootstrap="./Test/bootstrap.php"
 >
     <testsuite name="Magento Unit Tests">
         <directory suffix="Test.php">Test/Unit</directory>
