@@ -1,5 +1,5 @@
 {
-    "name": "stockbase/magento2-integration",
+    "name": "stockbase/magento2-module",
     "description": "A Magento 2 module for Stockbase",
     "type": "magento2-module",
     "license": "proprietary",
