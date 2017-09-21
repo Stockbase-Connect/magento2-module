@@ -25,6 +25,9 @@ checks:
       - magento/module-indexer
       - magento/module-require-js
       - magento/module-shipping
+      - magento/*
+      - magento
+      - magento/module-cms
 
 tools:
   external_code_coverage:
