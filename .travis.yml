@@ -21,8 +21,8 @@ install:
 
 script:
   - mkdir -p build/logs
-  - if [ "$cover" = "no" ]; then ./vendor/bin/phpunit
-  - if [ "$cover" = "yes" ]; then ./vendor/bin/phpunit --coverage-clover build/logs/coverage.xml
+  - if [ "$cover" = "no" ]; then ./vendor/bin/phpunit; fi;
+  - if [ "$cover" = "yes" ]; then ./vendor/bin/phpunit --coverage-clover build/logs/coverage.xml; fi;
 
 before_install:
   - composer self-update
