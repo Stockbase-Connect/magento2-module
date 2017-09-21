@@ -6,6 +6,8 @@ or refer to the `_book` folder.
 [![Build Status](https://travis-ci.org/Stockbase-Connect/magento2-module.svg?branch=master)](https://travis-ci.org/Stockbase-Connect/magento2-module)
 [![Code Coverage](https://scrutinizer-ci.com/g/Stockbase-Connect/magento2-module/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Stockbase-Connect/magento2-module/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Stockbase-Connect/magento2-module/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Stockbase-Connect/magento2-module/?branch=master)
+[![Packagist](https://img.shields.io/packagist/v/stockbase/magento2-module.svg)](https://packagist.org/packages/stockbase/magento2-module)
+[![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/Stockbase-Connect/magento2-module/blob/master/LICENSE)
 
 ## Installation
 
