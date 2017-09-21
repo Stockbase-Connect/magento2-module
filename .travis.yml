@@ -8,12 +8,15 @@ matrix:
     #    - php: 7.0
     #  env: deps=low
     - php: 7.0
-      env: cover=yes
+      env: 
+        - cover=yes
+        - docs=yes
 
 env:
   global:
     - deps=no
     - cover=no
+    - docs=no
 
 install:
   - echo "{\"http-basic\":{\"repo.magento.com\":{\"username\":\"${MAGENTO_USERNAME}\",\"password\":\"${MAGENTO_PASSWORD}\"}}}" > auth.json
@@ -34,11 +37,13 @@ before_install:
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover build/logs/coverage.xml
+# Build docs for Github Pages
+  - if [ "$docs" = "yes" ]; then ./vendor/bin/bookdown docs/bookdown.json --root-href=/magento2-module/; fi;
 
 deploy:
   provider: pages
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
-  local_dir: docs
+  local_dir: ./build/docs
   on:
     branch: master

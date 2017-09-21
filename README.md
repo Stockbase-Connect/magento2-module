@@ -1,7 +1,7 @@
 # Stockbase Magento 2 Module
 
 For information and features please visit the [online documentation](https://stockbase-connect.github.io/magento2-module/)
-or refer to the `_book` folder.
+or refer to the `docs` folder.
 
 [![Build Status](https://travis-ci.org/Stockbase-Connect/magento2-module.svg?branch=master)](https://travis-ci.org/Stockbase-Connect/magento2-module)
 [![Code Coverage](https://scrutinizer-ci.com/g/Stockbase-Connect/magento2-module/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Stockbase-Connect/magento2-module/?branch=master)

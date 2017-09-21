@@ -2,8 +2,8 @@
 
 First of all, thanks for considering to make a contribution to this project!
 
-Before you start working, we strongly encourage you first discuss the change you wish to make via an issue, email, or 
-any other method with the owners of this repository. It could save you some valuable time. 
+Before you start working, we strongly encourage you first discuss the change you wish to make via an issue, email, or
+any other method with the owners of this repository. It could save you some valuable time.
 
 Please note we have a code of conduct: please follow it in all your interactions with the project.
 
@@ -14,8 +14,8 @@ Please note we have a code of conduct: please follow it in all your interactions
 3. Update `CHANGELOG.md` with details following the [keepachangelog.com](http://keepachangelog.com) format.
 4. Increase the version numbers in any examples files and the README.md to the new version that this
    Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-5. Make sure the documentation (in `_books`) is up to date with your latest changes. 
-6. Build a new version of the documentation in order to update the `./docs` folder and push the changes as a separate 
+5. Make sure the documentation (in `docs`) is up to date with your latest changes.
+6. Build a new version of the documentation in order to update the `./docs` folder and push the changes as a separate
    commit.
 7. You're ready to create the pull-request!
 

@@ -10,7 +10,7 @@ This directory forms a Bookdown production project, with an eye toward publishin
 ### Build
 To build the project on Mac/Linux:
 
-    cd _book
+    cd docs
     ./bin/build
 
 To build in other platforms, simply inspect the docker command inside that file, modify accordingly, and run it manually.
@@ -21,7 +21,7 @@ See `./bin/build -h` for additional options.
 
 ##### Local Preview
 
-To both build and locally preview the docs run `./bin/build --preview` 
+To both build and locally preview the docs run `./bin/build --preview`
 
 You can also preview manually using the built-in PHP server. For example:
 
