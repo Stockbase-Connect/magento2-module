@@ -22,6 +22,8 @@ install:
   - echo "{\"http-basic\":{\"repo.magento.com\":{\"username\":\"${MAGENTO_USERNAME}\",\"password\":\"${MAGENTO_PASSWORD}\"}}}" > auth.json
   - if [ "$deps" = "no" ]; then composer $flag install; fi;
   - if [ "$deps" = "low" ]; then composer $flag --prefer-lowest --prefer-stable update; fi;
+  # Build docs for Github Pages
+  - if [ "$docs" = "yes" ]; then ./vendor/bin/bookdown docs/bookdown.json --root-href=/magento2-module/; fi;
 
 script:
   - mkdir -p build/logs
@@ -37,8 +39,6 @@ before_install:
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover build/logs/coverage.xml
-# Build docs for Github Pages
-  - if [ "$docs" = "yes" ]; then ./vendor/bin/bookdown docs/bookdown.json --root-href=/magento2-module/; fi;
 
 deploy:
   provider: pages
