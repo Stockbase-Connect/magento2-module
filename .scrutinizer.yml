@@ -2,6 +2,10 @@ checks:
   php:
     code_rating: true
     duplication: true
+    excluded_dependencies:
+      - magento/framework
+      - magento/module-catalog-inventory
+
 
 tools:
   external_code_coverage:
