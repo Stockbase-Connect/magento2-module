@@ -21,7 +21,7 @@ install:
   - if [ "$deps" = "low" ]; then composer $flag --prefer-lowest --prefer-stable update; fi;
 
 script:
-  - mkdir -p _build/logs
+  - mkdir -p build/logs
   - ./vendor/bin/phpunit --coverage-clover build/logs/coverage.xml
 
 before_install:
