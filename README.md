@@ -49,3 +49,9 @@ php bin/magento setup:upgrade
 ```
 
 After successful installation, you can [configure](#configuration) the module via the admin panel.
+
+## License
+This module is licensed under the [MIT License](https://github.com/Stockbase-Connect/magento2-module/blob/master/LICENSE)
+
+## Contributing
+If you're interested in contributing please read our [Contributing Guidelines](https://github.com/Stockbase-Connect/magento2-module/blob/master/CONTRIBUTING.md)
