@@ -12,12 +12,11 @@ Some of it's features:
 
 Our module extends your local stock with items for your Stockbase account.
 
-* When you don't have enough available product in your Magento stock, this module allows you to order missing items from
-Stockbase.
+* When you don't have enough available product in your Magento stock, this module allows you to order missing items from Stockbase.
 
-* Your local stock is always prioritized. Magento will always try to use your local stock first for purchases.
-Stockbase stock will be used only when you don't have enough items in your local stock.
+* Your local stock is always prioritized. Magento will always try to use your local stock first for purchases. Stockbase stock will be used only when you don't have enough items in your local stock.
 
+* If no stock is available (neither in Magento nor in Stockbase), in most cases the customer should not be able to add that product to cart. But a request for the product is still made, for any reason, customers will see a message that indicates the requested quantity of that product is not available.
 
 **> Automated Order Creation**
 
