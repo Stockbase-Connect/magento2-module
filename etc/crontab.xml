@@ -8,7 +8,7 @@
         </job>
 
         <job name="stockbase_images" instance="Stockbase\Integration\Cron\Images" method="execute">
-            <schedule>* * * * *</schedule>
+            <schedule>*/30 * * * *</schedule>
         </job>
 
     </group>

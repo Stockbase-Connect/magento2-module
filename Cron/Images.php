@@ -51,14 +51,15 @@ class Images
      *
      * @var DirectoryList
      */
-    protected $directoryList;
+    private $directoryList;
 
     /**
      * File interface
      *
      * @var File
      */
-    protected $file;
+    private $file;
+    
     /**
      * Images constructor.
      * @param LoggerInterface $logger
@@ -129,12 +130,14 @@ class Images
     /**
      * @return array
      */
-    public function getAllEans()
+    private function getAllEans()
     {
+        $this->logger->info('Get All EANs process');
         // get ean attribute:
         $attribute = $this->config->getEanFieldName();
         // apply filters and paginate by 100:
-        $collection = $this->productCollection->addAttributeToSelect($attribute)
+        $collection = $this->productCollection->create()
+            ->addAttributeToSelect($attribute)
             ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty.
             ->setPageSize(100);
         // iterate over the pages:
@@ -153,6 +156,7 @@ class Images
                 }
             }
         }
+        $this->logger->info('Found EANs: '.count($eans));
         return $eans;
     }
 
@@ -163,8 +167,9 @@ class Images
      *
      * @return bool
      */
-    public function saveImageForProduct($images)
+    private function saveImageForProduct($images)
     {
+        $this->logger->info('Save images process: ');
         // get product model:
         $productModel = $this->product;
         // get ean attribute:
@@ -173,6 +178,7 @@ class Images
         $client = $this->stockbaseClientFactory->create();
         // loop images:
         foreach ($images as $image) {
+            $this->logger->info($image->{'Url'});
             // load product by ean:
             $product = $productModel->loadByAttribute($eanField, $image->EAN);
             // continue looping if we do not have product:
@@ -201,6 +207,7 @@ class Images
                 );
                 // save product:
                 $product->{'save'}();
+                $this->logger->info('Saved.');
             }
         }
         return true;
@@ -212,7 +219,7 @@ class Images
      *
      * @return string
      */
-    protected function getMediaDirTmpDir()
+    private function getMediaDirTmpDir()
     {
         return $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
     }
@@ -220,7 +227,7 @@ class Images
     /**
      * @return mixed
      */
-    public function getImagesEans()
+    private function getImagesEans()
     {
         return $this->config->getImagesEans();
     }
@@ -228,7 +235,7 @@ class Images
     /**
      * @param $eans
      */
-    public function saveImagesEans($eans)
+    private function saveImagesEans($eans)
     {
         $this->config->saveImagesEans($eans);
     }

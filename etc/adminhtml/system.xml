@@ -71,7 +71,7 @@
                 </field>
 
                 <field id="images_sync_enabled" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Images synchronization enabled</label>
+                    <label>Images Sync Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="*/*/module_enabled">1</field>
