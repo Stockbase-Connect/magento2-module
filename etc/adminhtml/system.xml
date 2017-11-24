@@ -62,13 +62,20 @@
                     </depends>
                 </field>
 
-                <field id="order_prefix" translate="label" type="text" sortOrder="45" showInDefault="1"
-                       showInWebsite="1" showInStore="1">
+                <field id="order_prefix" translate="label" type="text" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Order prefix for Stockbase orders</label>
                     <depends>
                         <field id="*/*/module_enabled">1</field>
                     </depends>
                     <validate>validate-no-empty</validate>
+                </field>
+
+                <field id="images_sync_enabled" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Images synchronization enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="*/*/module_enabled">1</field>
+                    </depends>
                 </field>
 
             </group>
