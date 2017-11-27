@@ -118,12 +118,16 @@ class Images
             $this->logger->info('Cron runImageImport error: '.$e->getMessage());
             return false;
         }
-        // download and save the images locally:
-        $this->saveImageForProduct($images);
-        // update the processed images configuration:
-        $processedEans = array_merge($processedEans, $eans);
-        $encodedEans = json_encode($processedEans);
-        $this->saveImagesEans($encodedEans);
+        // validate returned images:
+        if(is_array($images->{'Items'}) && count($images->{'Items'})>0) {
+            // download and save the images locally:
+            $this->saveImageForProduct($images->{'Items'});
+            // update the processed images configuration:
+            $processedEans = array_merge($processedEans, $eans);
+            $encodedEans = json_encode($processedEans);
+            $this->saveImagesEans($encodedEans);
+            $this->logger->info('New images synchronized.');
+        }
         $this->logger->info('Stockbase images synchronization complete.');
     }
 
@@ -174,7 +178,7 @@ class Images
      */
     private function saveImageForProduct($images)
     {
-        $this->logger->info('Save images process: ');
+        $this->logger->info('Save images process:');
         // get product model:
         $productModel = $this->product;
         // get ean attribute:
@@ -191,14 +195,14 @@ class Images
                 continue;
             }
             // get image from stockbase:
-            $protectedImage = $client->getImageFile($image->{'Url'});
+            $stockbaseImage = (string)$image->{'Url'};
             // create temporal folder if it is not exists:
             $tmpDir = $this->getMediaDirTmpDir();
             $this->file->checkAndCreateFolder($tmpDir);
             // get new file path:
             $newFileName = $tmpDir . baseName($image->{'Url'});
             // read file from URL and copy it to the new destination:
-            $result = $this->file->read($protectedImage, $newFileName);
+            $result = $this->file->read($stockbaseImage, $newFileName);
             if ($result) {
                 if ($product->getMediaGallery() == null) {
                     $product->setMediaGallery(array('images' => array(), 'values' => array()));

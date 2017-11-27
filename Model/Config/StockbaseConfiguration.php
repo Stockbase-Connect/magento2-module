@@ -3,6 +3,7 @@
 namespace Stockbase\Integration\Model\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 use Stockbase\Integration\Model\Config\Source\Environment;
 
 /**
@@ -26,12 +27,20 @@ class StockbaseConfiguration
     private $scopeConfig;
 
     /**
+     *  @var WriterInterface
+     */
+    protected $configWriter;
+
+    /**
      * StockbaseConfiguration constructor.
      * @param ScopeConfigInterface $scopeConfig
      */
-    public function __construct(ScopeConfigInterface $scopeConfig)
-    {
+    public function __construct(
+        ScopeConfigInterface $scopeConfig,
+        WriterInterface $configWriter
+    ) {
         $this->scopeConfig = $scopeConfig;
+        $this->configWriter = $configWriter;
     }
 
     /**
@@ -105,7 +114,7 @@ class StockbaseConfiguration
      */
     public function saveImagesEans($eans)
     {
-        return $this->scopeConfig->saveConfig(self::CONFIG_IMAGES_EANS, $eans, 'default', 0);
+        return $this->configWriter->save(self::CONFIG_IMAGES_EANS, $eans, 'default', 0);
     }
 
 }

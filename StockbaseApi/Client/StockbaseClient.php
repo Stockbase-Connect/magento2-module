@@ -148,13 +148,4 @@ class StockbaseClient
         return $response;
     }
 
-    /**
-     * @param $imageUrl
-     * @return mixed
-     */
-    public function getImageFile($imageUrl)
-    {
-        return $this->divideIqClient->request($imageUrl)->getBody();
-    }
-
 }
