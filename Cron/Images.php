@@ -18,6 +18,7 @@ use Magento\Framework\Filesystem\Io\File;
  */
 class Images
 {
+
     /**
      * @var LoggerInterface
      */
@@ -52,7 +53,6 @@ class Images
      * @var DirectoryList
      */
     private $directoryList;
-
     /**
      * File interface
      *
@@ -135,29 +135,35 @@ class Images
         $this->logger->info('Get All EANs process');
         // get ean attribute:
         $attribute = $this->config->getEanFieldName();
-        // apply filters and paginate by 100:
-        $collection = $this->productCollection->create()
-            ->addAttributeToSelect($attribute)
-            ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty.
-            ->setPageSize(100);
-        // iterate over the pages:
-        $eans = array();
-        $currentPage = 0;
-        $lastPage = $collection->getLastPageNumber();
-        while ($currentPage < $lastPage) {
-            // load the data of this page in a single query:
-            $collection->setCurPage(++$currentPage);
-            $collection->load();
-            // iterate over the products:
-            foreach ($collection as $product) {
-                if ($ean = $product->{$attribute}) {
-                    // add the ean if this product has one:
-                    $eans[] = $ean;
+        if($attribute) {
+            // apply filters and paginate by 100:
+            $collection = $this->productCollection->create()
+                ->addAttributeToSelect($attribute)
+                ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty.
+                ->setPageSize(100);
+            // iterate over the pages:
+            $eans = array();
+            $currentPage = 0;
+            $lastPage = $collection->getLastPageNumber();
+            while ($currentPage < $lastPage) {
+                // load the data of this page in a single query:
+                $collection->setCurPage(++$currentPage);
+                $collection->load();
+                // iterate over the products:
+                foreach ($collection as $product) {
+                    $ean = $product->getData($attribute);
+                    $this->logger->info('Product EAN: '.$ean);
+                    if ($ean) {
+                        // add the ean if this product has one:
+                        $eans[] = $ean;
+                    }
                 }
             }
+            $this->logger->info('Found EANs: '.count($eans));
+            return $eans;
+        } else {
+            $this->logger->info('Please setup the EAN attribute.');
         }
-        $this->logger->info('Found EANs: '.count($eans));
-        return $eans;
     }
 
     /**
