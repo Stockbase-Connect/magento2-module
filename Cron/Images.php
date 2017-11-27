@@ -3,15 +3,15 @@
 namespace Stockbase\Integration\Cron;
 
 use Magento\Framework\ObjectManagerInterface;
-use Psr\Log\LoggerInterface;
-use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
-use Stockbase\Integration\Model\Config\StockbaseConfiguration;
-use Stockbase\Integration\Model\ResourceModel\StockItem as StockItemResource;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollection;
 use Magento\Catalog\Model\Product as ProductModel;
 use Magento\Framework\Url as UrlHelper;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Io\File;
+use Psr\Log\LoggerInterface;
+use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
+use Stockbase\Integration\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\Model\ResourceModel\StockItem as StockItemResource;
 
 /**
  * Stockbase images synchronization cron job.
@@ -59,6 +59,10 @@ class Images
      * @var File
      */
     private $file;
+    /**
+     * @var array
+     */
+    private $eans = array();
     
     /**
      * Images constructor.
@@ -105,12 +109,10 @@ class Images
         }
         // start process:
         $this->logger->info('Synchronizing Stockbase images...');
-        // get all the eans:
-        $allEans = $this->getAllEans();
         // get processed eans:
         $processedEans = json_decode($this->getImagesEans()) ? : array();
-        // process 100 unprocessed eans at a time:
-        $eans = array_slice(array_diff($allEans, $processedEans), 0, 100);
+        // get all the eans:
+        $eans = $this->getNotProcessedEans($processedEans);
         $this->logger->info('EANs to be processed: '.count($eans));
         try {
             // if still need to process eans:
@@ -138,42 +140,49 @@ class Images
     /**
      * @return array
      */
-    private function getAllEans()
+    private function getNotProcessedEans($processedEans)
     {
-        // found eans:
-        $eans = array();
+        // clean eans list:
+        $this->eans = array();
+        // start process:
         $this->logger->info('Get All EANs process');
         // get ean attribute:
         $attribute = $this->config->getEanFieldName();
+        // validate attribute:
         if($attribute) {
-            // apply filters and paginate by 100:
+            // create collection and apply filters:
             $collection = $this->productCollection->create()
                 ->addAttributeToSelect($attribute)
                 ->addAttributeToSelect('stockbase_product')
-                ->addAttributeToFilter('stockbase_product', array('eq' => '1')) // stockbase product.
-                ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty.
-                ->setPageSize(100);
-            // iterate over the pages:
-            $currentPage = 0;
-            $lastPage = $collection->getLastPageNumber();
-            while ($currentPage < $lastPage) {
-                // load the data of this page in a single query:
-                $collection->setCurPage(++$currentPage);
-                $collection->load();
-                // iterate over the products:
-                foreach ($collection as $product) {
-                    $ean = $product->getData($attribute);
-                    if ($ean) {
-                        // add the ean if this product has one:
-                        $eans[] = $ean;
-                    }
-                }
-            }
-            $this->logger->info('Found EANs: '.count($eans));
+                ->addAttributeToFilter('stockbase_product', array('eq' => '1')) // stockbase product
+                ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty
+                ->addAttributeToFilter($attribute, array('nin' => $processedEans)) // not processed eans
+                ;
+            // walk collection and save eans in the object:
+            $collection->walk(array($this, 'getProductEan'));
+            // log eans count:
+            $this->logger->info('Found EANs: '.count($this->eans));
         } else {
+            // missing ean attribute:
             $this->logger->info('Please setup the EAN attribute.');
         }
-        return $eans;
+        return $this->eans;
+    }
+
+    /**
+     * @param $product
+     */
+    public function getProductEan($product)
+    {
+        // get ean attribute:
+        $attribute = $this->config->getEanFieldName();
+        // get ean:
+        $ean = $product->getData($attribute);
+        // if the ean is not empty:
+        if ($ean) {
+            // add the ean if this product has one:
+            $this->eans[] = $ean;
+        }
     }
 
     /**
@@ -190,8 +199,6 @@ class Images
         $productModel = $this->product;
         // get ean attribute:
         $eanField = $this->config->getEanFieldName();
-        // get client:
-        $client = $this->stockbaseClientFactory->create();
         // loop images:
         foreach ($images as $image) {
             $this->logger->info('Image URL: '.$image->{'Url'});
