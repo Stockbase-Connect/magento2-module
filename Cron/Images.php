@@ -108,25 +108,29 @@ class Images
         // get all the eans:
         $allEans = $this->getAllEans();
         // get processed eans:
-        $processedEans = json_decode($this->getImagesEans()) ?: array();
+        $processedEans = json_decode($this->getImagesEans()) ? : array();
         // process 100 unprocessed eans at a time:
         $eans = array_slice(array_diff($allEans, $processedEans), 0, 100);
+        $this->logger->info('EANs to be processed: '.count($eans));
         try {
-            $client = $this->stockbaseClientFactory->create();
-            $images = $client->getImages($eans);
+            // if still need to process eans:
+            if(count($eans) > 0) {
+                $client = $this->stockbaseClientFactory->create();
+                $images = $client->getImages($eans);
+                // validate returned images:
+                if(is_array($images->{'Items'}) && count($images->{'Items'}) > 0) {
+                    // download and save the images locally:
+                    $this->saveImageForProduct($images->{'Items'});
+                    // update the processed images configuration:
+                    $processedEans = array_merge($processedEans, $eans);
+                    $encodedEans = json_encode($processedEans);
+                    $this->saveImagesEans($encodedEans);
+                    $this->logger->info('New images synchronized.');
+                }
+            }
         } catch (Exception $e) {
             $this->logger->info('Cron runImageImport error: '.$e->getMessage());
             return false;
-        }
-        // validate returned images:
-        if(is_array($images->{'Items'}) && count($images->{'Items'})>0) {
-            // download and save the images locally:
-            $this->saveImageForProduct($images->{'Items'});
-            // update the processed images configuration:
-            $processedEans = array_merge($processedEans, $eans);
-            $encodedEans = json_encode($processedEans);
-            $this->saveImagesEans($encodedEans);
-            $this->logger->info('New images synchronized.');
         }
         $this->logger->info('Stockbase images synchronization complete.');
     }
@@ -136,6 +140,8 @@ class Images
      */
     private function getAllEans()
     {
+        // found eans:
+        $eans = array();
         $this->logger->info('Get All EANs process');
         // get ean attribute:
         $attribute = $this->config->getEanFieldName();
@@ -143,10 +149,11 @@ class Images
             // apply filters and paginate by 100:
             $collection = $this->productCollection->create()
                 ->addAttributeToSelect($attribute)
+                ->addAttributeToSelect('stockbase_product')
+                ->addAttributeToFilter('stockbase_product', array('eq' => '1')) // stockbase product.
                 ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty.
                 ->setPageSize(100);
             // iterate over the pages:
-            $eans = array();
             $currentPage = 0;
             $lastPage = $collection->getLastPageNumber();
             while ($currentPage < $lastPage) {
@@ -163,10 +170,10 @@ class Images
                 }
             }
             $this->logger->info('Found EANs: '.count($eans));
-            return $eans;
         } else {
             $this->logger->info('Please setup the EAN attribute.');
         }
+        return $eans;
     }
 
     /**
@@ -187,7 +194,6 @@ class Images
         $client = $this->stockbaseClientFactory->create();
         // loop images:
         foreach ($images as $image) {
-            $this->logger->info($image->{'Url'});
             // load product by ean:
             $product = $productModel->loadByAttribute($eanField, $image->EAN);
             // continue looping if we do not have product:
