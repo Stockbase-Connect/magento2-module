@@ -194,6 +194,7 @@ class Images
         $client = $this->stockbaseClientFactory->create();
         // loop images:
         foreach ($images as $image) {
+            $this->logger->info('Image URL: '.$image->{'Url'});
             // load product by ean:
             $product = $productModel->loadByAttribute($eanField, $image->EAN);
             // continue looping if we do not have product:
@@ -221,8 +222,10 @@ class Images
                     false
                 );
                 // save product:
-                $product->{'save'}();
-                $this->logger->info('Saved.');
+                $product->save();
+                $this->logger->info('Product saved.');
+            } else {
+                $this->logger->info('Can not read the image: '.$stockbaseImage);
             }
         }
         return true;
