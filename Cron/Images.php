@@ -152,7 +152,6 @@ class Images
                 // iterate over the products:
                 foreach ($collection as $product) {
                     $ean = $product->getData($attribute);
-                    $this->logger->info('Product EAN: '.$ean);
                     if ($ean) {
                         // add the ean if this product has one:
                         $eans[] = $ean;
