@@ -19,7 +19,8 @@ class StockbaseConfiguration
     const CONFIG_EAN_FIELD = 'stockbase/integration/ean_field';
     const CONFIG_ORDER_PREFIX = 'stockbase/integration/order_prefix';
     const CONFIG_IMAGES_SYNC = 'stockbase/integration/images_sync_enabled';
-    const CONFIG_IMAGES_EANS = 'stockbase/integration/images_eans';
+    const CONFIG_IMAGES_CRON_SYNC = 'stockbase/integration/images_sync_cron_enabled';
+    const CONFIG_IMAGES_FILTER_PRODUCTS = 'stockbase/integration/images_filter_products';
 
     /**
      * @var ScopeConfigInterface
@@ -102,19 +103,15 @@ class StockbaseConfiguration
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getImagesEans()
+    public function isImagesSyncCronEnabled()
     {
-        return $this->scopeConfig->getValue(self::CONFIG_IMAGES_EANS);
+        return (bool) $this->scopeConfig->getValue(self::CONFIG_IMAGES_CRON_SYNC);
     }
 
-    /**
-     * @return mixed
-     */
-    public function saveImagesEans($eans)
+    public function filterProcessedProducts()
     {
-        return $this->configWriter->save(self::CONFIG_IMAGES_EANS, $eans, 'default', 0);
+        return (bool) $this->scopeConfig->getValue(self::CONFIG_IMAGES_FILTER_PRODUCTS);
     }
-
 }

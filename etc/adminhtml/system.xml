@@ -73,8 +73,27 @@
                 <field id="images_sync_enabled" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Images Sync Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>This will enable the images sync on product save.</comment>
                     <depends>
                         <field id="*/*/module_enabled">1</field>
+                    </depends>
+                </field>
+
+                <field id="images_sync_cron_enabled" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Images Sync CRON Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>This will enable the images sync through a CRON process.</comment>
+                    <depends>
+                        <field id="*/*/module_enabled">1</field>
+                    </depends>
+                </field>
+
+                <field id="images_filter_products" translate="label" type="select" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter processed products in Images Sync CRON process?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="*/*/module_enabled">1</field>
+                        <field id="*/*/images_sync_cron_enabled">1</field>
                     </depends>
                 </field>
 

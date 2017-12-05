@@ -2,16 +2,12 @@
 
 namespace Stockbase\Integration\Cron;
 
-use Magento\Framework\ObjectManagerInterface;
-use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollection;
-use Magento\Catalog\Model\Product as ProductModel;
-use Magento\Framework\Url as UrlHelper;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\Filesystem\Io\File;
 use Psr\Log\LoggerInterface;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollection;
 use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
 use Stockbase\Integration\Model\Config\StockbaseConfiguration;
-use Stockbase\Integration\Model\ResourceModel\StockItem as StockItemResource;
+use Stockbase\Integration\Model\ResourceModel\ProductImage as ProductImageResource;
+use Stockbase\Integration\Helper\Images as ImagesHelper;
 
 /**
  * Stockbase images synchronization cron job.
@@ -28,37 +24,21 @@ class Images
      */
     private $stockbaseClientFactory;
     /**
-     * @var ObjectManagerInterface
-     */
-    private $objectManager;
-    /**
      * @var StockbaseConfiguration
      */
     private $config;
     /**
+     * @var ProductImageResource
+     */
+    private $productImageResource;
+    /**
+     * @var ImagesHelper
+     */
+    private $imagesHelper;
+    /**
      * @var ProductCollection
      */
     private $productCollection;
-    /**
-     * @var ProductModel
-     */
-    private $product;
-    /**
-     * @var UrlHelper
-     */
-    private $urlHelper;
-    /**
-     * Directory List
-     *
-     * @var DirectoryList
-     */
-    private $directoryList;
-    /**
-     * File interface
-     *
-     * @var File
-     */
-    private $file;
     /**
      * @var array
      */
@@ -67,35 +47,26 @@ class Images
     /**
      * Images constructor.
      * @param LoggerInterface $logger
-     * @param ObjectManagerInterface $objectManager
      * @param StockbaseClientFactory $stockbaseClientFactory
      * @param StockbaseConfiguration $config
      * @param ProductCollection $productCollection
-     * @param ProductModel $product
-     * @param UrlHelper $urlHelper
-     * @param DirectoryList $directoryList
-     * @param File $file
+     * @param ProductImageResource $productImageResource
+     * @param ImagesHelper $imagesHelper
      */
     public function __construct(
         LoggerInterface $logger,
-        ObjectManagerInterface $objectManager,
         StockbaseClientFactory $stockbaseClientFactory,
         StockbaseConfiguration $config,
         ProductCollection $productCollection,
-        ProductModel $product,
-        UrlHelper $urlHelper,
-        DirectoryList $directoryList,
-        File $file
+        ProductImageResource $productImageResource,
+        ImagesHelper $imagesHelper
     ) {
         $this->logger = $logger;
         $this->stockbaseClientFactory = $stockbaseClientFactory;
-        $this->objectManager = $objectManager;
         $this->config = $config;
         $this->productCollection = $productCollection;
-        $this->product = $product;
-        $this->urlHelper = $urlHelper;
-        $this->directoryList = $directoryList;
-        $this->file = $file;
+        $this->productImageResource = $productImageResource;
+        $this->imagesHelper = $imagesHelper;
     }
 
     /**
@@ -104,16 +75,13 @@ class Images
     public function execute()
     {
         // validate configuration:
-        if (!$this->config->isModuleEnabled() || !$this->config->isImagesSyncEnabled()) {
+        if (!$this->config->isModuleEnabled() || !$this->config->isImagesSyncCronEnabled()) {
             return;
         }
         // start process:
         $this->logger->info('Synchronizing Stockbase images...');
-        // get processed eans:
-        $processedEans = json_decode($this->getImagesEans()) ? : array();
         // get all the eans:
-        $eans = $this->getNotProcessedEans($processedEans);
-        $this->logger->info('EANs to be processed: '.count($eans));
+        $eans = $this->getEansToProcess();
         try {
             // if still need to process eans:
             if(count($eans) > 0) {
@@ -122,12 +90,8 @@ class Images
                 // validate returned images:
                 if(is_array($images->{'Items'}) && count($images->{'Items'}) > 0) {
                     // download and save the images locally:
-                    $this->saveImageForProduct($images->{'Items'});
-                    // update the processed images configuration:
-                    $processedEans = array_merge($processedEans, $eans);
-                    $encodedEans = json_encode($processedEans);
-                    $this->saveImagesEans($encodedEans);
-                    $this->logger->info('New images synchronized.');
+                    $newImagesCount = $this->imagesHelper->saveProductImages($images->{'Items'});
+                    $this->logger->info('New synchronized images: '.$newImagesCount);
                 }
             }
         } catch (Exception $e) {
@@ -140,12 +104,12 @@ class Images
     /**
      * @return array
      */
-    private function getNotProcessedEans($processedEans)
+    private function getEansToProcess()
     {
         // clean eans list:
         $this->eans = array();
         // start process:
-        $this->logger->info('Get All EANs process');
+        $this->logger->info('Get All EANs');
         // get ean attribute:
         $attribute = $this->config->getEanFieldName();
         // validate attribute:
@@ -154,14 +118,23 @@ class Images
             $collection = $this->productCollection->create()
                 ->addAttributeToSelect($attribute)
                 ->addAttributeToSelect('stockbase_product')
-                ->addAttributeToFilter('stockbase_product', array('eq' => '1')) // stockbase product
-                ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty
-                ->addAttributeToFilter($attribute, array('nin' => $processedEans)) // not processed eans
+                ->addAttributeToFilter('stockbase_product', array('eq' => '1')) // only stockbase products
+                ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty ean
                 ;
+            // if the filter is active then exclude the eans processed:
+            if($this->config->filterProcessedProducts()) {
+                // get eans list:
+                $processedEans = $this->productImageResource->getProcessedEans();
+                // add eans filter:
+                if(count($processedEans) > 0) {
+                    $this->logger->info('Filtered EANs: '.count($processedEans));
+                    $collection->addAttributeToFilter($attribute, array('nin' => $processedEans));
+                }
+            }
             // walk collection and save eans in the object:
             $collection->walk(array($this, 'getProductEan'));
             // log eans count:
-            $this->logger->info('Found EANs: '.count($this->eans));
+            $this->logger->info('EANs to process: '.count($this->eans));
         } else {
             // missing ean attribute:
             $this->logger->info('Please setup the EAN attribute.');
@@ -183,86 +156,6 @@ class Images
             // add the ean if this product has one:
             $this->eans[] = $ean;
         }
-    }
-
-    /**
-     * Saves images array from stockbase for given $ean
-     *
-     * @param array $images
-     *
-     * @return bool
-     */
-    private function saveImageForProduct($images)
-    {
-        $this->logger->info('Save images process:');
-        // get product model:
-        $productModel = $this->product;
-        // get ean attribute:
-        $eanField = $this->config->getEanFieldName();
-        // loop images:
-        foreach ($images as $image) {
-            $this->logger->info('Image URL: '.$image->{'Url'});
-            // load product by ean:
-            $product = $productModel->loadByAttribute($eanField, $image->EAN);
-            // continue looping if we do not have product:
-            if (!$product) {
-                continue;
-            }
-            // get image from stockbase:
-            $stockbaseImage = (string)$image->{'Url'};
-            // create temporal folder if it is not exists:
-            $tmpDir = $this->getMediaDirTmpDir();
-            $this->file->checkAndCreateFolder($tmpDir);
-            // get new file path:
-            $newFileName = $tmpDir . baseName($image->{'Url'});
-            // read file from URL and copy it to the new destination:
-            $result = $this->file->read($stockbaseImage, $newFileName);
-            if ($result) {
-                if ($product->getMediaGallery() == null) {
-                    $product->setMediaGallery(array('images' => array(), 'values' => array()));
-                }
-                // add saved file to the $product gallery:
-                $product->addImageToMediaGallery(
-                    $newFileName,
-                    array('image', 'small_image', 'thumbnail'),
-                    false,
-                    false
-                );
-                // save product:
-                $product->save();
-                $this->logger->info('Product saved.');
-            } else {
-                $this->logger->info('Can not read the image: '.$stockbaseImage);
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Media directory name for the temporary file storage
-     * pub/media/tmp
-     *
-     * @return string
-     */
-    private function getMediaDirTmpDir()
-    {
-        return $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getImagesEans()
-    {
-        return $this->config->getImagesEans();
-    }
-
-    /**
-     * @param $eans
-     */
-    private function saveImagesEans($eans)
-    {
-        $this->config->saveImagesEans($eans);
     }
 
 }
