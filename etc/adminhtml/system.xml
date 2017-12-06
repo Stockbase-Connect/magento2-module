@@ -89,8 +89,9 @@
                 </field>
 
                 <field id="images_filter_products" translate="label" type="select" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Filter processed products in Images Sync CRON process?</label>
+                    <label>Skip processed products?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>If this option is disabled the Images Sync CRON will process all the Stockbase products everytime.</comment>
                     <depends>
                         <field id="*/*/module_enabled">1</field>
                         <field id="*/*/images_sync_cron_enabled">1</field>

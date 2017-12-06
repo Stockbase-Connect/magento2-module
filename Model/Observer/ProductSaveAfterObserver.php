@@ -70,14 +70,14 @@ class ProductSaveAfterObserver implements ObserverInterface
             $ean = $product->getData($attribute);
             // if the ean is not empty:
             if ($ean) {
-                $this->logger->info('Image Sync in Product Save process. EAN found: '.$ean);
+                $this->logger->debug('Image Sync in Product Save process. EAN found: '.$ean);
                 $client = $this->stockbaseClientFactory->create();
                 $images = $client->getImages([$ean]);
                 // validate returned images:
                 if(is_array($images->{'Items'}) && count($images->{'Items'}) > 0) {
                     // download and save the images locally:
                     $this->imagesHelper->saveProductImages($images->{'Items'});
-                    $this->logger->info('New images synchronized.');
+                    $this->logger->debug('New images synchronized.');
                 }
             }
         }

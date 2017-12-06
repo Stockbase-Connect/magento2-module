@@ -86,7 +86,7 @@ class Images
      */
     public function saveProductImages($images)
     {
-        $this->logger->info('Save images process:');
+        $this->logger->debug('Save images process:');
         $newImagesCount = 0;
         // get product model:
         $productModel = $this->product;
@@ -94,17 +94,17 @@ class Images
         $eanField = $this->config->getEanFieldName();
         // loop images:
         foreach ($images as $image) {
-            $this->logger->info('Image URL: '.$image->{'Url'}.' - EAN: '.$image->EAN);
+            $this->logger->debug('Image URL: '.$image->{'Url'}.' - EAN: '.$image->EAN);
             // load product by ean:
             $product = $productModel->loadByAttribute($eanField, $image->EAN);
             // continue looping if we do not have product:
             if (!$product) {
-                $this->logger->info('Product not found for EAN: '.$image->EAN);
+                $this->logger->debug('Product not found for EAN: '.$image->EAN);
                 continue;
             }
-            $this->logger->info('Loaded product: '.$product->getId());
+            $this->logger->debug('Loaded product: '.$product->getId());
             if(!$product->getData('stockbase_product')) {
-                $this->logger->info('The Product is not mark as Stockbase product: '.$product->getId());
+                $this->logger->debug('The Product is not mark as Stockbase product: '.$product->getId());
                 continue;
             }
             // stockbase image:
@@ -114,7 +114,7 @@ class Images
             // check if the image exists:
             $imageCollection = $this->productImageResource->imageExists($imageName, $product->getId(), $image->EAN);
             if(count($imageCollection)>0) {
-                $this->logger->info('The image '.$imageName.' is already synchronized for product '.$product->getId());
+                $this->logger->debug('The image '.$imageName.' is already synchronized for product '.$product->getId());
                 continue;
             }
             // create temporal folder if it is not exists:
@@ -126,7 +126,7 @@ class Images
             if(!file_exists($newFileName)) {
                 // read file from URL and copy it to the new destination:
                 $this->file->read($stockbaseImage, $newFileName);
-                $this->logger->info('New image saved: '. $newFileName);
+                $this->logger->debug('New image saved: '. $newFileName);
             }
             // if the process worked then the file should be there now:
             if (file_exists($newFileName)) {
@@ -161,10 +161,10 @@ class Images
                 // save:
                 $imageModel->setData($imageData)->save();
                 // end process.
-                $this->logger->info('Product saved.');
+                $this->logger->debug('Product saved.');
                 $newImagesCount++;
             } else {
-                $this->logger->info('There is an issue with the image: '.$newFileName);
+                $this->logger->debug('There is an issue with the image: '.$newFileName);
             }
         }
         return $newImagesCount;

@@ -33,7 +33,7 @@ class ProductImage extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $connection = $this->getConnection();
         $query = $connection->select()
             ->from(['s' => $this->getMainTable()], ['s.ean'])
-            ->where('s.image = \''.$imageName.'\' AND s.product_id = '.$productId.' AND s.ean=\''.$ean.'\'');
+            ->where('s.image = ? AND s.product_id = ? AND s.ean= ?', $imageName, $productId, $ean);
         $eans = $connection->fetchAll($query);
         return $eans;
     }
