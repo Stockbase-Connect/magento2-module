@@ -1,0 +1,11 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <stockbase>
+            <integration>
+                <images_sync_enabled>0</images_sync_enabled>
+                <images_sync_cron_enabled>0</images_sync_cron_enabled>
+                <images_filter_products>1</images_filter_products>
+            </integration>
+        </stockbase>
+    </default>
+</config>

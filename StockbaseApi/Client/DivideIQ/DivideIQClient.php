@@ -10,6 +10,7 @@ use DivideBV\PHPDivideIQ\DivideIQ;
  */
 class DivideIQClient extends DivideIQ
 {
+
     const DEFAULT_REQUEST_TIMEOUT = 60.0;
 
     /**
@@ -31,4 +32,5 @@ class DivideIQClient extends DivideIQ
     {
         $this->client->setDefaultOption('timeout', $timeout);
     }
+
 }

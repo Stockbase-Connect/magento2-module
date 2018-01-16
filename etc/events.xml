@@ -39,4 +39,8 @@
         <observer name="inventory" instance="Stockbase\Integration\Model\Observer\RefundOrderInventoryObserver"/>
     </event>
 
+    <event name="controller_action_catalog_product_save_entity_after">
+        <observer name="stockbase_images_sync" instance="Stockbase\Integration\Model\Observer\ProductSaveAfterObserver"/>
+    </event>
+
 </config>
