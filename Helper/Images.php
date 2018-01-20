@@ -109,7 +109,8 @@ class Images
             // stockbase image:
             $stockbaseImage = (string) $image->{'Url'};
             // image name:
-            $imageName = basename($image->{'Url'});
+            $fileInfo = $this->file->getPathInfo($image->{'Url'});
+            $imageName = $fileInfo['basename'];
             // check if the image exists:
             $imageCollection = $this->productImageResource->imageExists($imageName, $product->getId(), $image->EAN);
             if (count($imageCollection) > 0) {
@@ -122,13 +123,13 @@ class Images
             // get new file path:
             $newFileName = $tmpDir.$imageName;
             // if the image file is not in our system:
-            if (!file_exists($newFileName)) {
+            if (!$this->file->fileExists($newFileName)) {
                 // read file from URL and copy it to the new destination:
                 $this->file->read($stockbaseImage, $newFileName);
                 $this->logger->debug('New image saved: '.$newFileName);
             }
             // if the process worked then the file should be there now:
-            if (file_exists($newFileName)) {
+            if ($this->file->fileExists($newFileName)) {
                 // if product gallery is empty the set the default values:
                 $mediaGallery = $product->getMediaGallery();
                 if (!$mediaGallery) {
