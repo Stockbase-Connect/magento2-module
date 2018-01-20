@@ -15,12 +15,12 @@ class UpgradeSchema implements UpgradeSchemaInterface
 {
 
     /**
-     * @param SchemaSetupInterface $setup
+     * @param SchemaSetupInterface   $setup
      * @param ModuleContextInterface $context
      */
     public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        if(version_compare($context->getVersion(), '1.1.0') < 0) {
+        if (version_compare($context->getVersion(), '1.1.0') < 0) {
             $tableName = $setup->getTable('stockbase_product_images');
             if (!$setup->getConnection()->isTableExists($tableName)) {
                 $table = $setup->getConnection()
@@ -79,7 +79,5 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 $setup->getConnection()->createTable($table);
             }
         }
-
     }
-
 }

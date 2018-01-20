@@ -10,7 +10,6 @@ use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
  */
 class Collection extends AbstractCollection
 {
-
     /**
      * Constructor.
      */
@@ -21,5 +20,4 @@ class Collection extends AbstractCollection
             \Stockbase\Integration\Model\ResourceModel\ProductImage::class
         );
     }
-
 }

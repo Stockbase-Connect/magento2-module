@@ -147,5 +147,4 @@ class StockbaseClient
         
         return $response;
     }
-
 }

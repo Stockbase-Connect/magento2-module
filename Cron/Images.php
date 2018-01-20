@@ -2,6 +2,7 @@
 
 namespace Stockbase\Integration\Cron;
 
+use Magento\Catalog\Model\Product;
 use Psr\Log\LoggerInterface;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollection;
 use Stockbase\Integration\StockbaseApi\Client\StockbaseClientFactory;
@@ -14,7 +15,6 @@ use Stockbase\Integration\Helper\Images as ImagesHelper;
  */
 class Images
 {
-
     /**
      * @var LoggerInterface
      */
@@ -46,12 +46,12 @@ class Images
     
     /**
      * Images constructor.
-     * @param LoggerInterface $logger
+     * @param LoggerInterface        $logger
      * @param StockbaseClientFactory $stockbaseClientFactory
      * @param StockbaseConfiguration $config
-     * @param ProductCollection $productCollection
-     * @param ProductImageResource $productImageResource
-     * @param ImagesHelper $imagesHelper
+     * @param ProductCollection      $productCollection
+     * @param ProductImageResource   $productImageResource
+     * @param ImagesHelper           $imagesHelper
      */
     public function __construct(
         LoggerInterface $logger,
@@ -84,66 +84,26 @@ class Images
         $eans = $this->getEansToProcess();
         try {
             // if still need to process eans:
-            if(count($eans) > 0) {
+            if (count($eans) > 0) {
                 $client = $this->stockbaseClientFactory->create();
                 $images = $client->getImages($eans);
                 // validate returned images:
-                if(is_array($images->{'Items'}) && count($images->{'Items'}) > 0) {
+                if (is_array($images->{'Items'}) && count($images->{'Items'}) > 0) {
                     // download and save the images locally:
                     $newImagesCount = $this->imagesHelper->saveProductImages($images->{'Items'});
                     $this->logger->info('New synchronized images: '.$newImagesCount);
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->logger->info('Cron runImageImport error: '.$e->getMessage());
-            return false;
+            
+            return;
         }
         $this->logger->info('Stockbase images synchronization complete.');
     }
 
     /**
-     * @return array
-     */
-    private function getEansToProcess()
-    {
-        // clean eans list:
-        $this->eans = array();
-        // start process:
-        $this->logger->info('Get All EANs');
-        // get ean attribute:
-        $attribute = $this->config->getEanFieldName();
-        // validate attribute:
-        if($attribute) {
-            // create collection and apply filters:
-            $collection = $this->productCollection->create()
-                ->addAttributeToSelect($attribute)
-                ->addAttributeToSelect('stockbase_product')
-                ->addAttributeToFilter('stockbase_product', array('eq' => '1')) // only stockbase products
-                ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty ean
-                ;
-            // if the filter is active then exclude the eans processed:
-            if($this->config->filterProcessedProducts()) {
-                // get eans list:
-                $processedEans = $this->productImageResource->getProcessedEans();
-                // add eans filter:
-                if(count($processedEans) > 0) {
-                    $this->logger->info('Filtered EANs: '.count($processedEans));
-                    $collection->addAttributeToFilter($attribute, array('nin' => $processedEans));
-                }
-            }
-            // walk collection and save eans in the object:
-            $collection->walk(array($this, 'getProductEan'));
-            // log eans count:
-            $this->logger->info('EANs to process: '.count($this->eans));
-        } else {
-            // missing ean attribute:
-            $this->logger->info('Please setup the EAN attribute.');
-        }
-        return $this->eans;
-    }
-
-    /**
-     * @param $product
+     * @param Product $product
      */
     public function getProductEan($product)
     {
@@ -158,4 +118,45 @@ class Images
         }
     }
 
+    /**
+     * @return array
+     */
+    private function getEansToProcess()
+    {
+        // clean eans list:
+        $this->eans = array();
+        // start process:
+        $this->logger->info('Get All EANs');
+        // get ean attribute:
+        $attribute = $this->config->getEanFieldName();
+        // validate attribute:
+        if ($attribute) {
+            // create collection and apply filters:
+            $collection = $this->productCollection->create()
+                ->addAttributeToSelect($attribute)
+                ->addAttributeToSelect('stockbase_product')
+                ->addAttributeToFilter('stockbase_product', array('eq' => '1')) // only stockbase products
+                ->addAttributeToFilter($attribute, array('notnull' => true, 'neq' => '')) // not null and not empty ean
+                ;
+            // if the filter is active then exclude the eans processed:
+            if ($this->config->filterProcessedProducts()) {
+                // get eans list:
+                $processedEans = $this->productImageResource->getProcessedEans();
+                // add eans filter:
+                if (count($processedEans) > 0) {
+                    $this->logger->info('Filtered EANs: '.count($processedEans));
+                    $collection->addAttributeToFilter($attribute, array('nin' => $processedEans));
+                }
+            }
+            // walk collection and save eans in the object:
+            $collection->walk(array($this, 'getProductEan'));
+            // log eans count:
+            $this->logger->info('EANs to process: '.count($this->eans));
+        } else {
+            // missing ean attribute:
+            $this->logger->info('Please setup the EAN attribute.');
+        }
+        
+        return $this->eans;
+    }
 }

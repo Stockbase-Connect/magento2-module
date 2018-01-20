@@ -34,9 +34,9 @@ class ProductSaveAfterObserver implements ObserverInterface
 
     /**
      * ProductSaveAfterObserver constructor.
-     * @param LoggerInterface $logger
+     * @param LoggerInterface        $logger
      * @param StockbaseConfiguration $config
-     * @param ImagesHelper $imagesHelper
+     * @param ImagesHelper           $imagesHelper
      * @param StockbaseClientFactory $stockbaseClientFactory
      */
     public function __construct(
@@ -65,7 +65,7 @@ class ProductSaveAfterObserver implements ObserverInterface
         // get ean attribute:
         $attribute = $this->config->getEanFieldName();
         // validate attribute:
-        if($attribute) {
+        if ($attribute) {
             // get ean:
             $ean = $product->getData($attribute);
             // if the ean is not empty:
@@ -74,7 +74,7 @@ class ProductSaveAfterObserver implements ObserverInterface
                 $client = $this->stockbaseClientFactory->create();
                 $images = $client->getImages([$ean]);
                 // validate returned images:
-                if(is_array($images->{'Items'}) && count($images->{'Items'}) > 0) {
+                if (is_array($images->{'Items'}) && count($images->{'Items'}) > 0) {
                     // download and save the images locally:
                     $this->imagesHelper->saveProductImages($images->{'Items'});
                     $this->logger->debug('New images synchronized.');
@@ -82,5 +82,4 @@ class ProductSaveAfterObserver implements ObserverInterface
             }
         }
     }
-
 }

@@ -15,17 +15,9 @@ class ProductImage extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     protected $entityManager;
 
     /**
-     * Constructor.
-     */
-    protected function _construct()
-    {
-        $this->_init('stockbase_product_images', 'id');
-    }
-
-    /**
-     * @param $imageName
-     * @param $productId
-     * @param $ean
+     * @param string $imageName
+     * @param string $productId
+     * @param string $ean
      * @return mixed
      */
     public function imageExists($imageName, $productId, $ean)
@@ -35,6 +27,7 @@ class ProductImage extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             ->from(['s' => $this->getMainTable()], ['s.ean'])
             ->where('s.image = ? AND s.product_id = ? AND s.ean= ?', $imageName, $productId, $ean);
         $eans = $connection->fetchAll($query);
+        
         return $eans;
     }
 
@@ -48,7 +41,15 @@ class ProductImage extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             ->from(['s' => $this->getMainTable()], ['s.ean'])
             ->group('s.ean');
         $eans = $connection->fetchAll($query);
+        
         return $eans;
     }
 
+    /**
+     * Constructor.
+     */
+    protected function _construct()
+    {
+        $this->_init('stockbase_product_images', 'id');
+    }
 }

@@ -10,15 +10,6 @@ use Magento\Framework\Model\AbstractModel;
  */
 class ProductImage extends AbstractModel
 {
-
-    /**
-     * Constructor.
-     */
-    protected function _construct()
-    {
-        $this->_init(\Stockbase\Integration\Model\ResourceModel\ProductImage::class);
-    }
-
     /**
      * @return mixed
      */
@@ -83,4 +74,11 @@ class ProductImage extends AbstractModel
         $this->setData('timestamp', $timestamp);
     }
 
+    /**
+     * Constructor.
+     */
+    protected function _construct()
+    {
+        $this->_init(\Stockbase\Integration\Model\ResourceModel\ProductImage::class);
+    }
 }

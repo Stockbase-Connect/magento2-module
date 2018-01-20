@@ -31,7 +31,8 @@ class StockbaseConfiguration
      * StockbaseConfiguration constructor.
      * @param ScopeConfigInterface $scopeConfig
      */
-    public function __construct(ScopeConfigInterface $scopeConfig) {
+    public function __construct(ScopeConfigInterface $scopeConfig)
+    {
         $this->scopeConfig = $scopeConfig;
     }
 
@@ -101,6 +102,9 @@ class StockbaseConfiguration
         return (bool) $this->scopeConfig->getValue(self::CONFIG_IMAGES_CRON_SYNC);
     }
 
+    /**
+     * @return bool
+     */
     public function filterProcessedProducts()
     {
         return (bool) $this->scopeConfig->getValue(self::CONFIG_IMAGES_FILTER_PRODUCTS);
