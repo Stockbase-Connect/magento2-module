@@ -32,5 +32,4 @@ class DivideIQClient extends DivideIQ
     {
         $this->client->setDefaultOption('timeout', $timeout);
     }
-
 }

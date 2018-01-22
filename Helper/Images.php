@@ -19,7 +19,6 @@ use Stockbase\Integration\Model\Config\StockbaseConfiguration;
  */
 class Images
 {
-
     /**
      * @var LoggerInterface
      */
@@ -51,13 +50,13 @@ class Images
 
     /**
      * Images constructor.
-     * @param LoggerInterface $logger
+     * @param LoggerInterface        $logger
      * @param StockbaseConfiguration $config
-     * @param ProductImage $productImage
-     * @param ProductImageResource $productImageResource
-     * @param ProductModel $product
-     * @param DirectoryList $directoryList
-     * @param File $file
+     * @param ProductImage           $productImage
+     * @param ProductImageResource   $productImageResource
+     * @param ProductModel           $product
+     * @param DirectoryList          $directoryList
+     * @param File                   $file
      */
     public function __construct(
         LoggerInterface $logger,
@@ -103,17 +102,18 @@ class Images
                 continue;
             }
             $this->logger->debug('Loaded product: '.$product->getId());
-            if(!$product->getData('stockbase_product')) {
+            if (!$product->getData('stockbase_product')) {
                 $this->logger->debug('The Product is not mark as Stockbase product: '.$product->getId());
                 continue;
             }
             // stockbase image:
-            $stockbaseImage = (string)$image->{'Url'};
+            $stockbaseImage = (string) $image->{'Url'};
             // image name:
-            $imageName = baseName($image->{'Url'});
+            $fileInfo = $this->file->getPathInfo($image->{'Url'});
+            $imageName = $fileInfo['basename'];
             // check if the image exists:
             $imageCollection = $this->productImageResource->imageExists($imageName, $product->getId(), $image->EAN);
-            if(count($imageCollection)>0) {
+            if (count($imageCollection) > 0) {
                 $this->logger->debug('The image '.$imageName.' is already synchronized for product '.$product->getId());
                 continue;
             }
@@ -121,22 +121,25 @@ class Images
             $tmpDir = $this->getMediaDirTmpDir();
             $this->file->checkAndCreateFolder($tmpDir);
             // get new file path:
-            $newFileName = $tmpDir . $imageName;
+            $newFileName = $tmpDir.$imageName;
             // if the image file is not in our system:
-            if(!file_exists($newFileName)) {
+            if (!$this->file->fileExists($newFileName)) {
                 // read file from URL and copy it to the new destination:
                 $this->file->read($stockbaseImage, $newFileName);
-                $this->logger->debug('New image saved: '. $newFileName);
+                $this->logger->debug('New image saved: '.$newFileName);
             }
             // if the process worked then the file should be there now:
-            if (file_exists($newFileName)) {
+            if ($this->file->fileExists($newFileName)) {
                 // if product gallery is empty the set the default values:
                 $mediaGallery = $product->getMediaGallery();
                 if (!$mediaGallery) {
-                    $product->setMediaGallery(array('images' => array(), 'values' => array()));
+                    $product->setMediaGallery([
+                        'images' => [],
+                        'values' => [],
+                    ]);
                 } else {
                     // if the product has a gallery and the image is already there then continue with the next one:
-                    if(is_array($mediaGallery['images']) && in_array($imageName, $mediaGallery['images'])) {
+                    if (is_array($mediaGallery['images']) && in_array($imageName, $mediaGallery['images'])) {
                         continue;
                     }
                 }
@@ -156,7 +159,7 @@ class Images
                     'ean' => $image->EAN,
                     'product_id' => $product->getId(),
                     'image' => $imageName,
-                    'timestamp' => date('Y-m-d H:i:s')
+                    'timestamp' => date('Y-m-d H:i:s'),
                 ];
                 // save:
                 $imageModel->setData($imageData)->save();
@@ -167,6 +170,7 @@ class Images
                 $this->logger->debug('There is an issue with the image: '.$newFileName);
             }
         }
+        
         return $newImagesCount;
     }
 
@@ -178,7 +182,6 @@ class Images
      */
     private function getMediaDirTmpDir()
     {
-        return $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'tmp';
+        return $this->directoryList->getPath(DirectoryList::MEDIA).DIRECTORY_SEPARATOR.'tmp';
     }
-
 }
