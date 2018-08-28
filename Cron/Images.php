@@ -90,7 +90,7 @@ class Images
                 // validate returned images:
                 if (is_array($images->{'Items'}) && count($images->{'Items'}) > 0) {
                     // download and save the images locally:
-                    $newImagesCount = $this->imagesHelper->saveProductImages($images->{'Items'});
+                    $newImagesCount = $this->imagesHelper->saveProductImages($images->{'Items'}, $client);
                     $this->logger->info('New synchronized images: '.$newImagesCount);
                 }
             }

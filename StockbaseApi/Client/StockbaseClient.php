@@ -81,6 +81,17 @@ class StockbaseClient
     }
 
     /**
+     * Downloads a file using current client configuration and saves it at the specified destination.
+     *
+     * @param string|\GuzzleHttp\Url $uri File URI.
+     * @param string|resource|\GuzzleHttp\Stream\StreamInterface $destination Destination where the file should be saved to.
+     */
+    public function downloadImage($uri, $destination)
+    {
+        return $this->divideIqClient->download($uri, $destination);
+    }
+
+    /**
      * Creates an order on Stockbase from reserved items for specified Magento order.
      *
      * @param OrderInterface     $order

@@ -9,6 +9,7 @@ use Magento\Catalog\Model\Product as ProductModel;
 use Stockbase\Integration\Model\ProductImage;
 use Stockbase\Integration\Model\ResourceModel\ProductImage as ProductImageResource;
 use Stockbase\Integration\Model\Config\StockbaseConfiguration;
+use Stockbase\Integration\StockbaseApi\Client\StockbaseClient;
 
 /**
  *
@@ -81,9 +82,10 @@ class Images
      *
      * @param array $images
      *
+     * @param StockbaseClient $client
      * @return bool
      */
-    public function saveProductImages($images)
+    public function saveProductImages($images, StockbaseClient $client)
     {
         $this->logger->debug('Save images process:');
         $newImagesCount = 0;
@@ -125,7 +127,8 @@ class Images
             // if the image file is not in our system:
             if (!$this->file->fileExists($newFileName)) {
                 // read file from URL and copy it to the new destination:
-                $this->file->read($stockbaseImage, $newFileName);
+                //$this->file->read($stockbaseImage, $newFileName);
+                $client->downloadImage($stockbaseImage, $newFileName);
                 $this->logger->debug('New image saved: '.$newFileName);
             }
             // if the process worked then the file should be there now:
