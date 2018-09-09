@@ -5,8 +5,8 @@
     "license": "MIT",
     "require": {
         "php": "^7.0",
-        "magento/framework": "~100.0.0|~100.1.0",
-        "magento/module-catalog-inventory": "~100.0.0|~100.1.0",
+        "magento/framework": "~100.0.0|~100.1.0|~101.0.0",
+        "magento/module-catalog-inventory": "~100.0.0|~100.1.0|~100.2.0",
         "dividebv/phpdivideiq": "^0.6.0",
         "beberlei/assert": "^2.4"
     },
