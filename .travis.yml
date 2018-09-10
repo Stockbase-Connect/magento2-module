@@ -7,10 +7,12 @@ matrix:
     ## TODO: this works locally, but for some reason not in Travis
     #    - php: 7.0
     #  env: deps=low
-    - php: 7.0
+    - php: 7.2
       env: 
         - cover=yes
         - docs=yes
+    - php: 7.1
+    - php: 7.0
 
 env:
   global:

@@ -3,7 +3,7 @@
 
 namespace Stockbase\Integration\StockbaseApi\Client;
 
-use Assert\Assertion;
+use Webmozart\Assert\Assert;
 use DivideBV\PHPDivideIQ\DivideIQ;
 use Magento\Sales\Api\Data\OrderInterface;
 use Stockbase\Integration\Model\Config\StockbaseConfiguration;
@@ -71,7 +71,7 @@ class StockbaseClient
      */
     public function getImages(array $eans)
     {
-        Assertion::allNumeric($eans);
+        Assert::allNumeric($eans);
         
         $data = [
             'ean' => implode(',', $eans),

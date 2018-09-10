@@ -16,18 +16,6 @@ module and all its dependencies with a single console command.
 2. Navigate to your Magento 2 installation directory (where the `composer.json` and `composer.lock` files are located).
 3. Execute the command: `composer require stockbase/magento2-module`
 
-## Install Manually
-
-**Warning!** This installation is method recommended for module development only and we assume that you know how to 
-work with PHP and Composer. If you're not sure whether you need this type of installation, please follow the 
-instructions for [Composer installation](#2-2) in Section 1.2.1.
-
-1. Download the zip archive containing the module.
-2. Extract it into the `<magento root folder>/app/code/Stockbase/Integration` directory.
-3. Install into your main Magento project all dependencies listed in the module's `composer.json` file.
-   For example: `composer require dividebv/phpdivideiq:^0.5.0 beberlei/assert:^2.4`.
-   See the `require` section of the module's `composer.json` file.
-
 ## Enable the Module
 
 Execute the following commands in the Magento installation directory:  

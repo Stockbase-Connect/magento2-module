@@ -3,12 +3,17 @@
     "description": "A Magento 2 module for Stockbase",
     "type": "magento2-module",
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo.magento.com/"
+        }
+    ],
     "require": {
         "php": "^7.0",
-        "magento/framework": "~100.0.0|~100.1.0|~101.0.0",
-        "magento/module-catalog-inventory": "~100.0.0|~100.1.0|~100.2.0",
+        "magento/module-catalog-inventory": "^100.0.0",
         "dividebv/phpdivideiq": "^0.6.0",
-        "beberlei/assert": "^2.4"
+        "webmozart/assert": "^1.0"
     },
     "autoload": {
         "files": [ "registration.php" ],
@@ -20,9 +25,8 @@
         "phpunit/phpunit": "*",
         "phpro/grumphp": "^0.11.5",
         "magento-ecg/coding-standard": "^2.0",
-        "squizlabs/php_codesniffer": "~2.6",
-        "escapestudios/symfony2-coding-standard": "~2.0",
-        "magento/zendframework1": "1.12.10",
+        "squizlabs/php_codesniffer": "^2.6",
+        "escapestudios/symfony2-coding-standard": "^2.0",
         "bookdown/bookdown": "~1.0",
         "tobiju/bookdown-bootswatch-templates": "^1.1"
     }
