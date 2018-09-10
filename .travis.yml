@@ -11,7 +11,6 @@ matrix:
       env:
       - cover=yes
       - docs=yes
-    - php: 7.0
 
 env:
   global:
