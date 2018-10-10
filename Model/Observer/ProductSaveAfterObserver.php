@@ -76,7 +76,7 @@ class ProductSaveAfterObserver implements ObserverInterface
                 // validate returned images:
                 if (is_array($images->{'Items'}) && count($images->{'Items'}) > 0) {
                     // download and save the images locally:
-                    $this->imagesHelper->saveProductImages($images->{'Items'});
+                    $this->imagesHelper->saveProductImages($images->{'Items'}, $client);
                     $this->logger->debug('New images synchronized.');
                 }
             }
