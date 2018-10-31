@@ -126,7 +126,7 @@ class StockbaseClient
             'Person' => [
                 'FirstName' => $shippingAddress->getFirstname(),
                 'Surname' => $shippingAddress->getLastname(),
-                'Company' => $shippingAddress->getCompany(),
+                'Company' => $shippingAddress->getCompany() ?: ' ',
             ],
             'Address' => [
                 'Street' => $shippingAddress->getStreetLine(1),
