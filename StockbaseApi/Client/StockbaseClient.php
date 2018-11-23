@@ -83,8 +83,9 @@ class StockbaseClient
     /**
      * Downloads a file using current client configuration and saves it at the specified destination.
      *
-     * @param string|\GuzzleHttp\Url $uri File URI.
+     * @param string|\GuzzleHttp\Url                             $uri         File URI.
      * @param string|resource|\GuzzleHttp\Stream\StreamInterface $destination Destination where the file should be saved to.
+     * @return null
      */
     public function downloadImage($uri, $destination)
     {

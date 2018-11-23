@@ -80,8 +80,7 @@ class Images
     /**
      * Saves images array from stockbase for given $ean
      *
-     * @param array $images
-     *
+     * @param array           $images
      * @param StockbaseClient $client
      * @return bool
      */
