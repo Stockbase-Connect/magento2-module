@@ -3,7 +3,7 @@
 
 namespace Stockbase\Integration\Test\Unit\Model\Inventory;
 
-use Magento\Catalog\Model\ProductFactory;
+use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\TestFramework\Unit\Matcher\MethodInvokedAtIndex;
@@ -27,8 +27,8 @@ class StockbaseStockManagementTest extends TestCase
     /** @var StockbaseConfiguration|\PHPUnit_Framework_MockObject_MockObject */
     private $config;
 
-    /** @var ProductFactory|\PHPUnit_Framework_MockObject_MockObject */
-    private $productFactory;
+    /** @var ProductRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
+    private $productRepository;
 
     /** @var StockItemResource|\PHPUnit_Framework_MockObject_MockObject */
     private $stockItemResource;
@@ -55,10 +55,7 @@ class StockbaseStockManagementTest extends TestCase
         
         $this->product = $this->createMock(\Magento\Catalog\Model\Product::class);
         
-        $this->productFactory = $this->getMockBuilder('\Magento\Catalog\Model\ProductFactory')
-            ->setMethods(['create'])
-            ->getMock();
-        $this->productFactory->method('create')->willReturn($this->product);
+        $this->productRepository = $this->createMock(ProductRepositoryInterface::class);
         
         $this->stockItemResource = $this->createMock(StockItemResource::class);
         
@@ -246,7 +243,7 @@ class StockbaseStockManagementTest extends TestCase
         return new StockbaseStockManagement(
             $this->stockRegistry,
             $this->config,
-            $this->productFactory,
+            $this->productRepository,
             $this->stockItemResource,
             $this->objectManager
         );
@@ -262,7 +259,9 @@ class StockbaseStockManagementTest extends TestCase
         $this->stockItem->expects($this->once())->method('getBackorders')
             ->willReturn(\Magento\CatalogInventory\Model\Stock::BACKORDERS_NO);
 
-        $this->product->expects($this->once())->method('load')->with($productId);
+        $this->productRepository->expects($this->once())->method('getById')->with($productId)
+            ->willReturn($this->product);
+        
         $this->product->expects(new MethodInvokedAtIndex(0))->method('getData')->with('ean')->willReturn($ean);
         $this->product->expects(new MethodInvokedAtIndex(1))->method('getData')->with('stockbase_product')
             ->willReturn(true);

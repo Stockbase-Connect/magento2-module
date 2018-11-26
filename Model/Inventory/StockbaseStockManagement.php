@@ -3,8 +3,10 @@
 
 namespace Stockbase\Integration\Model\Inventory;
 
-use Magento\Catalog\Model\ProductFactory;
+use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Model\Product;
 use Magento\CatalogInventory\Api\StockRegistryInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\ObjectManagerInterface;
 use Magento\Quote\Model\Quote\Item as QuoteItem;
 use Stockbase\Integration\Model\Config\StockbaseConfiguration;
@@ -26,9 +28,9 @@ class StockbaseStockManagement
      */
     private $config;
     /**
-     * @var ProductFactory
+     * @var ProductRepositoryInterface
      */
-    private $productFactory;
+    private $productRepository;
     /**
      * @var StockItemResource
      */
@@ -40,23 +42,23 @@ class StockbaseStockManagement
 
     /**
      * StockbaseStockManagement constructor.
-     * @param StockRegistryInterface $stockRegistry
-     * @param StockbaseConfiguration $config
-     * @param ProductFactory         $productFactory
-     * @param StockItemResource      $stockItemResource
-     * @param ObjectManagerInterface $objectManager
+     * @param StockRegistryInterface     $stockRegistry
+     * @param StockbaseConfiguration     $config
+     * @param ProductRepositoryInterface $productRepository
+     * @param StockItemResource          $stockItemResource
+     * @param ObjectManagerInterface     $objectManager
      */
     public function __construct(
         StockRegistryInterface $stockRegistry,
         StockbaseConfiguration $config,
-        ProductFactory $productFactory,
+        ProductRepositoryInterface $productRepository,
         StockItemResource $stockItemResource,
         ObjectManagerInterface $objectManager
     ) {
 
         $this->stockRegistry = $stockRegistry;
         $this->config = $config;
-        $this->productFactory = $productFactory;
+        $this->productRepository = $productRepository;
         $this->stockItemResource = $stockItemResource;
         $this->objectManager = $objectManager;
     }
@@ -87,17 +89,24 @@ class StockbaseStockManagement
      */
     public function getStockbaseEan($productId)
     {
-        $stockItem = $this->stockRegistry->getStockItem($productId);
-        if ($this->config->isModuleEnabled() &&
-            $stockItem->getManageStock() &&
-            $stockItem->getBackorders() == \Magento\CatalogInventory\Model\Stock::BACKORDERS_NO
-        ) {
-            $product = $this->productFactory->create();
-            $product->load($productId);
-            $ean = $product->getData($this->config->getEanFieldName());
+        if ($this->config->isModuleEnabled()) {
+            $stockItem = $this->stockRegistry->getStockItem($productId);
+            if ($stockItem->getManageStock() &&
+                $stockItem->getBackorders() == \Magento\CatalogInventory\Model\Stock::BACKORDERS_NO
+            ) {
+                try {
+                    /** @var Product $product */
+                    $product = $this->productRepository->getById($productId);
 
-            if ($product->getData('stockbase_product') && !empty($ean)) {
-                return $ean;
+                    if (!$product->isComposite() && !$product->isVirtual()) {
+                        $ean = $product->getData($this->config->getEanFieldName());
+                        if (!empty($ean) && $product->getData('stockbase_product')) {
+                            return $ean;
+                        }
+                    }
+                } catch (NoSuchEntityException $e) {
+                    return null;
+                }
             }
         }
         
