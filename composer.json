@@ -11,7 +11,6 @@
         }
     ],
     "require": {
-        "php": "^7.1",
         "magento/module-catalog-inventory": "^100.0.0",
         "dividebv/phpdivideiq": "^0.6.0",
         "webmozart/assert": "^1.0"
