@@ -3,6 +3,7 @@
 
 namespace Stockbase\Integration\StockbaseApi\Client;
 
+use Magento\Sales\Api\Data\OrderItemInterface;
 use Webmozart\Assert\Assert;
 use DivideBV\PHPDivideIQ\DivideIQ;
 use Magento\Sales\Api\Data\OrderInterface;
@@ -110,11 +111,18 @@ class StockbaseClient
         $orderLineNumber = 0;
         foreach ($reservedStockbaseItems as $reserve) {
             $orderLineNumber++;
-            $orderLines[] = [
+            $orderLineData = [
                 'Number' => $orderLineNumber, // Number starting from 1
                 'EAN' => $reserve->getEan(),
                 'Amount' => (int) $reserve->getAmount(),
             ];
+            
+            /** @var OrderItemInterface $orderItem */
+            $orderItem = $this->_getOrderItemById($order, $reserve->getOrderItemId());
+            if ($orderItem && $orderItem->getRowTotal() !== null) {
+                $orderLineData['Price'] = $orderItem->getRowTotal();
+            }
+            $orderLines[] = $orderLineData;
         }
 
         $orderHeader = [
@@ -158,5 +166,19 @@ class StockbaseClient
         }
         
         return $response;
+    }
+    
+    private function _getOrderItemById(OrderInterface $order, $orderItemId)
+    {
+        if ($order instanceof \Magento\Sales\Model\Order) {
+            return $order->getItemById($orderItemId);
+        } else {
+            /** @var OrderItemInterface $orderItem */
+            $orderItem = array_filter((array) $order->getItems(), function (OrderItemInterface $item) use ($orderItemId) {
+                return $item->getItemId() == $orderItemId;
+            });
+            
+            return reset($orderItem);
+        }
     }
 }

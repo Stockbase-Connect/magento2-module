@@ -75,15 +75,7 @@ class StockbaseClientTest extends TestCase
             ->willReturn('TEST_ORDER_PREFIX');
 
         $order = $this->createOrderMock();
-        
-        $reservedItems = [];
-        for ($i = 0; $i < 2; $i++) {
-            $reservedItem = $this->createMock(\Stockbase\Integration\Model\StockItemReserve::class);
-            $reservedItem->method('getEan')->willReturn($i*100+1);
-            $reservedItem->method('getAmount')->willReturn($i*100+2);
-
-            $reservedItems[$i] = $reservedItem;
-        }
+        $reservedItems = $this->createReservedItemMocks();
         
         $this->divideIqClient->expects($this->once())->method('request')
             ->with(
@@ -102,6 +94,12 @@ class StockbaseClientTest extends TestCase
 
                 $this->assertTrue(isset($payload['OrderLines']));
                 $this->assertCount(count($reservedItems), $payload['OrderLines']);
+                for ($i = 0; $i < count($reservedItems); $i++) {
+                    $this->assertEquals($i+1, $payload['OrderLines'][$i]['Number']);
+                    $this->assertEquals($i*100+1, $payload['OrderLines'][$i]['EAN']);
+                    $this->assertEquals($i*100+2, $payload['OrderLines'][$i]['Amount']);
+                    $this->assertEquals(sprintf('%0.2f', ($i*100+3) * 10.95), $payload['OrderLines'][$i]['Price']);
+                }
 
                 $this->assertTrue(isset($payload['OrderDelivery']['Person']['FirstName']));
                 $this->assertEquals($order->getShippingAddress()->getFirstname(), $payload['OrderDelivery']['Person']['FirstName']);
@@ -198,7 +196,29 @@ class StockbaseClientTest extends TestCase
 
         $order->method('getRealOrderId')->willReturn(123456);
         $order->method('getCustomerNote')->willReturn('TEST_CUSTOMER_NOTE');
+
+        $order->method('getItemById')->willReturnCallback(function ($orderItemId) {
+            $orderItem = $this->createMock(\Magento\Sales\Model\Order\Item::class);
+            $orderItem->method('getRowTotal')->willReturn(sprintf('%0.2f', $orderItemId * 10.95));
+            
+            return $orderItem;
+        });
         
         return $order;
+    }
+    
+    protected function createReservedItemMocks()
+    {
+        $reservedItems = [];
+        for ($i = 0; $i < 2; $i++) {
+            $reservedItem = $this->createMock(\Stockbase\Integration\Model\StockItemReserve::class);
+            $reservedItem->method('getEan')->willReturn($i*100+1);
+            $reservedItem->method('getAmount')->willReturn($i*100+2);
+            $reservedItem->method('getOrderItemId')->willReturn($i*100+3);
+
+            $reservedItems[$i] = $reservedItem;
+        }
+        
+        return $reservedItems;
     }
 }
