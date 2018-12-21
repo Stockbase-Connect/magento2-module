@@ -118,10 +118,7 @@ class StockbaseClient
             ];
             
             /** @var OrderItemInterface $orderItem */
-            $orderItem = array_filter($order->getItems(), function(OrderItemInterface $item) use($reserve) {
-                return $item->getItemId() == $reserve->getOrderItemId();
-            });
-            $orderItem = reset($orderItem);
+            $orderItem = $this->_getOrderItemById($order, $reserve->getOrderItemId());
             if ($orderItem && $orderItem->getRowTotal() !== null) {
                 $orderLineData['Price'] = $orderItem->getRowTotal();
             }
@@ -169,5 +166,19 @@ class StockbaseClient
         }
         
         return $response;
+    }
+    
+    private function _getOrderItemById(OrderInterface $order, $orderItemId)
+    {
+        if ($order instanceof \Magento\Sales\Model\Order) {
+            return $order->getItemById($orderItemId);
+        } else {
+            /** @var OrderItemInterface $orderItem */
+            $orderItem = array_filter((array) $order->getItems(), function (OrderItemInterface $item) use ($orderItemId) {
+                return $item->getItemId() == $orderItemId;
+            });
+            
+            return reset($orderItem);
+        }
     }
 }
