@@ -8,7 +8,7 @@ use Magento\Framework\ObjectManagerInterface;
 use Stockbase\Integration\Model\Config\StockbaseConfiguration;
 
 /**
- * DivideIQClient Factory.
+ * DivideIQ client factory.
  */
 class DivideIQClientFactory
 {
@@ -36,7 +36,7 @@ class DivideIQClientFactory
     public function __construct(
         ObjectManagerInterface $objectManager,
         StockbaseConfiguration $config,
-        $instanceName = DivideIQClient::class
+        $instanceName = DivideIQ::class
     ) {
         $this->objectManager = $objectManager;
         $this->instanceName = $instanceName;
