@@ -1,6 +1,5 @@
 {
     "name": "stockbase/magento2-module",
-    "version": "2.1.1",
     "description": "A Magento 2 module for Stockbase",
     "type": "magento2-module",
     "license": "MIT",
