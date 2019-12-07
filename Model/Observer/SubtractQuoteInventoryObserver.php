@@ -81,11 +81,12 @@ class SubtractQuoteInventoryObserver extends \Magento\CatalogInventory\Observer\
                 $items[$productId] += $childItem->getTotalQty();
 
                 $stockItem = $this->stockRegistry->getStockItem($productId);
+                $stockQty = max($stockItem->getQty(), 0);
                 if ($this->stockbaseStockManagement->isStockbaseProduct($productId) &&
-                    $items[$productId] > $stockItem->getQty()
+                    $items[$productId] > $stockQty
                 ) {
-                    $diff = $items[$productId] - $stockItem->getQty();
-                    $items[$productId] = $stockItem->getQty();
+                    $diff = $items[$productId] - $stockQty;
+                    $items[$productId] = $stockQty;
                     
                     $stockbaseAmount = $this->stockbaseStockManagement->getStockbaseStockAmount($productId);
                     if ($stockbaseAmount - $diff < 0) {
